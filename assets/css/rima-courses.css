@@ -1,0 +1,1607 @@
+/**
+ * RIMA Academy — Our Courses Listing (2026 Premium)
+ * rima-courses.css
+ */
+
+/* ══════════════════════════════════════════════════════
+   CSS TOKENS (local to this page)
+   ══════════════════════════════════════════════════════ */
+:root {
+    --roc-blue:        var(--rima-primary, #00E5FF);
+    --roc-blue-dark:   var(--rima-primary-dark, #00B8CC);
+    --roc-blue-glow:   rgba(0, 229, 255, 0.3);
+    --roc-navy:        var(--rima-secondary-dark, #0A1128);
+    --roc-navy-mid:    var(--rima-secondary, #162547);
+    --roc-white:       #ffffff;
+    --roc-off:         var(--rima-gray-50, #F8F9FA);
+    --roc-border:      var(--rima-gray-200, #E9ECEF);
+    --roc-text:        var(--rima-secondary, #162547);
+    --roc-muted:       var(--rima-gray-600, #6C757D);
+    --roc-card-radius: 28px;
+    --roc-transition:  0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Ultra smooth hover */
+}
+
+/* ══════════════════════════════════════════════════════
+   GLOBAL WRAPPER
+   ══════════════════════════════════════════════════════ */
+.roc-page-container {
+    background: #f8fafc; /* Very subtle off-white for contrast against white cards */
+}
+
+/* ══════════════════════════════════════════════════════
+   HERO
+   ══════════════════════════════════════════════════════ */
+.roc-hero {
+    position: relative;
+    overflow: hidden;
+    background-color: #090e17;
+    padding: 160px 40px 140px; 
+    text-align: left; /* Align text to left */
+    color: #fff;
+    display: flex;
+    justify-content: flex-start; /* Align panel to left */
+    align-items: center;
+}
+
+.roc-hero-bg-wrapper {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 0;
+    pointer-events: none; /* Let clicks pass through except for the globe container */
+    overflow: hidden;
+}
+
+#roc-globe-viz {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: auto; /* allow dragging */
+    cursor: grab;
+}
+
+#roc-globe-viz:active {
+    cursor: grabbing;
+}
+
+/* Glass Marker for the Globe.gl points */
+.roc-glass-marker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(10, 17, 40, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    border-radius: 50px;
+    padding: 6px 12px;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+    white-space: nowrap;
+    transform: translate(-50%, -50%); /* Center on the data point */
+}
+
+.roc-glass-marker:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+    border-color: rgba(0, 229, 255, 0.8);
+    background: rgba(10, 17, 40, 0.8);
+}
+
+.roc-glass-marker img {
+    width: 18px;
+    height: auto;
+    border-radius: 2px;
+}
+
+@media only screen and (max-width: 1024px) {
+    /* Globe full screen remains the same */
+}
+
+@media only screen and (max-width: 768px) {
+    #roc-globe-viz {
+        opacity: 0.6; /* Fade slightly behind content on mobile */
+    }
+}
+
+.roc-hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(9, 14, 23, 0.85) 0%, rgba(16, 45, 86, 0.4) 50%, rgba(10, 17, 40, 0.8) 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.roc-hero-glass-panel {
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 100%);
+    backdrop-filter: blur(40px) saturate(150%);
+    -webkit-backdrop-filter: blur(40px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 1px solid rgba(255, 255, 255, 0.35);
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 36px;
+    padding: 72px 48px;
+    max-width: 680px;
+    width: 100%;
+    margin-left: 5%;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4), inset 0 2px 2px rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+    pointer-events: none;
+}
+.roc-hero-glass-panel::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.roc-hero-inner {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    pointer-events: auto;
+}
+
+/* ── Dynamic Flags UI ── */
+.roc-globe-languages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+    pointer-events: auto;
+}
+
+.roc-lang-flag-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50px;
+    padding: 8px 16px;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.roc-lang-flag-btn img {
+    width: 20px;
+    height: 14px;
+    object-fit: cover;
+    border-radius: 2px;
+}
+
+.roc-lang-flag-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(0, 229, 255, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2), 0 0 15px rgba(0, 229, 255, 0.2);
+}
+
+.roc-lang-flag-btn:active {
+    transform: translateY(0);
+}
+
+.roc-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.22);
+    backdrop-filter: blur(8px);
+    border-radius: 50px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 24px;
+}
+
+.roc-hero-title {
+    font-family: var(--rima-font-heading, inherit);
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    margin: 0 0 20px;
+    color: #fff;
+    background: linear-gradient(180deg, #fff 20%, rgba(255,255,255,0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.roc-hero-subtitle {
+    font-family: var(--rima-font-family, inherit);
+    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    color: rgba(255,255,255,0.85);
+    margin: 0 0 40px;
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+.roc-hero-stats {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Align stats to left */
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+}
+.roc-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 36px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    transition: transform var(--roc-transition), box-shadow var(--roc-transition), background var(--roc-transition);
+}
+.roc-stat:hover {
+    transform: translateY(-4px);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+.roc-stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+.roc-stat-label {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.7);
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+}
+.roc-stat-divider {
+    display: none;
+    height: 40px;
+    background: rgba(255,255,255,0.18);
+}
+
+/* ══════════════════════════════════════════════════════
+   FILTER BAR
+   ══════════════════════════════════════════════════════ */
+.roc-filter-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(248, 250, 252, 0.75); /* Match page background */
+    backdrop-filter: blur(32px) saturate(150%);
+    -webkit-backdrop-filter: blur(32px) saturate(150%);
+    border-bottom: 1px solid rgba(10, 17, 40, 0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.5); /* subtle top highlight */
+    box-shadow: 0 4px 30px rgba(10, 17, 40, 0.03);
+    margin-top: -30px; /* Overlap hero */
+    transition: box-shadow var(--roc-transition), background var(--roc-transition);
+}
+.roc-filter-bar.is-stuck {
+    background: rgba(255,255,255,0.95);
+    box-shadow: 0 10px 40px rgba(10, 17, 40, 0.1);
+}
+
+.roc-filter-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 16px 24px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* Pill tabs (Segmented Control Style) */
+.roc-filter-pills {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex: 1;
+    min-width: 0;
+    padding: 6px;
+    background: rgba(10, 17, 40, 0.04);
+    border-radius: 100px;
+    border: 1px solid rgba(10, 17, 40, 0.05);
+}
+.roc-filter-pills::-webkit-scrollbar { display: none; }
+
+.roc-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px !important;
+    border-radius: 50px !important;
+    border: none !important;
+    background: transparent !important;
+    color: var(--roc-muted) !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    white-space: nowrap;
+    scroll-snap-align: start;
+    transition: all 0.2s ease !important;
+    font-family: inherit;
+    line-height: 1 !important;
+    box-shadow: none !important;
+}
+.roc-pill:hover {
+    color: var(--roc-navy) !important;
+    background: rgba(10, 17, 40, 0.03) !important;
+}
+.roc-pill.roc-pill-active,
+.roc-pill[aria-selected="true"] {
+    background: #fff !important;
+    color: var(--roc-navy) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+    transform: scale(1.02);
+}
+.roc-pill-count {
+    background: rgba(10, 17, 40, 0.08);
+    border-radius: 50px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: inherit;
+    transition: all 0.2s ease;
+}
+.roc-pill.roc-pill-active .roc-pill-count,
+.roc-pill[aria-selected="true"] .roc-pill-count {
+    background: var(--roc-navy);
+    color: #fff;
+}
+
+/* Controls row */
+.roc-filter-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.roc-search-wrap {
+    position: relative;
+}
+.roc-search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--roc-muted);
+    pointer-events: none;
+    font-size: 16px;
+}
+.roc-search-input {
+    height: 44px;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 0 16px 0 44px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--roc-text);
+    background: var(--roc-off);
+    width: 240px;
+    transition: all var(--roc-transition);
+    outline: none;
+}
+.roc-search-input:focus {
+    background: #fff;
+    border-color: var(--roc-blue);
+    box-shadow: 0 8px 24px var(--roc-blue-glow);
+    width: 300px;
+}
+.roc-search-input::placeholder { color: var(--roc-muted); }
+
+.roc-sort-select {
+    height: 38px;
+    border: 1.5px solid var(--roc-border);
+    border-radius: 10px;
+    padding: 0 32px 0 12px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--roc-text);
+    background: #fff;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 24 24' stroke='%236b7a99' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    outline: none;
+    transition: border-color var(--roc-transition);
+}
+.roc-sort-select:focus {
+    border-color: var(--roc-blue);
+    box-shadow: 0 0 0 3px var(--roc-blue-glow);
+}
+
+.roc-view-toggle {
+    display: flex;
+    gap: 2px;
+    background: var(--roc-off);
+    border-radius: 8px;
+    padding: 3px;
+}
+.roc-view-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    color: var(--roc-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--roc-transition);
+}
+.roc-view-btn.active,
+.roc-view-btn[aria-pressed="true"] {
+    background: #fff;
+    color: var(--roc-blue);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* Results bar */
+.roc-results-bar {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 8px 24px 14px;
+}
+.roc-results-count {
+    font-size: 13px;
+    color: var(--roc-muted);
+}
+.roc-results-count strong {
+    color: var(--roc-text);
+    font-weight: 700;
+}
+
+/* ══════════════════════════════════════════════════════
+   PAGE WRAP + GRID
+   ══════════════════════════════════════════════════════ */
+.roc-page-wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 36px 24px 80px;
+}
+
+.roc-grid-wrap {
+    display: grid;
+    gap: 28px;
+    transition: opacity 0.2s ease;
+}
+.roc-view-grid-mode {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+.roc-view-list-mode {
+    grid-template-columns: 1fr;
+}
+.roc-grid-wrap.roc-loading {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════
+   COURSE CARD — GRID MODE
+   ══════════════════════════════════════════════════════ */
+.roc-card {
+    background: #fff;
+    border-radius: 24px;
+    border: 1px solid rgba(10, 17, 40, 0.06);
+    overflow: hidden;
+    transition: all var(--roc-transition);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(10, 17, 40, 0.03), inset 0 0 0 1px rgba(255, 255, 255, 1);
+}
+.roc-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(10, 17, 40, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 1);
+    border-color: rgba(0, 229, 255, 0.3);
+}
+
+.roc-card-image-link { display: block; }
+.roc-card-image {
+    position: relative;
+    overflow: hidden;
+    height: 220px;
+    background: linear-gradient(135deg, var(--roc-navy), var(--roc-navy-mid));
+    border-bottom: 1px solid rgba(10, 17, 40, 0.05);
+}
+.roc-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    display: block;
+}
+.roc-card:hover .roc-card-image img {
+    transform: scale(1.05);
+}
+.roc-card-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Overlay badges */
+.roc-card-badge-cat,
+.roc-card-badge-price {
+    position: absolute;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 6px 14px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+.roc-card-badge-cat {
+    top: 16px;
+    left: 16px;
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--roc-navy);
+    backdrop-filter: blur(10px) saturate(180%);
+    -webkit-backdrop-filter: blur(10px) saturate(180%);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.roc-card-badge-price {
+    bottom: -16px; /* Offset it to overlay the image border */
+    right: 20px;
+    background: var(--roc-blue);
+    color: var(--roc-navy);
+    font-size: 14px;
+    padding: 8px 18px;
+    box-shadow: 0 4px 15px rgba(0, 229, 255, 0.4);
+    z-index: 2;
+    transform: translateY(-24px); /* Moves it up into the image area */
+}
+.roc-badge-free {
+    background: #00c853 !important;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 200, 83, 0.4);
+}
+
+.roc-card-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    position: relative;
+}
+
+.roc-card-title {
+    font-family: var(--rima-font-heading, inherit);
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.4;
+    margin: 0 0 12px;
+    color: var(--roc-navy);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.roc-card-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--roc-transition);
+}
+.roc-card-title a:hover { color: var(--roc-blue-dark); }
+
+.roc-card-instructor {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--roc-muted);
+    margin-bottom: 12px;
+}
+.roc-card-instructor svg {
+    color: var(--roc-blue);
+}
+
+.roc-card-excerpt {
+    font-size: 14px;
+    color: var(--roc-muted);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex: 1;
+    margin-bottom: 20px;
+}
+
+/* Meta row (visible in list mode, hidden in grid) */
+.roc-card-meta-row {
+    display: none;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+.roc-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--roc-muted);
+}
+
+.roc-card-cta {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    text-align: center;
+    border-radius: 12px !important;
+    padding: 14px 24px !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    transition: all var(--roc-transition) !important;
+    margin-top: auto;
+    background: var(--roc-off);
+    color: var(--roc-navy) !important; 
+    border: 1px solid rgba(10, 17, 40, 0.05);
+}
+.roc-card-cta:hover {
+    background: var(--roc-blue);
+    color: var(--roc-navy) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 229, 255, 0.3);
+    border-color: transparent;
+}
+.roc-card-cta svg { flex-shrink: 0; transition: transform var(--roc-transition); stroke-width: 2.5; }
+.roc-card-cta:hover svg { transform: translateX(4px); }
+
+/* ══════════════════════════════════════════════════════
+   LIST MODE OVERRIDES
+   ══════════════════════════════════════════════════════ */
+.roc-view-list-mode .roc-card {
+    flex-direction: row;
+    align-items: stretch;
+}
+.roc-view-list-mode .roc-card-image-link {
+    flex-shrink: 0;
+    width: 240px;
+}
+.roc-view-list-mode .roc-card-image {
+    height: 100%;
+    min-height: 180px;
+}
+.roc-view-list-mode .roc-card-body {
+    padding: 24px 26px;
+}
+.roc-view-list-mode .roc-card-title {
+    font-size: 19px;
+    -webkit-line-clamp: 1;
+}
+.roc-view-list-mode .roc-card-excerpt {
+    -webkit-line-clamp: 3;
+}
+.roc-view-list-mode .roc-card-meta-row {
+    display: flex;
+}
+.roc-view-list-mode .roc-card-cta {
+    max-width: 200px;
+}
+
+/* ══════════════════════════════════════════════════════
+   SKELETON LOADER
+   ══════════════════════════════════════════════════════ */
+.roc-skeleton {
+    display: none;
+    pointer-events: none;
+    border: 1.5px solid var(--roc-border) !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+.roc-grid-wrap.roc-loading .roc-skeleton { display: flex !important; }
+.roc-grid-wrap.roc-loading .roc-card:not(.roc-skeleton) { display: none; }
+
+@keyframes roc-shimmer {
+    0%   { background-position: -600px 0; }
+    100% { background-position: 600px 0; }
+}
+.roc-skeleton-image,
+.roc-skeleton-line {
+    background: linear-gradient(90deg, #f0f2f5 25%, #e8eaed 50%, #f0f2f5 75%);
+    background-size: 600px 100%;
+    animation: roc-shimmer 1.6s infinite linear;
+    border-radius: 8px;
+}
+.roc-skeleton-image {
+    height: 210px;
+    border-radius: 0;
+}
+.roc-skeleton-title  { height: 20px; margin-bottom: 12px; }
+.roc-skeleton-sub    { height: 14px; width: 60%; margin-bottom: 16px; }
+.roc-skeleton-text   { height: 13px; margin-bottom: 8px; }
+.roc-skeleton-short  { width: 75%; }
+.roc-skeleton-btn    { height: 44px; margin-top: 16px; border-radius: 10px; }
+
+/* ══════════════════════════════════════════════════════
+   EMPTY STATE
+   ══════════════════════════════════════════════════════ */
+.roc-empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    grid-column: 1 / -1;
+}
+.roc-empty-icon { margin-bottom: 24px; }
+.roc-empty-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--roc-text);
+    margin: 0 0 12px;
+}
+.roc-empty-text {
+    font-size: 15px;
+    color: var(--roc-muted);
+    margin: 0 0 28px;
+}
+
+/* ══════════════════════════════════════════════════════
+   LOAD MORE
+   ══════════════════════════════════════════════════════ */
+.roc-load-more-wrap {
+    text-align: center;
+    margin-top: 48px;
+}
+.roc-load-more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 40px;
+    background: #fff;
+    border: 2px solid var(--roc-blue);
+    border-radius: 50px;
+    color: var(--roc-blue);
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all var(--roc-transition);
+}
+.roc-load-more-btn:hover {
+    background: var(--roc-blue);
+    color: #fff;
+    box-shadow: 0 8px 28px var(--roc-blue-glow);
+    transform: translateY(-2px);
+}
+.roc-load-more-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+.roc-load-more-spinner {
+    display: none;
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: roc-spin 0.7s linear infinite;
+}
+.roc-load-more-btn.roc-loading .roc-load-more-spinner { display: block; }
+.roc-load-more-btn.roc-loading .roc-load-more-text { opacity: 0.7; }
+@keyframes roc-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ══════════════════════════════════════════════════════
+   CARD APPEAR ANIMATION
+   ══════════════════════════════════════════════════════ */
+@keyframes roc-card-in {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.roc-card.roc-appear {
+    animation: roc-card-in 0.4s ease both;
+}
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .roc-view-grid-mode { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+}
+
+@media (max-width: 768px) {
+    .roc-hero { padding: 64px 20px 56px; }
+    .roc-filter-inner { flex-direction: column; align-items: stretch; }
+    .roc-filter-controls { flex-wrap: wrap; }
+    .roc-search-input { width: 100%; }
+    .roc-search-input:focus { width: 100%; }
+    .roc-view-grid-mode { grid-template-columns: 1fr; }
+    .roc-view-list-mode .roc-card { flex-direction: column; }
+    .roc-view-list-mode .roc-card-image-link { width: 100%; }
+    .roc-view-list-mode .roc-card-image { height: 210px; }
+    .roc-stat-divider { height: 1px; width: 60px; }
+    .roc-hero-stats { flex-direction: row; }
+}
+
+/* ══════════════════════════════════════════════════════
+   INTERACTIVE LANGUAGE SHOWCASE REEL
+   ══════════════════════════════════════════════════════ */
+.roc-lang-reel {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #090e17 0%, #0d1529 50%, #090e17 100%);
+}
+
+.roc-reel-canvas {
+    position: relative;
+    width: 100%;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#roc-reel-particles {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* ── Slides ─────────────────────────────── */
+.roc-reel-slides {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1200px;
+    padding: 80px 60px;
+}
+
+.roc-reel-slide {
+    display: none;
+    align-items: center;
+    gap: 80px;
+    animation: reelFadeIn 0.8s ease forwards;
+}
+
+.roc-reel-slide-active {
+    display: flex;
+}
+
+@keyframes reelFadeIn {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Flag Visual ────────────────────────── */
+.roc-reel-flag-wrap {
+    flex: 0 0 320px;
+    height: 320px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.roc-reel-glow {
+    position: absolute;
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 229, 255, 0.12) 0%, transparent 70%);
+    animation: reelGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes reelGlow {
+    from { transform: scale(0.85); opacity: 0.5; }
+    to { transform: scale(1.15); opacity: 1; }
+}
+
+.roc-reel-flag {
+    width: 240px;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 229, 255, 0.2), 0 0 0 2px rgba(0, 229, 255, 0.15);
+    animation: reelFloat 4s ease-in-out infinite alternate;
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes reelFloat {
+    from { transform: translateY(-8px) rotate(-1.5deg); }
+    to { transform: translateY(8px) rotate(1.5deg); }
+}
+
+/* ── Info Panel ─────────────────────────── */
+.roc-reel-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.roc-reel-label {
+    font-size: 13px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+    font-weight: 600;
+}
+
+.roc-reel-native {
+    font-family: 'Playfair Display', serif;
+    font-size: 64px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    line-height: 1.1;
+}
+
+.roc-reel-name {
+    font-size: 22px;
+    font-weight: 300;
+    color: rgba(0, 229, 255, 0.8);
+    margin: 0 0 8px;
+}
+
+.roc-reel-countries {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.45);
+    line-height: 1.7;
+    margin: 0;
+}
+
+.roc-reel-countries strong {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.roc-reel-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 28px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 60px;
+    backdrop-filter: blur(8px);
+    width: fit-content;
+    margin-top: 8px;
+}
+
+.roc-reel-stat-num {
+    font-size: 30px;
+    font-weight: 700;
+    color: #00e5ff;
+}
+
+.roc-reel-stat-lbl {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.roc-reel-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(124, 77, 255, 0.15));
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    border-radius: 60px;
+    color: #00e5ff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: fit-content;
+    margin-top: 8px;
+    font-family: 'Inter', sans-serif;
+}
+
+.roc-reel-cta:hover {
+    background: linear-gradient(135deg, rgba(0, 229, 255, 0.3), rgba(124, 77, 255, 0.3));
+    border-color: rgba(0, 229, 255, 0.6);
+    transform: translateX(4px);
+    box-shadow: 0 8px 30px rgba(0, 229, 255, 0.15);
+}
+
+/* ── Controls ───────────────────────────── */
+.roc-reel-controls {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(10, 17, 40, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 60px;
+    padding: 10px 20px;
+}
+
+.roc-reel-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.roc-reel-btn:hover {
+    background: rgba(0, 229, 255, 0.15);
+    border-color: rgba(0, 229, 255, 0.4);
+}
+
+.roc-reel-dots {
+    display: flex;
+    gap: 8px;
+}
+
+.roc-reel-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 4px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.roc-reel-dot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.roc-reel-dot:hover {
+    border-color: rgba(0, 229, 255, 0.5);
+    transform: scale(1.15);
+}
+
+.roc-reel-dot-active {
+    border-color: #00e5ff;
+    box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+    transform: scale(1.2);
+}
+
+/* ── Progress Bar ───────────────────────── */
+.roc-reel-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.05);
+    z-index: 10;
+}
+
+.roc-reel-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00e5ff, #7c4dff);
+    transition: width 0.1s linear;
+}
+
+/* ── Play/Pause ─────────────────────────── */
+.roc-reel-playpause {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    z-index: 10;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 17, 40, 0.6);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.roc-reel-playpause:hover {
+    color: #fff;
+    border-color: rgba(0, 229, 255, 0.4);
+    background: rgba(0, 229, 255, 0.1);
+}
+
+/* ── Reel Responsive ────────────────────── */
+@media only screen and (max-width: 900px) {
+    .roc-reel-slide {
+        flex-direction: column;
+        text-align: center;
+        gap: 40px;
+    }
+    .roc-reel-flag-wrap { flex: none; width: 200px; height: 200px; }
+    .roc-reel-flag { width: 160px; }
+    .roc-reel-glow { width: 220px; height: 220px; }
+    .roc-reel-native { font-size: 42px; }
+    .roc-reel-name { font-size: 18px; }
+    .roc-reel-info { align-items: center; }
+    .roc-reel-slides { padding: 60px 24px; }
+    .roc-reel-stat { margin: 8px auto 0; }
+    .roc-reel-cta { margin: 8px auto 0; }
+}
+
+@media only screen and (max-width: 480px) {
+    .roc-reel-canvas { min-height: 520px; }
+    .roc-reel-native { font-size: 34px; }
+    .roc-reel-flag-wrap { width: 150px; height: 150px; }
+    .roc-reel-flag { width: 120px; }
+    .roc-reel-controls { padding: 8px 12px; gap: 8px; }
+    .roc-reel-dot { width: 28px; height: 28px; }
+    .roc-reel-btn { width: 32px; height: 32px; }
+}
+
+/* Marker pulse effect */
+.roc-glass-marker-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    background: rgba(0, 229, 255, 0.4);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    animation: markerPulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+@keyframes markerPulse {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+}
+
+/* ══════════════════════════════════════════════════════
+   LANGUAGE CATEGORIES GRID (NEW UX)
+   ══════════════════════════════════════════════════════ */
+.roc-categories-container {
+    max-width: 1280px;
+    margin: 60px auto 40px auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 10;
+}
+
+.roc-categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.roc-lang-card-btn {
+    position: relative;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 28px;
+    overflow: hidden;
+    height: 380px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+    text-align: left;
+}
+
+.roc-lang-card-btn:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 229, 255, 0.2);
+}
+
+.roc-lang-card-bg {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.roc-lang-card-btn:hover .roc-lang-card-bg {
+    transform: scale(1.08);
+}
+
+.roc-lang-card-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to bottom, rgba(10, 17, 40, 0.1) 0%, rgba(10, 17, 40, 0.8) 100%);
+    transition: background 0.5s ease;
+}
+
+.roc-lang-card-btn:hover .roc-lang-card-overlay {
+    background: linear-gradient(to bottom, rgba(10, 17, 40, 0.2) 0%, rgba(10, 17, 40, 0.95) 100%);
+}
+
+.roc-lang-card-content {
+    position: relative;
+    padding: 40px 30px;
+    z-index: 2;
+    color: #fff;
+    width: 100%;
+}
+
+.roc-lang-card-content h3 {
+    margin: 0 0 10px 0;
+    font-size: 32px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.roc-lang-card-content span {
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Back button area */
+.roc-back-to-langs {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 40px 24px 0 24px;
+}
+
+.roc-back-inner {
+    display: flex;
+    align-items: center;
+}
+
+.roc-btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 2px solid rgba(10, 17, 40, 0.15);
+    color: var(--roc-navy);
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.roc-btn-outline:hover {
+    background: rgba(10, 17, 40, 0.05);
+    border-color: rgba(10, 17, 40, 0.3);
+    transform: translateX(-4px);
+}
+
+/* ══════════════════════════════════════════════════════
+   PARALLAX LEVEL EXPLANATIONS (PREMIUM DESIGN)
+   ══════════════════════════════════════════════════════ */
+.roc-levels-parallax {
+    position: relative;
+    padding: 60px 24px 100px;
+    background-color: #090e17; /* Dark navy base */
+    color: #fff;
+    overflow: hidden;
+}
+
+.roc-levels-parallax::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    /* Deep mesh gradient matching the hero */
+    background: radial-gradient(circle at 15% 50%, rgba(0, 229, 255, 0.08), transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(16, 45, 86, 0.4), transparent 50%);
+    z-index: 1;
+}
+
+.roc-parallax-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+/* Elegant Back Button */
+.roc-btn-back-elegant {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.6);
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-bottom: 50px;
+    padding: 0;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.roc-btn-back-elegant:hover {
+    color: #00E5FF;
+    transform: translateX(-5px);
+}
+
+/* Header */
+.roc-level-header {
+    text-align: center;
+    margin-bottom: 70px;
+}
+
+.roc-level-header h2 {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+    background: linear-gradient(to right, #ffffff, #a3b8cc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.roc-level-header p {
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.7);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Level Cards Grid */
+.roc-level-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
+}
+
+/* Card Design */
+.roc-lvl-card {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.roc-lvl-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 4px;
+    background: linear-gradient(90deg, #00E5FF, transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.roc-lvl-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateY(-8px);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.roc-lvl-card:hover::before {
+    opacity: 1;
+}
+
+/* Badge */
+.roc-lvl-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(0, 229, 255, 0.1);
+    color: #00E5FF;
+    font-size: 16px;
+    font-weight: 800;
+    border-radius: 50px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(0, 229, 255, 0.2);
+}
+
+.roc-lvl-card h3 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+    line-height: 1.4;
+}
+
+.roc-lvl-card p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+}
+
+@media only screen and (max-width: 768px) {
+    .roc-levels-parallax {
+        padding: 40px 20px 80px;
+    }
+    .roc-level-header h2 {
+        font-size: 36px;
+    }
+    .roc-level-header p {
+        font-size: 16px;
+    }
+    .roc-lvl-card {
+        padding: 30px 24px;
+    }
+    .roc-level-cards {
+        gap: 24px;
+    }
+}
+
+/* ══════════════════════════════════════════════════════
+   ULTRA MODERN COURSES GRID (DARK MODE)
+   ══════════════════════════════════════════════════════ */
+.roc-page-container {
+    background-color: #090e17; /* Seamless transition from parallax */
+    position: relative;
+    z-index: 2;
+    padding-bottom: 100px;
+}
+
+/* Overriding Academist Course Cards for Premium Look */
+.roc-page-container .eltdf-cl-item {
+    background: rgba(255, 255, 255, 0.02) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 20px !important;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.roc-page-container .eltdf-cl-item:hover {
+    transform: translateY(-8px) !important;
+    border-color: rgba(0, 229, 255, 0.3) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 229, 255, 0.1) !important;
+}
+
+/* Image Wrapper */
+.roc-page-container .eltdf-cl-image {
+    position: relative;
+}
+.roc-page-container .eltdf-cl-image::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to bottom, transparent, rgba(9, 14, 23, 0.9));
+    pointer-events: none;
+}
+
+/* Typography and Content */
+.roc-page-container .eltdf-cl-item-inner {
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+.roc-page-container .eltdf-cl-text {
+    padding: 24px !important;
+    background: transparent !important;
+}
+
+.roc-page-container .eltdf-cl-title {
+    color: #fff !important;
+    font-weight: 700 !important;
+    font-size: 20px !important;
+    margin-bottom: 12px !important;
+}
+.roc-page-container .eltdf-cl-title a {
+    color: #fff !important;
+    transition: color 0.3s ease !important;
+}
+.roc-page-container .eltdf-cl-title a:hover {
+    color: #00E5FF !important;
+}
+
+/* Specific text elements */
+.roc-page-container .eltdf-cl-instructor,
+.roc-page-container .eltdf-cl-instructor a,
+.roc-page-container .eltdf-cl-price {
+    color: #00E5FF !important;
+    font-weight: 600 !important;
+}
+
+.roc-page-container .eltdf-cl-excerpt {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-size: 14px !important;
+}
+
+/* Bottom info section */
+.roc-page-container .eltdf-cl-info-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    background: transparent !important;
+    padding: 15px 24px !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.roc-page-container .eltdf-cl-info-bottom .eltdf-cl-students,
+.roc-page-container .eltdf-cl-info-bottom .eltdf-cl-comments {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Pagination */
+.roc-page-container .eltdf-cl-pagination {
+    margin-top: 40px !important;
+}
+.roc-page-container .eltdf-cl-pagination ul li a,
+.roc-page-container .eltdf-cl-pagination ul li span {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+}
+.roc-page-container .eltdf-cl-pagination ul li.eltdf-cl-pag-active a {
+    background: #00E5FF !important;
+    border-color: #00E5FF !important;
+    color: #090e17 !important;
+    font-weight: bold !important;
+}
+.roc-page-container .eltdf-cl-pagination ul li a:hover {
+    background: rgba(0, 229, 255, 0.2) !important;
+    border-color: #00E5FF !important;
+    color: #00E5FF !important;
+}

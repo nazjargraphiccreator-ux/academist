@@ -1,0 +1,1754 @@
+/**
+ * AnaCleaning Checkout Page Styles
+ * 
+ * Premium checkout with address selection and Cargus integration
+ * 
+ * @package AnaCleaning
+ * @version 1.0.0
+ */
+
+/* ========================================
+   Checkout Container
+   ======================================== */
+
+.rima-checkout-page {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+}
+
+.rima-checkout-page .woocommerce {
+    max-width: 900px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 40px 24px !important;
+    display: block !important;
+}
+
+.rima-checkout-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    width: 100%;
+}
+
+/* ONE-PAGE CENTERED LAYOUT - Desktop stays single column */
+@media (min-width: 993px) {
+    .rima-checkout-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+    }
+
+    .rima-checkout-main,
+    .rima-checkout-sidebar {
+        width: 100%;
+        max-width: 900px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .rima-checkout-page .woocommerce {
+        padding: 16px !important;
+    }
+
+    .rima-checkout-wrapper {
+        gap: 16px;
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+}
+
+/* ========================================
+   Checkout Header
+   ======================================== */
+
+.rima-checkout-header {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto var(--rima-space-4);
+    text-align: center;
+}
+
+.rima-checkout-title {
+    font-size: var(--rima-font-size-2xl);
+    font-weight: var(--rima-font-weight-bold);
+    color: var(--rima-text-primary);
+    margin: 0;
+}
+
+.rima-checkout-subtitle {
+    font-size: var(--rima-font-size-sm);
+    color: var(--rima-text-muted);
+    margin-top: var(--rima-space-2);
+}
+
+/* ========================================
+   Checkout Steps
+   ======================================== */
+
+.rima-checkout-main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.rima-checkout-step {
+    background: var(--rima-white);
+    border-radius: var(--rima-radius-xl);
+    box-shadow: var(--rima-shadow-card);
+    overflow: hidden;
+}
+
+.rima-checkout-step-header {
+    display: flex;
+    align-items: center;
+    gap: var(--rima-space-4);
+    padding: var(--rima-space-5);
+    background: var(--rima-gray-50);
+    border-bottom: 1px solid var(--rima-gray-200);
+}
+
+.rima-step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--rima-radius-full);
+    background: var(--rima-gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--rima-font-size-sm);
+    font-weight: var(--rima-font-weight-bold);
+    color: var(--rima-text-inverse);
+}
+
+.rima-step-title {
+    font-size: var(--rima-font-size-base);
+    font-weight: var(--rima-font-weight-semibold);
+    color: var(--rima-text-primary);
+    margin: 0;
+}
+
+.rima-step-subtitle {
+    font-size: var(--rima-font-size-xs);
+    color: var(--rima-text-muted);
+}
+
+.rima-checkout-step-body {
+    padding: var(--rima-space-5);
+}
+
+/* ========================================
+   Address Selection
+   ======================================== */
+
+.rima-address-selector {
+    display: flex;
+    flex-direction: column;
+    gap: var(--rima-space-4);
+}
+
+/* Selected Address Display */
+.rima-selected-address {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--rima-space-4);
+    padding: var(--rima-space-4);
+    background: rgba(var(--rima-primary-rgb), 0.05);
+    border: 2px solid var(--rima-primary);
+    border-radius: var(--rima-radius-lg);
+}
+
+.rima-selected-address-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--rima-radius-full);
+    background: var(--rima-gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--rima-text-inverse);
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.rima-selected-address-content {
+    flex: 1;
+}
+
+.rima-selected-address-name {
+    font-weight: var(--rima-font-weight-semibold);
+    color: var(--rima-text-primary);
+    margin-bottom: var(--rima-space-1);
+}
+
+.rima-selected-address-details {
+    font-size: var(--rima-font-size-sm);
+    color: var(--rima-text-secondary);
+    line-height: var(--rima-line-height-relaxed);
+}
+
+.rima-selected-address-change {
+    flex-shrink: 0;
+}
+
+/* Same Address Toggle */
+.rima-same-address-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--rima-space-3);
+    padding: var(--rima-space-4);
+    background: var(--rima-gray-50);
+    border-radius: var(--rima-radius-md);
+    cursor: pointer;
+}
+
+.rima-same-address-toggle input {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--rima-primary);
+}
+
+.rima-same-address-toggle span {
+    font-size: var(--rima-font-size-sm);
+    color: var(--rima-text-primary);
+}
+
+/* No Address State */
+.rima-no-address {
+    text-align: center;
+    padding: var(--rima-space-6);
+    background: var(--rima-gray-50);
+    border-radius: var(--rima-radius-lg);
+    border: 2px dashed var(--rima-gray-300);
+}
+
+.rima-no-address-icon {
+    font-size: 32px;
+    color: var(--rima-text-muted);
+    margin-bottom: var(--rima-space-3);
+}
+
+.rima-no-address-text {
+    font-size: var(--rima-font-size-sm);
+    color: var(--rima-text-secondary);
+    margin-bottom: var(--rima-space-4);
+}
+
+/* ========================================
+   Shipping Method (Cargus)
+   ======================================== */
+
+.rima-shipping-methods {
+    display: flex;
+    flex-direction: column;
+    gap: var(--rima-space-3);
+}
+
+.rima-shipping-method {
+    display: flex;
+    align-items: center;
+    gap: var(--rima-space-4);
+    padding: var(--rima-space-4);
+    background: var(--rima-white);
+    border: 2px solid var(--rima-gray-200);
+    border-radius: var(--rima-radius-lg);
+    cursor: pointer;
+    transition: all var(--rima-transition-fast);
+}
+
+.rima-shipping-method:hover {
+    border-color: var(--rima-primary);
+}
+
+.rima-shipping-method.is-selected {
+    border-color: var(--rima-primary);
+    background: rgba(var(--rima-primary-rgb), 0.05);
+}
+
+.rima-shipping-method input {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--rima-primary);
+}
+
+.rima-shipping-method-logo {
+    width: 48px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.rima-shipping-method-info {
+    flex: 1;
+}
+
+.rima-shipping-method-name {
+    font-weight: var(--rima-font-weight-medium);
+    color: var(--rima-text-primary);
+    margin-bottom: var(--rima-space-1);
+}
+
+.rima-shipping-method-time {
+    font-size: var(--rima-font-size-xs);
+    color: var(--rima-text-muted);
+}
+
+.rima-shipping-method-price {
+    font-weight: var(--rima-font-weight-semibold);
+    color: var(--rima-primary);
+}
+
+/* Free shipping badge */
+.rima-shipping-free {
+    background: var(--rima-success);
+    color: var(--rima-text-inverse);
+    padding: var(--rima-space-1) var(--rima-space-2);
+    border-radius: var(--rima-radius-sm);
+    font-size: var(--rima-font-size-xs);
+    font-weight: var(--rima-font-weight-semibold);
+}
+
+/* ========================================
+   Payment Methods
+   ======================================== */
+
+.rima-payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: var(--rima-space-3);
+}
+
+.rima-payment-method {
+    display: flex;
+    align-items: center;
+    gap: var(--rima-space-4);
+    padding: var(--rima-space-4);
+    background: var(--rima-white);
+    border: 2px solid var(--rima-gray-200);
+    border-radius: var(--rima-radius-lg);
+    cursor: pointer;
+    transition: all var(--rima-transition-fast);
+}
+
+.rima-payment-method:hover {
+    border-color: var(--rima-primary);
+}
+
+.rima-payment-method.is-selected {
+    border-color: var(--rima-primary);
+    background: rgba(var(--rima-primary-rgb), 0.05);
+}
+
+/* Force native radio buttons visible on mobile */
+.wc_payment_method input[type="radio"] {
+    z-index: 11 !important;
+    /* Ensure readable */
+    opacity: 1 !important;
+    /* Force visible */
+    position: static !important;
+    /* Remove absolute positioning hiding it */
+    width: 18px !important;
+    height: 18px !important;
+    clip: auto !important;
+    display: inline-block !important;
+    /* Show it */
+    margin-right: 8px !important;
+}
+
+/* Ensure label enables clicking */
+.wc_payment_method label {
+    display: inline-block !important;
+    width: auto !important;
+}
+
+.rima-payment-method input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--rima-primary);
+}
+
+.rima-payment-method-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--rima-radius-md);
+    background: var(--rima-gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--rima-text-secondary);
+}
+
+.rima-payment-method-info {
+    flex: 1;
+}
+
+.rima-payment-method-name {
+    font-weight: var(--rima-font-weight-medium);
+    color: var(--rima-text-primary);
+}
+
+.rima-payment-method-desc {
+    font-size: var(--rima-font-size-xs);
+    color: var(--rima-text-muted);
+}
+
+/* Card payment form */
+.rima-payment-card-form {
+    display: none;
+    padding: var(--rima-space-4);
+    background: var(--rima-gray-50);
+    border-radius: var(--rima-radius-md);
+    margin-top: var(--rima-space-3);
+}
+
+.rima-payment-method.is-selected .rima-payment-card-form {
+    display: block;
+}
+
+/* ========================================
+   Order Summary Sidebar
+   ======================================== */
+
+.rima-checkout-sidebar {
+    position: static;
+    width: 100%;
+}
+
+.rima-order-summary {
+    background: var(--rima-white);
+    border-radius: var(--rima-radius-xl);
+    box-shadow: var(--rima-shadow-card);
+    overflow: hidden;
+}
+
+.rima-order-summary-header {
+    padding: var(--rima-space-5);
+    background: var(--rima-gradient-primary);
+    /* Use Gradient */
+    border-bottom: 1px solid var(--rima-gray-200);
+    /* Flex for better alignment if needed */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.rima-order-summary-title {
+    font-size: var(--rima-font-size-lg);
+    font-weight: var(--rima-font-weight-bold);
+    color: var(--rima-text-inverse);
+    /* White text */
+    margin: 0;
+    /* Prevent truncation but allow wrapping */
+    white-space: normal;
+    line-height: 1.4;
+    flex: 1;
+}
+
+.rima-order-summary-body {
+    padding: var(--rima-space-5);
+}
+
+/* Product List */
+.rima-order-products {
+    display: flex;
+    flex-direction: column;
+    gap: var(--rima-space-4);
+    margin-bottom: var(--rima-space-5);
+    /* Force no scroll - show all products */
+    max-height: none !important;
+    overflow: visible !important;
+    height: auto !important;
+}
+
+.rima-order-product {
+    display: flex;
+    gap: var(--rima-space-3);
+    align-items: center;
+}
+
+.rima-order-product-image {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--rima-radius-md);
+    object-fit: cover;
+    background: var(--rima-gray-100);
+}
+
+.rima-order-product-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.rima-order-product-name {
+    font-size: var(--rima-font-size-sm);
+    font-weight: var(--rima-font-weight-medium);
+    color: var(--rima-text-primary);
+    margin-bottom: var(--rima-space-1);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rima-order-product-qty {
+    font-size: var(--rima-font-size-xs);
+    color: var(--rima-text-muted);
+}
+
+.rima-order-product-price {
+    font-weight: var(--rima-font-weight-semibold);
+    color: var(--rima-text-primary);
+    white-space: nowrap;
+}
+
+/* Summary Rows */
+.rima-order-summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--rima-space-3) 0;
+    font-size: var(--rima-font-size-sm);
+    border-bottom: 1px solid var(--rima-gray-100);
+}
+
+.rima-order-summary-row:last-child {
+    border-bottom: none;
+}
+
+.rima-order-summary-row.is-total {
+    padding-top: var(--rima-space-4);
+    margin-top: var(--rima-space-2);
+    border-top: 2px solid var(--rima-gray-200);
+    border-bottom: none;
+}
+
+.rima-order-summary-row.is-total .rima-order-summary-label {
+    font-size: var(--rima-font-size-base);
+    font-weight: var(--rima-font-weight-semibold);
+}
+
+.rima-order-summary-row.is-total .rima-order-summary-value {
+    font-size: var(--rima-font-size-xl);
+    font-weight: var(--rima-font-weight-bold);
+    color: var(--rima-primary);
+}
+
+/* Place Order Button */
+.rima-place-order {
+    padding: var(--rima-space-5);
+    background: var(--rima-gray-50);
+    border-top: 1px solid var(--rima-gray-200);
+}
+
+.rima-place-order-btn {
+    width: 100%;
+    padding: var(--rima-space-4);
+    font-size: var(--rima-font-size-base);
+    font-weight: var(--rima-font-weight-semibold);
+}
+
+/* Trust Section */
+.rima-checkout-trust {
+    display: flex;
+    justify-content: center;
+    gap: var(--rima-space-4);
+    margin-top: var(--rima-space-5);
+}
+
+.rima-checkout-trust-item {
+    display: flex;
+    align-items: center;
+    gap: var(--rima-space-2);
+    font-size: var(--rima-font-size-xs);
+    color: var(--rima-text-muted);
+}
+
+.rima-checkout-trust-icon {
+    color: var(--rima-primary);
+}
+
+/* ========================================
+   Billing/Invoice Note
+   ======================================== */
+
+.rima-invoice-note {
+    display: flex;
+    align-items: center;
+    gap: var(--rima-space-2);
+    padding: var(--rima-space-3);
+    background: rgba(var(--rima-secondary-rgb), 0.1);
+    border-radius: var(--rima-radius-sm);
+    margin-top: var(--rima-space-3);
+}
+
+.rima-invoice-note-icon {
+    color: var(--rima-secondary);
+}
+
+.rima-invoice-note-text {
+    font-size: var(--rima-font-size-xs);
+    color: var(--rima-text-secondary);
+}
+
+/* ========================================
+   Responsive Styles - COMPREHENSIVE
+   ======================================== */
+
+@media (max-width: 992px) {
+    .rima-checkout-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .rima-checkout-sidebar {
+        position: static;
+        order: -1;
+    }
+
+    .rima-checkout-header {
+        text-align: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .rima-checkout-page .woocommerce {
+        padding: var(--rima-space-4);
+    }
+
+    .rima-checkout-title {
+        font-size: var(--rima-font-size-xl);
+    }
+
+    .rima-checkout-subtitle {
+        font-size: var(--rima-font-size-sm);
+    }
+
+    .rima-checkout-step-header {
+        padding: var(--rima-space-4);
+    }
+
+    .rima-step-number {
+        width: 28px;
+        height: 28px;
+        font-size: var(--rima-font-size-xs);
+    }
+
+    .rima-step-title {
+        font-size: var(--rima-font-size-sm);
+    }
+
+    .rima-checkout-step-body {
+        padding: var(--rima-space-4);
+    }
+
+    .rima-selected-address {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--rima-space-3);
+    }
+
+    .rima-selected-address-icon {
+        margin: 0 auto;
+    }
+
+    .rima-selected-address-change {
+        width: 100%;
+    }
+
+    .rima-selected-address-change .rima-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* No Address State - Mobile */
+    .rima-no-address {
+        padding: var(--rima-space-5);
+    }
+
+    .rima-no-address-icon {
+        font-size: 28px;
+    }
+
+    .rima-no-address-text {
+        font-size: 13px;
+    }
+
+    .rima-no-address .rima-btn {
+        width: 100%;
+    }
+
+    /* Payment Methods - Mobile - ENHANCED TOUCH TARGETS */
+    .rima-payment-method {
+        padding: 16px !important;
+        gap: 14px !important;
+        border-width: 2px !important;
+        min-height: 72px !important;
+        cursor: pointer !important;
+        position: relative !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    /* Ensure ENTIRE payment card is clickable */
+    .rima-payment-method,
+    .wc_payment_method {
+        cursor: pointer !important;
+        user-select: none !important;
+        -webkit-user-select: none !important;
+        -webkit-tap-highlight-color: rgba(0, 191, 166, 0.1) !important;
+    }
+
+    .rima-payment-method * {
+        pointer-events: none !important;
+        /* Prevent child elements from blocking click */
+    }
+
+    .rima-payment-method input[type="radio"] {
+        pointer-events: auto !important;
+        /* Re-enable for radio */
+    }
+
+    /* Ensure full clickability */
+    .rima-payment-method label {
+        cursor: pointer !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 14px !important;
+    }
+
+    /* Large touch-friendly radio buttons */
+    .rima-payment-method input[type="radio"],
+    .wc_payment_method input[type="radio"] {
+        width: 24px !important;
+        height: 24px !important;
+        min-width: 24px !important;
+        min-height: 24px !important;
+        margin: 0 !important;
+        cursor: pointer !important;
+        opacity: 1 !important;
+        position: static !important;
+        appearance: auto !important;
+        -webkit-appearance: radio !important;
+        flex-shrink: 0 !important;
+    }
+
+    .rima-payment-method-icon {
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 20px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .rima-payment-method-info {
+        flex: 1 !important;
+        min-width: 0 !important;
+    }
+
+    .rima-payment-method-name {
+        font-size: 15px !important;
+        font-weight: 600 !important;
+        margin-bottom: 4px !important;
+    }
+
+    .rima-payment-method-desc {
+        font-size: 12px !important;
+        line-height: 1.4 !important;
+    }
+
+    /* Active state very visible */
+    .rima-payment-method.is-selected,
+    .wc_payment_method.is-selected {
+        border-color: var(--rima-primary) !important;
+        background: rgba(0, 191, 166, 0.08) !important;
+        box-shadow: 0 2px 8px rgba(0, 191, 166, 0.15) !important;
+    }
+
+    /* Touch feedback */
+    .rima-payment-method:active {
+        transform: scale(0.98) !important;
+        transition: transform 0.1s ease !important;
+    }
+
+    /* Shipping Methods - Mobile - ENHANCED TOUCH TARGETS */
+    .rima-shipping-method {
+        padding: 16px !important;
+        gap: 14px !important;
+        min-height: 72px !important;
+        cursor: pointer !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    .rima-shipping-method input[type="radio"] {
+        width: 24px !important;
+        height: 24px !important;
+        min-width: 24px !important;
+        cursor: pointer !important;
+        flex-shrink: 0 !important;
+    }
+
+    .rima-shipping-method-logo {
+        width: 48px !important;
+        height: 36px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .rima-shipping-method-name {
+        font-size: 15px !important;
+        font-weight: 600 !important;
+    }
+
+    .rima-shipping-method-time {
+        font-size: 12px !important;
+    }
+
+    .rima-shipping-method.is-selected {
+        border-color: var(--rima-primary) !important;
+        background: rgba(0, 191, 166, 0.08) !important;
+    }
+
+    /* Address Selection Buttons - LARGE TOUCH TARGETS */
+    .rima-selected-address-change .rima-btn,
+    .rima-no-address .rima-btn,
+    .woocommerce-checkout .rima-btn {
+        min-height: 48px !important;
+        padding: 14px 24px !important;
+        font-size: 15px !important;
+        font-weight: 600 !important;
+        border-radius: 10px !important;
+        width: 100% !important;
+        justify-content: center !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    /* Change Address Button - Prominent */
+    .rima-selected-address-change {
+        width: 100% !important;
+        margin-top: 12px !important;
+    }
+
+    .rima-selected-address-change .rima-btn-outline {
+        background: #fff !important;
+        border: 2px solid var(--rima-primary) !important;
+        color: var(--rima-primary) !important;
+        min-height: 52px !important;
+        padding: 16px 24px !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 12px !important;
+        touch-action: manipulation !important;
+    }
+
+    .rima-selected-address-change .rima-btn-outline:active {
+        background: rgba(0, 191, 166, 0.1) !important;
+        transform: scale(0.98) !important;
+    }
+
+    /* Add New Address Button */
+    .rima-no-address .rima-btn-primary,
+    .rima-address-list-footer .rima-btn-primary {
+        background: var(--rima-gradient-primary) !important;
+        color: #fff !important;
+        border: none !important;
+        box-shadow: 0 4px 12px rgba(0, 191, 166, 0.3) !important;
+    }
+
+    /* Checkbox Inputs - Large and Touch-Friendly */
+    .rima-same-address-toggle,
+    .woocommerce-form__label-for-checkbox {
+        padding: 14px !important;
+        min-height: 56px !important;
+        cursor: pointer !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    .rima-same-address-toggle input[type="checkbox"],
+    .woocommerce-form__input input[type="checkbox"] {
+        width: 24px !important;
+        height: 24px !important;
+        min-width: 24px !important;
+        cursor: pointer !important;
+        margin: 0 !important;
+        flex-shrink: 0 !important;
+    }
+
+    .rima-same-address-toggle span {
+        font-size: 14px !important;
+        line-height: 1.4 !important;
+    }
+
+    /* ===== ORDER SUMMARY FIXES ===== */
+
+    /* Hide ALL shipping label duplicates on mobile */
+    .rima-order-summary-row[data-row="shipping"] .rima-order-summary-label {
+        display: none !important;
+    }
+
+    /* Center and style shipping value nicely */
+    .rima-order-summary-row[data-row="shipping"] {
+        justify-content: center !important;
+    }
+
+    .rima-order-summary-row[data-row="shipping"] .rima-order-summary-value {
+        width: 100% !important;
+        text-align: center !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        color: #1e293b !important;
+    }
+}
+
+/* Show only the last shipping row with value */
+.woocommerce-checkout-review-order-table tr.woocommerce-shipping-totals:last-of-type,
+.woocommerce-checkout-review-order-table tr.shipping:last-of-type {
+    display: table-row !important;
+}
+
+/* Larger quantity input in order summary */
+.rima-order-product-qty input,
+.woocommerce-checkout-review-order-table .product-quantity input,
+.qty {
+    min-width: 60px !important;
+    width: 60px !important;
+    height: 40px !important;
+    padding: 8px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    border: 2px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+}
+
+/* Quantity buttons if they exist */
+.rima-order-product-qty .quantity-button,
+.woocommerce-checkout-review-order-table .quantity-button {
+    min-width: 36px !important;
+    height: 40px !important;
+    font-size: 18px !important;
+}
+
+
+/* Responsive Summary Fixes */
+@media (max-width: 768px) {
+    .rima-order-summary-panel {
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        width: 100% !important;
+    }
+
+    .rima-order-summary-header {
+        padding: 16px !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        margin-bottom: 12px !important;
+        background: linear-gradient(135deg, #00BFA6, #00A693) !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+
+    .rima-order-summary-title {
+        font-size: 16px !important;
+        color: #ffffff !important;
+    }
+
+    .rima-order-summary-body {
+        padding: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    /* Professional Grid Layout for Products */
+    .rima-order-product {
+        display: grid !important;
+        grid-template-columns: 60px 1fr auto !important;
+        gap: 12px !important;
+        align-items: start !important;
+        padding: 12px 0 !important;
+        width: 100% !important;
+    }
+
+    .rima-order-product-image {
+        grid-column: 1;
+        width: 60px !important;
+        height: 60px !important;
+        object-fit: cover !important;
+    }
+
+    .rima-order-product-details {
+        grid-column: 2;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+    }
+
+    .rima-order-product-name {
+        font-size: 14px !important;
+        line-height: 1.3 !important;
+        margin-bottom: 4px !important;
+        text-align: left !important;
+        white-space: normal !important;
+    }
+
+    .rima-order-product-total,
+    .rima-order-product-price {
+        grid-column: 3;
+        text-align: right !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+        color: #00BFA6 !important;
+        white-space: nowrap !important;
+        align-self: start !important;
+        padding-top: 2px !important;
+        /* Optical alignment with text */
+    }
+
+    /* Ensure totals are visible */
+    .cart-subtotal,
+    .order-total,
+    .tax-rate,
+    .woocommerce-shipping-totals {
+        display: flex !important;
+        /* Force flex display */
+        justify-content: space-between !important;
+        padding: 8px 0 !important;
+        font-size: 14px !important;
+        color: #64748b !important;
+    }
+
+    /* Remove Internal Scroll - Show Full List */
+    .rima-order-summary-panel .rima-order-products {
+        max-height: none !important;
+        overflow: visible !important;
+        height: auto !important;
+        padding-bottom: 0 !important;
+        margin-bottom: 12px !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+
+    /* HIDE THEME FOOTER ON CHECKOUT MOBILE */
+    /* This ensures only the checkout flow is visible */
+}
+
+@media (max-width: 768px) {
+
+    .woocommerce-checkout .footer,
+    .woocommerce-checkout footer,
+    .woocommerce-checkout .et-footer,
+    .woocommerce-cart .footer,
+    .woocommerce-cart footer,
+    .woocommerce-cart .et-footer,
+    .woocommerce-checkout .footer-bottom,
+    .woocommerce-cart .footer-bottom {
+        display: none !important;
+    }
+
+    /* Ensure body has padding for our sticky footer */
+    body.woocommerce-checkout,
+    body.woocommerce-cart {
+        padding-bottom: 140px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .rima-checkout-page .woocommerce {
+        padding: var(--rima-space-3);
+    }
+
+    .rima-checkout-title {
+        font-size: var(--rima-font-size-lg);
+    }
+
+    /* Order Summary - Mobile */
+    .rima-order-summary {
+        border-radius: var(--rima-radius-lg);
+    }
+
+    .rima-order-summary-header {
+        padding: var(--rima-space-4);
+    }
+
+    .rima-order-summary-title {
+        font-size: var(--rima-font-size-base);
+    }
+
+    .rima-order-summary-body {
+        padding: var(--rima-space-4);
+    }
+
+    /* Order Products - Mobile */
+    .rima-order-products {
+        max-height: none !important;
+        /* Force full height on small screens too */
+        gap: var(--rima-space-3);
+    }
+
+    .rima-order-product {
+        gap: var(--rima-space-2);
+    }
+
+    .rima-order-product-image {
+        width: 48px;
+        height: 48px;
+    }
+
+    .rima-order-product-name {
+        font-size: 13px;
+    }
+
+    .rima-order-product-qty {
+        font-size: 11px;
+    }
+
+    .rima-order-product-price {
+        font-size: 13px;
+    }
+
+    /* Summary Rows - Mobile */
+    .rima-order-summary-row {
+        font-size: 13px;
+    }
+
+    .rima-order-summary-row.is-total .rima-order-summary-value {
+        font-size: var(--rima-font-size-lg);
+    }
+
+    /* Place Order - Mobile */
+    .rima-place-order {
+        padding: var(--rima-space-4);
+    }
+
+    .rima-place-order-btn {
+        padding: var(--rima-space-4);
+        font-size: var(--rima-font-size-base);
+    }
+
+    /* Trust Section - Mobile */
+    .rima-checkout-trust {
+        flex-direction: column;
+        gap: var(--rima-space-2);
+        margin-top: var(--rima-space-4);
+    }
+
+    .rima-checkout-trust-item {
+        justify-content: center;
+        font-size: 12px;
+    }
+
+    /* Same Address Toggle - Mobile */
+    .rima-same-address-toggle {
+        padding: var(--rima-space-3);
+        font-size: 14px;
+    }
+
+    .rima-same-address-toggle input {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Invoice Note - Mobile */
+    .rima-invoice-note {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--rima-space-2);
+    }
+
+    .rima-invoice-note-text {
+        font-size: 12px;
+    }
+
+    /* Notes Textarea - Mobile */
+    .rima-form-textarea {
+        font-size: 14px;
+        padding: var(--rima-space-3);
+    }
+
+    /* Selected Address Details - Mobile */
+    .rima-selected-address-name {
+        font-size: 14px;
+    }
+
+    .rima-selected-address-details {
+        font-size: 13px;
+    }
+
+    /* Checkout Steps - Mobile spacing */
+    .rima-checkout-main {
+        gap: var(--rima-space-4);
+    }
+
+    .rima-checkout-step {
+        border-radius: var(--rima-radius-lg);
+    }
+}
+
+/* ========================================
+   WooCommerce Overrides
+   ======================================== */
+
+.rima-checkout-page #customer_details,
+.rima-checkout-page .woocommerce-billing-fields,
+.rima-checkout-page .woocommerce-shipping-fields {
+    margin: 0;
+    padding: 0;
+}
+
+.rima-checkout-page .woocommerce-checkout-review-order-table {
+    display: none;
+    /* We use custom summary */
+}
+
+.rima-checkout-page #payment {
+    background: transparent;
+    border-radius: 0;
+}
+
+.rima-checkout-page #payment .payment_methods {
+    padding: 0;
+    border: none;
+}
+
+.rima-checkout-page #place_order {
+    display: none;
+    /* We use custom button */
+}
+
+/* ========================================
+   Mobile Responsiveness
+   ======================================== */
+
+/* ========================================
+   Mobile Responsiveness
+   ======================================== */
+
+@media screen and (max-width: 768px) {
+    .rima-checkout-page .woocommerce {
+        padding: 12px !important;
+    }
+
+    /* FORCE COLUMN LAYOUT */
+    .rima-checkout-wrapper {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Reset any grid specific properties from desktop */
+    .rima-checkout-main,
+    .rima-checkout-sidebar {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+
+    /* Steps Styling */
+    .rima-checkout-step {
+        margin-bottom: 0;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+        border: 1px solid #f1f5f9 !important;
+        background: #fff !important;
+    }
+
+    .rima-checkout-step-header {
+        padding: 16px !important;
+        background: #f8fafc !important;
+    }
+
+    /* Form Fields - 100% WIDTH FORCE */
+    .form-row,
+    .woocommerce-billing-fields__field-wrapper,
+    .woocommerce-shipping-fields__field-wrapper {
+        width: 100% !important;
+        float: none !important;
+        display: block !important;
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+    }
+
+    .woocommerce-input-wrapper {
+        width: 100% !important;
+        display: block !important;
+    }
+
+    input.input-text,
+    select,
+    textarea {
+        font-size: 16px !important;
+        /* Prevent zoom */
+        padding: 12px 16px !important;
+        height: auto !important;
+        min-height: 48px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Payment Methods - Mobile Stack */
+    .rima-payment-methods {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    .rima-payment-method {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Fix address cards on mobile */
+    .rima-address-card-wrapper {
+        width: 100%;
+        margin-bottom: 12px;
+    }
+
+    .rima-selected-address {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .rima-selected-address-icon {
+        margin: 0;
+    }
+
+    /* Order Summary - Clean separation */
+    .rima-checkout-sidebar {
+        margin-top: 20px;
+        border-top: 4px solid #f1f5f9;
+        padding-top: 20px;
+    }
+
+    .rima-order-summary {
+        border: 1px solid #e2e8f0;
+        box-shadow: none;
+    }
+
+    /* Floating Place Order Button Container (Optional, or just full width) */
+    /* Let's make it standard full width block for now to be safe */
+    .rima-place-order-btn {
+        width: 100%;
+        padding: 16px;
+        font-size: 18px;
+        margin-top: 10px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 191, 166, 0.3);
+    }
+
+    /* Hide steps indicators on mobile if they take too much space */
+    .rima-checkout-steps-nav {
+        display: none;
+    }
+}
+
+/* ========================================
+   PREMIUM MOBILE OPTIMIZATION - CHECKOUT
+   Based on rima-mobile-design-system.css
+   ======================================== */
+
+@media (max-width: 768px) {
+
+    /* Container - Full Width */
+    .rima-checkout-page .woocommerce {
+        padding: 0 !important;
+        max-width: 100%;
+    }
+
+    .rima-checkout-wrapper {
+        gap: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Linear Vertical Flow */
+    .rima-checkout-main {
+        gap: 0;
+    }
+
+    /* Checkout Steps - Premium Cards */
+    .rima-checkout-step {
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        border-bottom: 8px solid var(--mobile-gray-100);
+        margin-bottom: 0;
+    }
+
+    .rima-checkout-step-header {
+        padding: var(--mobile-space-md) var(--mobile-container-padding) !important;
+        background: linear-gradient(135deg, var(--mobile-gray-50) 0%, #ffffff 100%);
+    }
+
+    .rima-checkout-step-title {
+        font-size: var(--mobile-font-lg) !important;
+        font-weight: var(--mobile-font-bold);
+    }
+
+    .rima-checkout-step-body {
+        padding: var(--mobile-space-md) var(--mobile-container-padding) !important;
+    }
+
+    /* Form Fields - Touch Optimized */
+    .form-row {
+        margin-bottom: var(--mobile-space-md) !important;
+    }
+
+    .form-row label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: var(--mobile-font-sm) !important;
+        font-weight: var(--mobile-font-semibold);
+        color: var(--mobile-gray-700);
+    }
+
+    input.input-text,
+    select,
+    textarea,
+    .select2-container .select2-selection--single {
+        width: 100% !important;
+        min-height: 48px !important;
+        padding: 14px 16px !important;
+        font-size: var(--mobile-font-base) !important;
+        /* 16px - no zoom */
+        font-family: inherit !important;
+        border: 2px solid var(--mobile-gray-200) !important;
+        border-radius: var(--mobile-input-radius) !important;
+        background: #ffffff !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+    }
+
+    input.input-text:focus,
+    select:focus,
+    textarea:focus {
+        outline: none !important;
+        border-color: var(--mobile-primary) !important;
+        box-shadow: 0 0 0 3px rgba(0, 191, 166, 0.1) !important;
+    }
+
+    textarea {
+        min-height: 120px !important;
+        resize: vertical;
+    }
+
+    /* Select Dropdown Arrow */
+    select {
+        background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%2364748b' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 16px center !important;
+        padding-right: 48px !important;
+    }
+
+    /* Address Selection - Touch Cards */
+    .rima-address-card {
+        padding: var(--mobile-space-md) !important;
+        margin-bottom: var(--mobile-space-sm) !important;
+        border-radius: var(--mobile-card-radius) !important;
+        border: 2px solid var(--mobile-gray-200) !important;
+        min-height: var(--mobile-touch-comfortable);
+    }
+
+    .rima-address-card.selected {
+        border-color: var(--mobile-primary) !important;
+        background: rgba(0, 191, 166, 0.05) !important;
+    }
+
+    .rima-address-selector-btn {
+        width: 100% !important;
+        min-height: var(--mobile-touch-comfortable) !important;
+        padding: 16px !important;
+        font-size: var(--mobile-font-base) !important;
+        font-weight: var(--mobile-font-semibold);
+        border-radius: var(--mobile-button-radius) !important;
+        margin-bottom: var(--mobile-space-sm);
+        pointer-events: auto !important;
+        /* Ensure clickable */
+    }
+
+    /* Payment Methods - Touch Optimized */
+    .rima-payment-methods {
+        display: flex;
+        flex-direction: column;
+        gap: var(--mobile-space-sm);
+    }
+
+    .rima-payment-method {
+        padding: var(--mobile-space-md) !important;
+        border: 2px solid var(--mobile-gray-200) !important;
+        border-radius: var(--mobile-card-radius) !important;
+        min-height: var(--mobile-touch-comfortable);
+        display: flex;
+        align-items: center;
+        gap: var(--mobile-space-sm);
+    }
+
+    .rima-payment-method.selected {
+        border-color: var(--mobile-primary) !important;
+        background: rgba(0, 191, 166, 0.05) !important;
+    }
+
+    .rima-payment-method input[type="radio"] {
+        width: 20px !important;
+        height: 20px !important;
+        min-height: 20px !important;
+        margin: 0 !important;
+    }
+
+    .rima-payment-method-label {
+        font-size: var(--mobile-font-base) !important;
+        font-weight: var(--mobile-font-semibold);
+        flex: 1;
+    }
+
+    /* Order Summary - Collapsible */
+    .rima-checkout-sidebar {
+        order: -1;
+        /* Move to top */
+        margin: 0;
+        border-top: none;
+        padding: 0;
+        border-bottom: 8px solid var(--mobile-gray-100);
+    }
+
+    .rima-order-summary {
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    .rima-order-summary-header {
+        padding: var(--mobile-space-md) var(--mobile-container-padding) !important;
+        background: var(--mobile-gray-50);
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .rima-order-summary-title {
+        font-size: var(--mobile-font-lg) !important;
+        font-weight: var(--mobile-font-bold);
+    }
+
+    .rima-order-summary-total {
+        font-size: var(--mobile-font-xl) !important;
+        font-weight: var(--mobile-font-bold);
+        color: var(--mobile-primary);
+    }
+
+    .rima-order-summary-body {
+        padding: var(--mobile-space-md) var(--mobile-container-padding) !important;
+    }
+
+    .rima-cart-item-mobile {
+        display: flex;
+        gap: var(--mobile-space-sm);
+        margin-bottom: var(--mobile-space-sm);
+        padding-bottom: var(--mobile-space-sm);
+        border-bottom: 1px solid var(--mobile-gray-200);
+    }
+
+    .rima-cart-item-image {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+    .rima-cart-item-details {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+    }
+
+    .rima-cart-item-name {
+        font-size: var(--mobile-font-sm);
+        font-weight: var(--mobile-font-medium);
+        color: var(--mobile-gray-900);
+    }
+
+    .rima-cart-item-meta {
+        font-size: var(--mobile-font-xs);
+        color: var(--mobile-gray-500);
+    }
+
+    .rima-cart-item-price {
+        font-size: var(--mobile-font-base);
+        font-weight: var(--mobile-font-bold);
+        color: var(--mobile-primary);
+    }
+
+    /* Place Order Button - Sticky Premium - FIXED */
+    #place_order,
+    .rima-place-order-btn {
+        position: sticky !important;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        /* Lowered from 100 to prevent blocking other buttons */
+        width: 100% !important;
+        min-height: var(--mobile-touch-comfortable) !important;
+        padding: 16px var(--mobile-container-padding) !important;
+        padding-bottom: max(16px, env(safe-area-inset-bottom)) !important;
+        font-size: var(--mobile-font-lg) !important;
+        pointer-events: auto !important;
+        font-weight: var(--mobile-font-bold) !important;
+        border-radius: 0 !important;
+        border: none !important;
+        background: linear-gradient(135deg, var(--mobile-primary) 0%, var(--mobile-primary-dark) 100%) !important;
+        color: #ffffff !important;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 191, 166, 0.3) !important;
+        margin: 0 !important;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    #place_order:active,
+    .rima-place-order-btn:active {
+        transform: scale(0.98);
+    }
+
+    /* Checkbox & Radio - Touch Size */
+    input[type="checkbox"],
+    input[type="radio"] {
+        min-width: 20px !important;
+        min-height: 20px !important;
+        width: 20px !important;
+        height: 20px !important;
+    }
+
+    /* Order Notes Toggle */
+    .rima-order-notes-toggle {
+        display: flex;
+        align-items: center;
+        gap: var(--mobile-space-sm);
+        padding: var(--mobile-space-md) var(--mobile-container-padding);
+        background: var(--mobile-gray-50);
+        cursor: pointer;
+        min-height: var(--mobile-touch-comfortable);
+    }
+
+    /* Shipping Methods - Stack */
+    .woocommerce-shipping-methods {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: var(--mobile-space-sm) !important;
+    }
+
+    .woocommerce-shipping-methods li {
+        padding: var(--mobile-space-md) !important;
+        border: 2px solid var(--mobile-gray-200) !important;
+        border-radius: var(--mobile-card-radius) !important;
+        min-height: var(--mobile-touch-min);
+    }
+
+    /* Loading State */
+    .blockUI.blockOverlay {
+        border-radius: 0 !important;
+    }
+
+    .woocommerce-checkout .blockUI.blockOverlay::before {
+        border: 3px solid var(--mobile-gray-200) !important;
+        border-top-color: var(--mobile-primary) !important;
+    }
+
+    /* ========================================
+       QUANTITY +/- BUTTONS - MOBILE CHECKOUT
+       ======================================== */
+
+    /* Quantity Wrapper */
+    .woocommerce-checkout .rima-qty-wrapper {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        background: #f8fafc !important;
+        border: 2px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        padding: 4px !important;
+        width: fit-content !important;
+    }
+
+    /* Quantity Buttons */
+    .woocommerce-checkout .rima-qty-btn {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+        min-height: 36px !important;
+        padding: 0 !important;
+        border: none !important;
+        background: linear-gradient(135deg, #00BFA6, #00A693) !important;
+        color: #fff !important;
+        border-radius: 8px !important;
+        font-size: 14px !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+    }
+
+    .woocommerce-checkout .rima-qty-btn:active {
+        transform: scale(0.95) !important;
+        background: linear-gradient(135deg, #00A693, #008F7F) !important;
+    }
+
+    .woocommerce-checkout .rima-qty-btn i {
+        font-size: 12px !important;
+        pointer-events: none !important;
+    }
+
+    /* Quantity Input */
+    .woocommerce-checkout .rima-qty-wrapper .qty {
+        min-width: 50px !important;
+        width: 50px !important;
+        height: 36px !important;
+        padding: 8px !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+        border: none !important;
+        background: #fff !important;
+        border-radius: 6px !important;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: textfield !important;
+    }
+
+    .woocommerce-checkout .rima-qty-wrapper .qty:focus {
+        outline: 2px solid #00BFA6 !important;
+        outline-offset: 2px !important;
+    }
+
+    /* Remove spinner arrows from number input */
+    .woocommerce-checkout .rima-qty-wrapper .qty::-webkit-outer-spin-button,
+    .woocommerce-checkout .rima-qty-wrapper .qty::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0 !important;
+    }
+
+    /* Order Product Row - Better layout for quantity */
+    .woocommerce-checkout .rima-order-product {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding: 12px 0 !important;
+    }
+
+    .woocommerce-checkout .rima-order-product-info {
+        flex: 1 !important;
+        min-width: 0 !important;
+    }
+}

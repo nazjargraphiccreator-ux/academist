@@ -1,0 +1,1575 @@
+/* ==========================================================================
+   RIMA ACADEMY — Contact Page
+   Custom e-learning contact styles built on top of rima-design-system.css
+   ========================================================================== */
+
+/* ── Google Fonts (Poppins already loaded by theme, kept as fallback) ────── */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/* ── CSS Variables (extends root tokens from rima-design-system) ─────────── */
+:root {
+    --rc-primary:        #8a1f2c;
+    --rc-primary-dark:   #6e1823;
+    --rc-primary-glow:   rgba(138, 31, 44, 0.3);
+    --rc-accent:         #8a1f2c;
+    --rc-red:            #ff4757;
+    --rc-navy:           #040814;
+    --rc-surface:        rgba(255, 255, 255, 0.03);
+    --rc-bg:             #040814;
+    --rc-border:         rgba(255, 255, 255, 0.08);
+    --rc-text:           #ffffff;
+    --rc-muted:          #A0ABC0;
+    --rc-radius:         20px;
+    --rc-radius-sm:      12px;
+    --rc-shadow-sm:      0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --rc-shadow-md:      0 8px 32px 0 rgba(138, 31, 44, 0.2);
+    --rc-shadow-lg:      0 20px 60px rgba(138, 31, 44, 0.3);
+    --rc-transition:     all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    --rc-font:           'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* ==========================================================================
+   PAGE WRAPPER
+   ========================================================================== */
+.rima-contact-page {
+    background: transparent;
+    min-height: 100vh;
+    font-family: var(--rc-font);
+}
+
+/* ==========================================================================
+   HERO SECTION
+   ========================================================================== */
+.rima-contact-hero {
+    position: relative;
+    background: transparent;
+    padding: 90px 20px 110px;
+    text-align: center;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.rima-contact-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 70% 60% at 20% 30%, rgba(138, 31, 44, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 80% 70%, rgba(138, 31, 44, 0.1) 0%, transparent 55%);
+    z-index: -1;
+}
+
+/* Floating orbs */
+.rima-contact-hero::after {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 340px;
+    height: 340px;
+    background: radial-gradient(circle, rgba(138, 31, 44, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: -1;
+    animation: rc-float 8s ease-in-out infinite;
+}
+
+@keyframes rc-float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50%       { transform: translateY(-20px) scale(1.06); }
+}
+
+.rima-contact-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    backdrop-filter: blur(8px);
+}
+
+.rima-contact-hero-badge svg {
+    flex-shrink: 0;
+}
+
+.rima-contact-hero h1 {
+    font-family: var(--rc-font);
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.15;
+    margin: 0 0 20px;
+    letter-spacing: -0.03em;
+}
+
+.rima-contact-hero h1 span {
+    background: linear-gradient(135deg, #ff4d6d 0%, #8a1f2c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.rima-contact-hero p {
+    color: rgba(255,255,255,0.7);
+    font-size: 1.1rem;
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.7;
+    font-weight: 400;
+}
+
+/* Wave separator */
+.rima-contact-wave {
+    position: relative;
+    height: 60px;
+    margin-top: -2px;
+    background: transparent;
+    overflow: hidden;
+}
+.rima-contact-wave svg {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* ==========================================================================
+   QUICK INFO CARDS (email / phone / hours / location)
+   ========================================================================== */
+.rima-contact-quick-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 15px;
+    max-width: 1400px;
+    margin: -50px auto 60px;
+    padding: 0 24px;
+    position: relative;
+    z-index: 10;
+}
+
+.rc-info-card {
+    background: var(--rc-surface);
+    border-radius: var(--rc-radius);
+    padding: 16px 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    box-shadow: var(--rc-shadow-sm);
+    border: 1px solid var(--rc-border);
+    transition: var(--rc-transition);
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+.rc-info-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--rc-shadow-md);
+    border-color: var(--rc-primary);
+}
+
+.rc-info-card-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rc-info-card-icon.blue   { background: rgba(138, 31, 44, 0.15);  color: var(--rc-primary); box-shadow: inset 0 0 10px rgba(138, 31, 44, 0.2); }
+.rc-info-card-icon.purple { background: rgba(138, 31, 44, 0.15);  color: var(--rc-accent); box-shadow: inset 0 0 10px rgba(138, 31, 44, 0.2); }
+.rc-info-card-icon.red    { background: rgba(255, 71, 87, 0.15);   color: var(--rc-red); box-shadow: inset 0 0 10px rgba(255, 71, 87, 0.2); }
+.rc-info-card-icon.green  { background: rgba(0, 200, 83, 0.15);    color: #00c853; box-shadow: inset 0 0 10px rgba(0, 200, 83, 0.2); }
+
+.rc-info-card-body h4 {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--rc-muted);
+    margin: 0 0 4px;
+}
+
+.rc-info-card-body p,
+.rc-info-card-body a,
+.rc-info-card-body .rc-info-link,
+.rc-info-card-body .rc-info-text {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--rc-text) !important;
+    text-decoration: none !important;
+    margin: 0;
+    line-height: 1.5;
+    display: block;
+    white-space: nowrap;
+}
+
+.rc-info-card-body a:hover,
+.rc-info-card-body .rc-info-link:hover {
+    color: var(--rc-primary) !important;
+}
+
+/* ==========================================================================
+   MAIN CONTENT GRID
+   ========================================================================== */
+.rima-contact-main {
+    max-width: 1100px;
+    margin: 0 auto 80px;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 32px;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .rima-contact-main {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
+   CONTACT FORM CARD
+   ========================================================================== */
+.rima-contact-form-card {
+    background: #ffffff;
+    border-radius: var(--rc-radius);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    border: none;
+    overflow: hidden;
+}
+
+.rima-contact-form-header {
+    background: linear-gradient(135deg, var(--rc-primary) 0%, var(--rc-primary-dark) 100%);
+    padding: 32px 36px 28px;
+}
+
+.rima-contact-form-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 6px;
+    letter-spacing: -0.02em;
+}
+
+.rima-contact-form-header p {
+    color: rgba(255,255,255,0.75);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.rima-contact-form-body {
+    padding: 36px;
+}
+
+/* Topic selector pills */
+.rc-topic-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 28px;
+}
+
+.rc-topic-pill {
+    padding: 8px 18px;
+    border-radius: 50px;
+    border: 1.5px solid #e2e8f0;
+    background: #f7fafc;
+    color: #4a5568;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--rc-transition);
+    font-family: var(--rc-font);
+    line-height: 1;
+}
+
+.rc-topic-pill:hover,
+.rc-topic-pill.active {
+    border-color: var(--rc-primary);
+    background: var(--rc-primary-glow);
+    color: var(--rc-primary);
+}
+
+/* Form rows */
+.rc-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+@media (max-width: 600px) {
+    .rc-form-row { grid-template-columns: 1fr; }
+}
+
+.rc-field {
+    margin-bottom: 22px;
+}
+
+.rc-field label,
+.quform-element-label,
+.quform-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--rc-text) !important;
+    margin-bottom: 7px;
+}
+
+.rc-field label .rc-required,
+.quform-required {
+    color: var(--rc-red);
+    margin-left: 2px;
+}
+
+.rc-field input,
+.rc-field select,
+.rc-field textarea {
+    width: 100%;
+    background: var(--rc-bg);
+    border: 1.5px solid var(--rc-border);
+    border-radius: 12px;
+    padding: 13px 16px;
+    font-size: 15px;
+    color: var(--rc-text);
+    font-family: var(--rc-font);
+    transition: var(--rc-transition);
+    box-sizing: border-box;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.rc-field input:focus,
+.rc-field select:focus,
+.rc-field textarea:focus {
+    border-color: var(--rc-primary);
+    background: rgba(255, 255, 255, 0.05); /* Dark mode focus background */
+    box-shadow: 0 0 0 4px var(--rc-primary-glow);
+}
+
+.rc-field textarea {
+    resize: vertical;
+    min-height: 130px;
+}
+
+.rc-field select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23718096' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+/* GDPR checkbox */
+.rc-field-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.rc-field-check input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 1.5px solid var(--rc-border);
+    background: var(--rc-bg);
+    flex-shrink: 0;
+    margin-top: 2px;
+    accent-color: var(--rc-primary);
+    cursor: pointer;
+}
+
+.rc-field-check label {
+    font-size: 13px;
+    color: var(--rc-muted);
+    line-height: 1.55;
+    cursor: pointer;
+}
+
+.rc-field-check label a {
+    color: var(--rc-primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.rc-field-check label a:hover {
+    text-decoration: underline;
+}
+
+/* Submit button */
+.rc-btn-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, var(--rc-primary) 0%, var(--rc-primary-dark) 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: var(--rc-font);
+    cursor: pointer;
+    transition: var(--rc-transition);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.01em;
+}
+
+.rc-btn-submit::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+}
+
+.rc-btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(16, 45, 86,0.35);
+}
+
+.rc-btn-submit:active {
+    transform: translateY(0);
+}
+
+.rc-btn-submit svg {
+    flex-shrink: 0;
+    transition: transform 0.3s;
+}
+
+.rc-btn-submit:hover svg {
+    transform: translateX(4px);
+}
+
+/* Success / Error states */
+.rc-form-notice {
+    display: none;
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    align-items: center;
+    gap: 10px;
+}
+
+.rc-form-notice.success {
+    background: rgba(0,200,83,0.1);
+    border: 1px solid rgba(0,200,83,0.3);
+    color: #00a152;
+    display: flex;
+}
+
+.rc-form-notice.error {
+    background: rgba(255,71,87,0.1);
+    border: 1px solid rgba(255,71,87,0.3);
+    color: #d32f2f;
+    display: flex;
+}
+
+/* Loading spinner on button */
+.rc-btn-submit.loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.rc-spinner {
+    display: none;
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid rgba(255,255,255,0.4);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: rc-spin 0.7s linear infinite;
+}
+
+.rc-btn-submit.loading .rc-spinner { display: block; }
+.rc-btn-submit.loading .rc-btn-icon { display: none; }
+
+@keyframes rc-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   SIDEBAR — Right Column
+   ========================================================================== */
+.rima-contact-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* FAQ Accordion */
+.rc-faq-card {
+    background: var(--rc-surface);
+    border-radius: var(--rc-radius);
+    box-shadow: var(--rc-shadow-sm);
+    border: 1px solid var(--rc-border);
+    overflow: hidden;
+}
+
+.rc-faq-card-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid var(--rc-border);
+}
+
+.rc-faq-card-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--rc-text);
+    margin: 0 0 4px;
+}
+
+.rc-faq-card-header p {
+    font-size: 13px;
+    color: var(--rc-muted);
+    margin: 0;
+}
+
+.rc-faq-item {
+    border-bottom: 1px solid var(--rc-border);
+}
+
+.rc-faq-item:last-child {
+    border-bottom: none;
+}
+
+.rc-faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 18px 28px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    font-family: var(--rc-font);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--rc-text);
+    transition: background 0.2s;
+}
+
+.rc-faq-question:hover {
+    background: var(--rc-bg);
+}
+
+.rc-faq-question .rc-faq-chevron {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--rc-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--rc-transition);
+    color: var(--rc-muted);
+}
+
+.rc-faq-item.open .rc-faq-question .rc-faq-chevron {
+    background: var(--rc-primary-glow);
+    color: var(--rc-primary);
+    transform: rotate(180deg);
+}
+
+.rc-faq-answer {
+    display: none;
+    padding: 0 28px 20px;
+    font-size: 13.5px;
+    color: var(--rc-muted);
+    line-height: 1.7;
+}
+
+.rc-faq-item.open .rc-faq-answer {
+    display: block;
+    animation: rc-slide-in 0.25s ease;
+}
+
+@keyframes rc-slide-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Social / community card */
+.rc-social-card {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+    border-radius: var(--rc-radius);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+}
+
+.rc-social-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(16, 45, 86,0.25) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.rc-social-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 6px;
+}
+
+.rc-social-card p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin: 0 0 20px;
+    line-height: 1.6;
+}
+
+.rc-social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.rc-social-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    text-decoration: none !important;
+    transition: var(--rc-transition);
+}
+
+.rc-social-link:hover {
+    background: rgba(255,255,255,0.13);
+    border-color: var(--rc-primary);
+    transform: translateX(4px);
+    box-shadow: 0 4px 15px rgba(138, 31, 44, 0.3);
+}
+
+.rc-social-link-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.rc-social-link-icon.fb     { background: #1877f2; }
+.rc-social-link-icon.ig     { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
+.rc-social-link-icon.tiktok { background: linear-gradient(135deg, #010101 0%, #2a2a2a 100%); }
+.rc-social-link-icon.wa     { background: #25d366; }
+
+
+.rc-social-link-text strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.rc-social-link-text span {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+}
+
+/* Hours card */
+.rc-hours-card {
+    background: var(--rc-surface);
+    border-radius: var(--rc-radius);
+    box-shadow: var(--rc-shadow-sm);
+    border: 1px solid var(--rc-border);
+    padding: 24px 28px;
+}
+
+.rc-hours-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--rc-text);
+    margin: 0 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rc-hours-card h3 svg {
+    color: var(--rc-primary);
+}
+
+.rc-hours-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--rc-border);
+    font-size: 14px;
+}
+
+.rc-hours-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.rc-hours-row .day {
+    color: var(--rc-muted);
+    font-weight: 500;
+}
+
+.rc-hours-row .time {
+    color: var(--rc-text);
+    font-weight: 600;
+}
+
+.rc-hours-row .time.closed {
+    color: var(--rc-red);
+}
+
+.rc-online-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,200,83,0.1);
+    border: 1px solid rgba(0,200,83,0.25);
+    color: #00a152;
+    border-radius: 50px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 14px;
+}
+
+.rc-online-dot {
+    width: 7px; height: 7px;
+    background: #00c853;
+    border-radius: 50%;
+    animation: rc-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes rc-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.6; transform: scale(1.4); }
+}
+
+/* ==========================================================================
+   MAP / LOCATION STRIP
+   ========================================================================== */
+.rima-contact-map-section {
+    max-width: 1100px;
+    margin: 0 auto 80px;
+    padding: 0 24px;
+}
+
+.rc-map-wrapper {
+    border-radius: var(--rc-radius);
+    overflow: hidden;
+    box-shadow: var(--rc-shadow-sm);
+    border: 1px solid var(--rc-border);
+    position: relative;
+}
+
+.rc-map-overlay-card {
+    position: absolute;
+    top: 20px; left: 20px;
+    background: var(--rc-surface);
+    border: 1px solid var(--rc-border);
+    backdrop-filter: blur(10px);
+    border-radius: var(--rc-radius-sm);
+    padding: 18px 22px;
+    box-shadow: var(--rc-shadow-sm);
+    z-index: 10;
+    max-width: 260px;
+}
+
+.rc-map-overlay-card h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--rc-text);
+    margin: 0 0 4px;
+}
+
+.rc-map-overlay-card p {
+    font-size: 13px;
+    color: var(--rc-muted);
+    margin: 0 0 12px;
+    line-height: 1.5;
+}
+
+.rc-map-overlay-card a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--rc-primary) !important;
+    text-decoration: none !important;
+    transition: gap 0.2s;
+}
+
+.rc-map-overlay-card a:hover {
+    gap: 10px;
+}
+
+.rc-map-wrapper iframe {
+    display: block;
+    width: 100%;
+    height: 340px;
+    border: none;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+@media (max-width: 768px) {
+    .rima-contact-hero {
+        padding: 60px 20px 80px;
+    }
+
+    .rima-contact-quick-info {
+        grid-template-columns: 1fr 1fr;
+        margin-top: -30px;
+    }
+
+    .rima-contact-form-body {
+        padding: 24px 20px;
+    }
+
+    .rima-contact-form-header {
+        padding: 24px 20px 20px;
+    }
+
+    .rc-faq-question {
+        padding: 16px 20px;
+    }
+
+    .rc-faq-answer {
+        padding: 0 20px 16px;
+    }
+
+    .rc-hours-card,
+    .rc-social-card {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .rima-contact-quick-info {
+        grid-template-columns: 1fr;
+        margin-top: -20px;
+    }
+
+    .rima-contact-hero h1 {
+        font-size: 1.8rem;
+    }
+
+    .rc-map-overlay-card {
+        position: static;
+        border-radius: 0;
+        box-shadow: none;
+        border-top: 1px solid var(--rc-border);
+        max-width: 100%;
+    }
+
+    .rc-map-wrapper iframe {
+        height: 220px;
+    }
+}
+
+/* ==========================================================================
+   CF7 Override (if Contact Form 7 is used)
+   ========================================================================== */
+.rima-contact-page .wpcf7-form p {
+    margin: 0;
+}
+
+.rima-contact-page .wpcf7-response-output {
+    display: none !important;
+}
+
+/* ==========================================================================
+   QUFORM OVERRIDES — matches Rima Academy design system
+   ========================================================================== */
+
+/* Wrapper */
+.rc-quform-wrapper {
+    margin-top: 4px;
+}
+
+/* Remove Quform default card chrome inside our card */
+.rc-quform-wrapper .quform-outer-wrapper,
+.rc-quform-wrapper .quform-form {
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+}
+
+/* Field items */
+.rc-quform-wrapper .quform-item {
+    margin-bottom: 20px !important;
+}
+
+/* Labels */
+.rc-quform-wrapper .quform-label,
+.rc-quform-wrapper .quform-label label {
+    display: block !important;
+    font-family: var(--rc-font) !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #1a202c !important;
+    margin-bottom: 7px !important;
+}
+
+/* Inputs, textareas, selects */
+.rc-quform-wrapper input[type="text"],
+.rc-quform-wrapper input[type="email"],
+.rc-quform-wrapper input[type="tel"],
+.rc-quform-wrapper input[type="url"],
+.rc-quform-wrapper input[type="number"],
+.rc-quform-wrapper select,
+.rc-quform-wrapper textarea {
+    width: 100% !important;
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e0 !important;
+    border-radius: 12px !important;
+    padding: 13px 16px !important;
+    font-size: 15px !important;
+    font-family: var(--rc-font) !important;
+    color: #1a202c !important;
+    transition: var(--rc-transition) !important;
+    box-sizing: border-box !important;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+.rc-quform-wrapper input[type="text"]:focus,
+.rc-quform-wrapper input[type="email"]:focus,
+.rc-quform-wrapper input[type="tel"]:focus,
+.rc-quform-wrapper input[type="url"]:focus,
+.rc-quform-wrapper input[type="number"]:focus,
+.rc-quform-wrapper select:focus,
+.rc-quform-wrapper textarea:focus {
+    border-color: var(--rc-primary) !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(138, 31, 44, 0.15) !important;
+}
+
+.rc-quform-wrapper textarea {
+    resize: vertical !important;
+    min-height: 130px !important;
+}
+
+/* Select arrow */
+.rc-quform-wrapper select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23718096' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 16px center !important;
+    padding-right: 40px !important;
+    cursor: pointer !important;
+}
+
+/* Placeholder color */
+.rc-quform-wrapper input::placeholder,
+.rc-quform-wrapper textarea::placeholder {
+    color: #a0aec0 !important;
+    opacity: 1 !important;
+}
+
+/* Submit button */
+.rc-quform-wrapper .quform-submit-inner button,
+.rc-quform-wrapper .quform-submit button,
+.rc-quform-wrapper input[type="submit"],
+.rc-quform-wrapper button[type="submit"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    padding: 15px 32px !important;
+    background: linear-gradient(135deg, var(--rc-primary) 0%, var(--rc-primary-dark) 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 14px !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    font-family: var(--rc-font) !important;
+    cursor: pointer !important;
+    transition: var(--rc-transition) !important;
+    width: 100% !important;
+    letter-spacing: 0.01em !important;
+    box-shadow: none !important;
+    text-transform: none !important;
+}
+
+.rc-quform-wrapper .quform-submit-inner button:hover,
+.rc-quform-wrapper .quform-submit button:hover,
+.rc-quform-wrapper input[type="submit"]:hover,
+.rc-quform-wrapper button[type="submit"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 30px rgba(16, 45, 86, 0.35) !important;
+}
+
+/* Validation error messages */
+.rc-quform-wrapper .quform-error,
+.rc-quform-wrapper .quform-item-has-errors input,
+.rc-quform-wrapper .quform-item-has-errors textarea,
+.rc-quform-wrapper .quform-item-has-errors select {
+    border-color: var(--rc-red) !important;
+}
+
+.rc-quform-wrapper .quform-error-message,
+.rc-quform-wrapper .quform-item .quform-error-message {
+    color: var(--rc-red) !important;
+    font-size: 12.5px !important;
+    font-weight: 500 !important;
+    margin-top: 5px !important;
+    font-family: var(--rc-font) !important;
+}
+
+/* Success message */
+.rc-quform-wrapper .quform-success-message {
+    background: rgba(0, 200, 83, 0.1) !important;
+    border: 1px solid rgba(0, 200, 83, 0.3) !important;
+    border-radius: 12px !important;
+    color: #00a152 !important;
+    padding: 16px 20px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    font-family: var(--rc-font) !important;
+    margin-bottom: 20px !important;
+}
+
+/* General form error */
+.rc-quform-wrapper .quform-general-error {
+    background: rgba(255, 71, 87, 0.1) !important;
+    border: 1px solid rgba(255, 71, 87, 0.3) !important;
+    border-radius: 12px !important;
+    color: #d32f2f !important;
+    padding: 16px 20px !important;
+    font-size: 14px !important;
+    font-family: var(--rc-font) !important;
+    margin-bottom: 20px !important;
+}
+
+/* Checkbox & radio items */
+.rc-quform-wrapper .quform-option-label,
+.rc-quform-wrapper .quform-options > div > label,
+.rc-quform-wrapper .quform-field-checkbox .quform-multifield-option,
+.rc-quform-wrapper .quform-field-radio .quform-multifield-option {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    margin-bottom: 8px !important;
+    font-size: 13.5px !important;
+    color: #4a5568 !important;
+    font-family: var(--rc-font) !important;
+    cursor: pointer !important;
+    line-height: 1 !important;
+}
+
+.rc-quform-wrapper input[type="checkbox"],
+.rc-quform-wrapper input[type="radio"] {
+    appearance: auto !important;
+    -webkit-appearance: auto !important;
+    width: 18px !important;
+    height: 18px !important;
+    accent-color: var(--rc-primary) !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: unset !important;
+    cursor: pointer !important;
+    border: none !important;
+    border-radius: 4px !important;
+}
+
+/* Loading spinner on submit */
+.rc-quform-wrapper .quform-loading-wrapper {
+    text-align: center !important;
+}
+
+/* Required star */
+.rc-quform-wrapper .quform-label .quform-required {
+    color: var(--rc-red) !important;
+    margin-left: 2px !important;
+}
+
+/* Remove default Quform icons if any */
+.rc-quform-wrapper .quform-field-wrapper::before,
+.rc-quform-wrapper .quform-field-wrapper::after {
+    display: none !important;
+}
+
+/* Fallback text when Quform is deactivated */
+.rc-quform-fallback {
+    color: var(--rc-muted);
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 20px;
+    background: var(--rc-bg);
+    border-radius: 12px;
+    border: 1px dashed var(--rc-border);
+    margin: 0;
+}
+
+.rc-quform-fallback a {
+    color: var(--rc-primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.rc-quform-fallback a:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   FAQ ACCORDION
+   ========================================================================== */
+.rc-faq-card {
+    background: rgba(138, 31, 44, 0.05);
+    border: 1px solid var(--rc-border);
+    border-radius: var(--rc-radius);
+    padding: 30px;
+    margin-bottom: 24px;
+    backdrop-filter: blur(12px);
+}
+
+.rc-faq-card-header {
+    margin-bottom: 24px;
+}
+
+.rc-faq-card-header h3 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.rc-faq-card-header p {
+    font-size: 14px;
+    color: var(--rc-muted);
+}
+
+.rc-faq-item {
+    border-bottom: 1px solid var(--rc-border);
+}
+
+.rc-faq-item:last-child {
+    border-bottom: none;
+}
+
+.rc-faq-question {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 16px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+}
+
+.rc-faq-chevron {
+    color: var(--rc-primary);
+    transition: transform 0.3s ease;
+}
+
+.rc-faq-item.open .rc-faq-chevron {
+    transform: rotate(180deg);
+}
+
+.rc-faq-answer {
+    padding-bottom: 16px;
+    color: var(--rc-muted);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   FIX MASSIVE TEXT & LOGO
+   ========================================================================== */
+.rc-massive-text {
+    font-size: clamp(40px, 10vw, 100px) !important;
+    line-height: 1.1 !important;
+    white-space: normal !important;
+    word-break: keep-all;
+    padding: 0 20px;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+.rc-hero-logo img {
+    max-height: 140px !important;
+}
+
+
+/* ==========================================================================
+   ULTRAMODERN GLASSMORPHISM REDESIGN (Floating over Globe)
+   ========================================================================== */
+
+/* Hero Section */
+.rima-contact-hero {
+    padding-top: 60px !important;
+}
+.rima-contact-hero h1, .rima-contact-hero p {
+    color: #ffffff !important;
+}
+.rima-contact-hero p {
+    opacity: 0.8;
+}
+.rima-contact-hero-badge {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    color: #fff !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Quick Info Cards */
+.rima-contact-quick-info {
+    margin-bottom: 60px !important;
+    gap: 20px !important;
+}
+.rc-info-card {
+    background: rgba(10, 15, 30, 0.5) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.4s ease, border-color 0.4s ease !important;
+    padding: 24px !important;
+}
+.rc-info-card:hover {
+    transform: translateY(-8px) scale(1.02) !important;
+    background: rgba(20, 30, 50, 0.7) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 20px 50px rgba(0, 229, 255, 0.15) !important;
+}
+.rc-info-card h4 {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+.rc-info-link, .rc-info-text {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+/* Main Grid (Form + Sidebar) */
+.rima-contact-form-card, .rc-faq-card, .rc-social-card {
+    background: rgba(10, 15, 30, 0.6) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 32px !important;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Add a subtle top inner glow to cards for the premium glass effect */
+.rima-contact-form-card::before, .rc-faq-card::before, .rc-social-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    z-index: 1;
+}
+
+/* Form Headings */
+.rima-contact-form-header h2, .rc-faq-card-header h3, .rc-social-card h3 {
+    color: #ffffff !important;
+}
+.rima-contact-form-header p, .rc-faq-card-header p {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Topic Pills */
+.rc-topic-pill {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    border-radius: 100px !important;
+    transition: all 0.3s ease !important;
+}
+.rc-topic-pill:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+.rc-topic-pill.active {
+    background: var(--rc-primary) !important;
+    border-color: var(--rc-primary) !important;
+    color: #000000 !important;
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.4) !important;
+}
+
+/* Form Inputs (Quform Overrides for Glassmorphism) */
+.rc-quform-wrapper .quform-input, 
+.rc-quform-wrapper input[type="text"], 
+.rc-quform-wrapper input[type="email"], 
+.rc-quform-wrapper textarea {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    border-radius: 16px !important;
+    padding: 18px 24px !important;
+    transition: all 0.3s ease !important;
+}
+.rc-quform-wrapper .quform-input:focus, 
+.rc-quform-wrapper input:focus, 
+.rc-quform-wrapper textarea:focus {
+    background: rgba(0, 0, 0, 0.5) !important;
+    border-color: var(--rc-primary) !important;
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.2) !important;
+    outline: none !important;
+}
+.rc-quform-wrapper .quform-submit-inner button {
+    background: var(--rc-primary) !important;
+    color: #000 !important;
+    border-radius: 100px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    box-shadow: 0 10px 30px rgba(0, 229, 255, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+.rc-quform-wrapper .quform-submit-inner button:hover {
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 15px 40px rgba(0, 229, 255, 0.5) !important;
+}
+
+/* FAQ Accordion */
+.rc-faq-question {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: #ffffff !important;
+    border-radius: 16px !important;
+    padding: 20px 24px !important;
+}
+.rc-faq-item.open .rc-faq-question {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px 16px 0 0 !important;
+    border-bottom-color: transparent !important;
+}
+.rc-faq-answer {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-top: none !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    border-radius: 0 0 16px 16px !important;
+}
+
+/* Social Cards */
+.rc-social-link {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 20px !important;
+    transition: all 0.3s ease !important;
+}
+.rc-social-link:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    transform: translateX(8px) !important;
+}
+.rc-social-link-text strong {
+    color: #ffffff !important;
+}
+.rc-social-link-text span {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Form Icons Fix (White text readability) */
+.rima-contact-page .wpcf7-form-control-wrap input::placeholder,
+.rc-quform-wrapper ::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+.rc-form-icon svg {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ==========================================================================
+   PROFESSIONAL WHITE FORM CARD OVERRIDE
+   ========================================================================== */
+.rima-contact-form-card {
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    border-radius: 32px !important;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4) !important;
+    padding: 0 !important;
+}
+
+.rima-contact-form-card::before {
+    display: none !important;
+}
+
+.rima-contact-form-header {
+    background: transparent !important;
+    padding: 40px 40px 10px !important;
+}
+
+.rima-contact-form-header h2 {
+    color: #09090b !important;
+    font-size: 32px !important;
+    font-weight: 800 !important;
+    margin-bottom: 8px !important;
+}
+
+.rima-contact-form-header p {
+    color: #71717a !important;
+    font-size: 16px !important;
+}
+
+.rima-contact-form-body {
+    padding: 20px 40px 40px !important;
+}
+
+/* Topic Pills inside White Form */
+.rima-contact-form-card .rc-topic-pill {
+    background: #f4f4f5 !important;
+    border: 1px solid #e4e4e7 !important;
+    color: #71717a !important;
+    font-weight: 600 !important;
+}
+.rima-contact-form-card .rc-topic-pill:hover {
+    background: #e4e4e7 !important;
+    color: #09090b !important;
+}
+.rima-contact-form-card .rc-topic-pill.active {
+    background: var(--rc-primary) !important;
+    border-color: var(--rc-primary) !important;
+    color: #000000 !important;
+    box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3) !important;
+}
+
+/* Fix weird huge grey boxes from Quform default styling globally just in case */
+.quform-outer {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+.quform-inner {
+    border: none !important;
+    background: transparent !important;
+}
+.quform-element > .quform-spacer {
+    padding-bottom: 24px !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Quform Inputs inside White Form */
+.rima-contact-form-card .rc-quform-wrapper .quform-input, 
+.rima-contact-form-card .rc-quform-wrapper input[type="text"], 
+.rima-contact-form-card .rc-quform-wrapper input[type="email"], 
+.rima-contact-form-card .rc-quform-wrapper textarea,
+.rima-contact-form-card .quform-element .quform-input,
+.rima-contact-form-card .quform-element .quform-input-file,
+.rima-contact-form-card .quform-element select {
+    background: #f4f4f5 !important;
+    border: 1px solid #e4e4e7 !important;
+    color: #09090b !important;
+    border-radius: 12px !important;
+    padding: 16px 20px !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    font-family: inherit !important;
+    font-size: 15px !important;
+}
+
+/* Overriding those giant grey quform backgrounds directly */
+.quform-theme-light-light .quform-element > .quform-spacer, 
+.quform-theme-light-light .quform-element > .quform-spacer > .quform-input {
+    background: transparent !important;
+    border: none !important;
+}
+
+.quform-theme-light-light .quform-inner {
+    border: none !important;
+    background: transparent !important;
+}
+
+.rima-contact-form-card .rc-quform-wrapper .quform-input:focus, 
+.rima-contact-form-card .rc-quform-wrapper input:focus, 
+.rima-contact-form-card .rc-quform-wrapper textarea:focus {
+    background: #ffffff !important;
+    border-color: var(--rc-primary) !important;
+    box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.1) !important;
+    outline: none !important;
+}
+
+.rima-contact-form-card .rc-quform-wrapper ::placeholder,
+.rima-contact-form-card .wpcf7-form-control-wrap input::placeholder {
+    color: #a1a1aa !important;
+}
+
+/* Quform Submit Button */
+.rima-contact-form-card .rc-quform-wrapper .quform-submit-inner button {
+    background: #09090b !important;
+    color: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 16px 32px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    margin-top: 10px !important;
+}
+.rima-contact-form-card .rc-quform-wrapper .quform-submit-inner button:hover {
+    background: var(--rc-primary) !important;
+    color: #000000 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 25px rgba(0, 229, 255, 0.3) !important;
+}
+
+/* Ensure form labels inside the white card are dark */
+.rima-contact-form-card .quform-label {
+    color: #09090b !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    margin-bottom: 8px !important;
+    display: block !important;
+}
+.rima-contact-form-card .quform-required {
+    color: #ef4444 !important;
+}
+
+/* Icons inside the labels if any */
+.rima-contact-form-card .quform-label i {
+    color: #71717a !important;
+    margin-right: 6px !important;
+}
+
+/* Any error or success messages inside the form */
+.rima-contact-form-card .quform-error-message,
+.rima-contact-form-card .quform-success-message {
+    border-radius: 8px !important;
+    font-size: 14px !important;
+}

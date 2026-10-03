@@ -1,0 +1,936 @@
+/* ==========================================================================
+   RIMA ACADEMY - MODERN DASHBOARD OVERHAUL
+   ========================================================================== */
+
+:root {
+	--rima-red:        #ff4757;
+	--rima-red-dark:   #ff6b81;
+	--rima-red-glow:   rgba(255, 71, 87, 0.12);
+	--rima-navy:       #102d56;
+	--rima-navy-2:     #102d56;
+	--rima-navy-3:     #102d56;
+	--rima-text:       #2d3748;
+	--rima-muted:      #718096;
+	--rima-surface:    #ffffff;
+	--rima-bg:         #f7fafc;
+	--rima-border:     #e2e8f0;
+	--rima-white:      #ffffff;
+	--rima-radius-sm:  8px;
+	--rima-radius-md:  16px;
+	--rima-radius-lg:  24px;
+	--rima-shadow-sm:  0 2px 8px rgba(0,0,0,0.04);
+	--rima-shadow-md:  0 8px 24px rgba(0,0,0,0.06);
+	--rima-shadow-lg:  0 12px 32px rgba(0,0,0,0.1);
+	--rima-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* -----------------------------------------
+   APP CONTAINER WRAPPER
+   ----------------------------------------- */
+
+.woocommerce-account .woocommerce {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    flex-direction: row !important;
+    gap: 30px !important;
+    align-items: flex-start !important;
+    max-width: 1300px !important;
+    width: 100% !important;
+    margin: 40px auto !important;
+    background: #f4f6f9;
+    padding: 30px;
+    border-radius: 32px;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+    border: none !important;
+    box-sizing: border-box !important;
+}
+.woocommerce-account .woocommerce::before,
+.woocommerce-account .woocommerce::after { display: none !important; }
+
+/* -----------------------------------------
+   SIDEBAR
+   ----------------------------------------- */
+.woocommerce-account .woocommerce-MyAccount-navigation {
+    flex: 0 0 300px !important;
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
+    float: none !important;
+    padding: 0 !important;
+    border: none !important;
+    border-right: none !important;
+    align-self: flex-start !important;
+    background: transparent !important;
+}
+.woocommerce-account .woocommerce-MyAccount-navigation::before,
+.woocommerce-account .woocommerce-MyAccount-navigation::after { display: none !important; }
+
+.dashboard-user-profile-widget {
+	background: linear-gradient(160deg, #102d56 0%, #102d56 100%);
+	padding: 40px 24px 30px;
+	text-align: center;
+	border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.user-avatar {
+	width: 96px;
+	border-radius: 50%;
+	border: 3px solid var(--rima-red);
+	box-shadow: 0 4px 20px rgba(255, 71, 87,0.5);
+	margin-bottom: 16px;
+}
+.user-name {
+	color: #fff;
+	font-size: 20px;
+	font-weight: 800;
+	margin: 0 0 4px;
+}
+.user-email {
+	color: rgba(255,255,255,0.5);
+	font-size: 13px;
+	margin: 0 0 16px;
+}
+.user-member-since {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: rgba(255, 71, 87,0.15);
+	color: #ff8fa5;
+	padding: 6px 14px;
+	border-radius: 20px;
+	font-size: 12px;
+	font-weight: 600;
+	margin-bottom: 24px;
+}
+.dashboard-user-stats {
+    background: rgba(255,255,255,0.03);
+    border-radius: 16px;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+.stat-value {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+.stat-label {
+    color: rgba(255,255,255,0.5);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Sidebar Nav */
+.dashboard-nav-list {
+	list-style: none;
+	padding: 24px 0;
+	margin: 0;
+}
+.dashboard-nav-list li { margin: 4px 16px; }
+.dashboard-nav-list li a {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 12px 16px;
+	color: #ffffff !important;
+	font-size: 14px;
+	font-weight: 600;
+	border-radius: 14px;
+	text-decoration: none;
+	transition: var(--rima-transition);
+}
+.nav-icon {
+	width: 36px !important;
+	height: 36px !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	flex-shrink: 0 !important;
+	background: rgba(255,255,255,0.08) !important;
+	border-radius: 10px !important;
+	transition: all 0.3s ease !important;
+	color: #fff !important;
+}
+.nav-icon svg {
+    display: block !important;
+    flex-shrink: 0 !important;
+    color: #fff !important;
+    stroke: #fff !important;
+}
+.dashboard-nav-list li a:hover {
+	color: #fff;
+	background: rgba(255,255,255,0.04);
+}
+.dashboard-nav-list li a:hover .nav-icon { background: rgba(255,255,255,0.1); }
+.dashboard-nav-list li.is-active a {
+	background: linear-gradient(90deg, var(--rima-red) 0%, var(--rima-red-dark) 100%);
+	color: #fff;
+	box-shadow: 0 4px 15px rgba(255, 71, 87,0.4);
+}
+.dashboard-nav-list li.is-active a .nav-icon {
+	background: rgba(255,255,255,0.2);
+}
+
+/* Logout Item */
+.dashboard-nav-list li.woocommerce-MyAccount-navigation-link--customer-logout {
+	margin-top: 16px;
+	padding-top: 16px;
+	border-top: 1px solid rgba(255,255,255,0.06);
+}
+.dashboard-nav-list li.woocommerce-MyAccount-navigation-link--customer-logout a { color: #ff6b8b; }
+.dashboard-nav-list li.woocommerce-MyAccount-navigation-link--customer-logout a .nav-icon { background: rgba(255,107,139,0.1); }
+.dashboard-nav-list li.woocommerce-MyAccount-navigation-link--customer-logout a:hover {
+    background: rgba(255, 71, 87,0.15);
+    color: #fff;
+}
+.dashboard-nav-list li.woocommerce-MyAccount-navigation-link--customer-logout a:hover .nav-icon { background: var(--rima-red); }
+
+/* -----------------------------------------
+   CONTENT AREA
+   ----------------------------------------- */
+.woocommerce-account .woocommerce-MyAccount-content {
+	flex: 1 1 0% !important;
+	min-width: 0 !important;
+	width: auto !important;
+	float: none !important;
+	background: #ffffff;
+	border-radius: 24px;
+	box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+	padding: 40px !important;
+	border: none !important;
+}
+.woocommerce-MyAccount-content::before,
+.woocommerce-MyAccount-content::after { display: none !important; }
+
+
+/* Dashboard Banner */
+.dashboard-welcome-banner {
+	background: linear-gradient(135deg, #102d56 0%, #102d56 150%);
+	border-radius: var(--rima-radius-lg);
+	padding: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	color: #fff;
+	position: relative;
+	overflow: hidden;
+	box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+	margin-bottom: 40px;
+}
+.dashboard-welcome-banner::after {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(16, 45, 86, 0.6) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+}
+.banner-content { position: relative; z-index: 1; max-width: 60%; }
+.banner-content h2 { font-size: 32px; font-weight: 800; margin: 0 0 12px; color: #fff; line-height: 1.2; }
+.banner-content p { font-size: 15px; color: rgba(255,255,255,0.7); margin: 0; line-height: 1.6; }
+.banner-stat {
+	position: relative;
+	z-index: 1;
+	background: rgba(255,255,255,0.1);
+	backdrop-filter: blur(10px);
+	border: 1px solid rgba(255,255,255,0.2);
+	padding: 24px 40px;
+	border-radius: var(--rima-radius-md);
+	text-align: center;
+}
+.banner-stat i { font-size: 32px; color: #fff; margin-bottom: 12px; opacity: 0.9; display:block; }
+.banner-stat span { display: block; font-size: 36px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+.banner-stat small { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
+
+/* Quick Links Grid */
+.dashboard-section-title {
+	font-size: 18px;
+	font-weight: 800;
+	color: var(--rima-text);
+	margin: 0 0 20px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+.dashboard-section-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 20px;
+    background: var(--rima-red);
+    border-radius: 4px;
+}
+
+.quick-link-card {
+	background: #ffffff;
+	border: 1px solid var(--rima-border);
+	padding: 30px 20px;
+	border-radius: var(--rima-radius-md);
+	text-align: center;
+	text-decoration: none;
+	transition: var(--rima-transition);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+.quick-link-card:hover {
+	border-color: var(--rima-red);
+	transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(255, 71, 87,0.08);
+}
+.quick-link-card i {
+	font-size: 28px;
+	color: var(--rima-red);
+	margin-bottom: 16px;
+    background: var(--rima-red-glow);
+    width: 64px;
+    height: 64px;
+    line-height: 64px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.quick-link-card h4 { font-size: 16px; font-weight: 700; color: var(--rima-text); margin: 0 0 8px; }
+.quick-link-card p { font-size: 13px; color: var(--rima-muted); margin: 0; line-height: 1.5; }
+
+/* -----------------------------------------
+   RESPONSIVE
+   ----------------------------------------- */
+@media (max-width: 1024px) {
+    .woocommerce-account .woocommerce { padding: 20px; gap: 20px; }
+    .woocommerce-MyAccount-navigation.academist-professional-sidebar { flex: 0 0 280px !important; }
+}
+@media (max-width: 900px) {
+    .dashboard-welcome-banner { flex-direction: column; text-align: center; padding: 30px 20px; }
+    .banner-content { max-width: 100%; margin-bottom: 24px; }
+    
+}
+@media (max-width: 768px) {
+	.woocommerce-account .woocommerce { flex-direction: column !important; }
+	.woocommerce-MyAccount-navigation.academist-professional-sidebar { flex: none !important; width: 100%; }
+	.woocommerce-MyAccount-content { padding: 24px; }
+    
+}
+
+/* ==========================================================
+   WOOCOMMERCE FORMS & TABLES MODERNIZATION
+   ========================================================== */
+.woocommerce-MyAccount-content form {
+	background: #fff;
+	padding: 30px;
+	border-radius: var(--rima-radius-lg);
+	border: 1px solid var(--rima-border);
+	box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+.woocommerce-MyAccount-content form fieldset {
+	background: #f9f9f9;
+	padding: 20px;
+	border-radius: var(--rima-radius-md);
+	border: 1px solid #eee;
+	margin-top: 30px;
+}
+.woocommerce-MyAccount-content form fieldset legend {
+	font-weight: 800;
+	font-size: 16px;
+	color: #1a1a1a;
+	background: #fff;
+	padding: 0 10px;
+	border-radius: 4px;
+	border: 1px solid #eee;
+}
+.woocommerce-MyAccount-content .woocommerce-Input,
+.woocommerce-MyAccount-content .input-text,
+.woocommerce-MyAccount-content select {
+	width: 100%;
+	padding: 12px 15px;
+	border: 1px solid #ddd;
+	border-radius: var(--rima-radius-sm);
+	font-size: 14px;
+	background: #fff;
+	transition: var(--rima-transition);
+}
+.woocommerce-MyAccount-content .woocommerce-Input:focus,
+.woocommerce-MyAccount-content .input-text:focus {
+	border-color: var(--rima-red);
+	box-shadow: 0 0 0 3px rgba(255, 71, 87,0.1);
+	outline: none;
+}
+.woocommerce-MyAccount-content label {
+	font-weight: 600;
+	font-size: 13px;
+	color: #4b5563;
+	margin-bottom: 6px;
+	display: inline-block;
+}
+.woocommerce-MyAccount-content .button {
+	background: var(--rima-red) !important;
+	color: #fff !important;
+	border: none !important;
+	border-radius: var(--rima-radius-md);
+	padding: 12px 24px;
+	font-weight: 700;
+	font-size: 14px;
+	cursor: pointer;
+	transition: var(--rima-transition);
+	box-shadow: 0 4px 12px rgba(255, 71, 87,0.2);
+}
+.woocommerce-MyAccount-content .button:hover {
+	background: #ff6b81 !important;
+	transform: translateY(-2px);
+	box-shadow: 0 6px 16px rgba(255, 71, 87,0.3);
+}
+
+/* Addresses Page */
+.woocommerce-MyAccount-content .woocommerce-Address {
+	background: #fff;
+	padding: 25px;
+	border-radius: var(--rima-radius-lg);
+	border: 1px solid var(--rima-border);
+	margin-bottom: 20px;
+}
+.woocommerce-MyAccount-content .woocommerce-Address-title h3 {
+	font-size: 18px;
+	font-weight: 800;
+	margin: 0 0 15px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #eee;
+}
+.woocommerce-MyAccount-content .woocommerce-Address-title .edit {
+	font-size: 13px;
+	color: var(--rima-red);
+	background: rgba(255, 71, 87,0.1);
+	padding: 4px 12px;
+	border-radius: 20px;
+	text-decoration: none;
+	font-weight: 600;
+}
+.user-member-since {
+	color: #ffffff;
+	background: rgba(255, 255, 255, 0.2);
+	padding: 4px 12px;
+	border-radius: 20px;
+	text-decoration: none;
+	font-weight: 600;
+	border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Course Cards CSS */
+.rima-course-card {
+  	background: var(--rima-surface);
+  	border: 1.5px solid var(--rima-border);
+  	border-radius: var(--rima-radius-lg);
+  	overflow: hidden;
+  	transition: var(--rima-transition);
+  	display: flex;
+  	flex-direction: column;
+}
+.rima-course-card:hover {
+  	border-color: var(--rima-red);
+  	box-shadow: var(--rima-shadow-lg);
+  	transform: translateY(-3px);
+}
+.rima-course-card__image {
+  	height: 160px;
+  	background-size: cover;
+  	background-position: center;
+  	background-color: #102d56;
+  	position: relative;
+}
+.rima-course-card__badges {
+  	position: absolute;
+  	top: 10px; left: 10px;
+  	display: flex;
+  	gap: 6px;
+}
+.rima-badge {
+  	display: inline-flex;
+  	align-items: center;
+  	gap: 4px;
+  	padding: 3px 9px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+}
+.rima-badge--zoom  { background: rgba(255, 71, 87,0.90); color: #fff; }
+.rima-badge--pending { background: rgba(245,158,11,0.12); color: #b45309; }
+.rima-badge--docs { background: #fff; color: #333; }
+
+.rima-course-card__body { padding: 18px 18px 10px; flex: 1; }
+.rima-course-card__title {
+  	font-size: 16px;
+  	font-weight: 700;
+  	color: var(--rima-text);
+  	margin: 0 0 8px;
+  	line-height: 1.4;
+}
+.rima-course-card__date {
+  	font-size: 12px;
+  	color: var(--rima-muted);
+  	display: flex;
+  	align-items: center;
+  	gap: 5px;
+  	margin: 0 0 10px;
+}
+.rima-status {
+  	display: inline-block;
+  	padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+}
+.rima-status--on-hold    { background: rgba(245,158,11,.12); color: #b45309; }
+.rima-status--cancelled  { background: rgba(239,68,68,.12);  color: #b91c1c; }
+.rima-status--completed  { background: rgba(16,185,129,.12); color: #047857; }
+  
+.rima-course-card__footer {
+  	padding: 12px 18px 16px;
+  	display: flex;
+  	gap: 10px;
+  	align-items: center;
+  	border-top: 1px solid var(--rima-border);
+}
+
+.rima-empty-state {
+  	text-align: center;
+    padding: 60px 20px;
+}
+.rima-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+.rima-btn--primary {
+    background: var(--rima-red);
+    color: #fff;
+}
+.rima-btn--primary:hover {
+    background: var(--rima-red-dark);
+}
+.rima-btn--ghost {
+    background: transparent;
+    border: 1px solid var(--rima-border);
+    color: var(--rima-text);
+}
+.rima-btn--ghost:hover {
+    border-color: var(--rima-red);
+    color: var(--rima-red);
+}
+.rima-courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+/* Avatar Fix - Perfect Circle */
+.user-avatar {
+	width: 100px;
+    height: 100px;
+    background-size: cover;
+    background-position: center;
+    object-fit: cover;
+	border-radius: 50%;
+	border: 3px solid var(--rima-red);
+	box-shadow: 0 4px 20px rgba(255, 71, 87,0.5);
+	margin-bottom: 16px;
+}
+
+/* Fix Banner Text Color and Add Quick Link Icons styling */
+.banner-content h2 { font-size: 32px; font-weight: 800; margin: 0 0 12px; color: #fff !important; line-height: 1.2; }
+.banner-content p { font-size: 15px; color: rgba(255,255,255,0.7) !important; margin: 0; line-height: 1.6; }
+.banner-content p em { font-size: 13px; color: rgba(255,255,255,0.6) !important; margin-top: 6px; display: inline-block; }
+.banner-stat h4 { font-size: 32px; font-weight: 800; color: #fff !important; margin: 0 0 5px; line-height: 1; }
+
+.quick-link-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    background: rgba(255, 71, 87,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    transition: var(--rima-transition);
+}
+.quick-link-card:hover .quick-link-icon-wrapper {
+    background: var(--rima-red);
+    box-shadow: 0 8px 20px rgba(255, 71, 87,0.3);
+    transform: scale(1.05);
+}
+.quick-link-card:hover .quick-link-icon-wrapper i {
+    color: #fff !important;
+}
+.quick-link-card i {
+	font-size: 26px;
+	color: var(--rima-red);
+    transition: var(--rima-transition);
+}
+.woocommerce-account .woocommerce::after { display: none !important; }
+
+/* WooCommerce Core Layout — override Bootstrap floats */
+.woocommerce-account .woocommerce-MyAccount-navigation {
+    float: none !important;
+    width: auto !important;
+    flex: 0 0 300px !important;
+    max-width: 300px !important;
+    align-self: flex-start;
+}
+.woocommerce-account .woocommerce-MyAccount-content {
+    float: none !important;
+    width: auto !important;
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+}
+.woocommerce-account .woocommerce {
+    align-items: flex-start !important;
+}
+
+/* Sidebar nav list — restore Bootstrap-nuked styles */
+.woocommerce-account .woocommerce-MyAccount-navigation ul,
+.woocommerce-account .woocommerce-MyAccount-navigation li,
+.woocommerce-account .woocommerce-MyAccount-navigation nav {
+    border: none !important;
+    border-right: none !important;
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.dashboard-nav-list {
+    border: none !important;
+    list-style: none !important;
+    padding: 24px 0 !important;
+    margin: 0 !important;
+}
+.dashboard-nav-list li {
+    margin: 4px 16px !important;
+    padding: 0 !important;
+}
+.dashboard-nav-list li a {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+    padding: 12px 16px !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    border-radius: 14px !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+    width: auto !important;
+    float: none !important;
+    border: none !important;
+}
+.dashboard-nav-list li.is-active a {
+    background: linear-gradient(90deg, #ff4757 0%, #ff6b81 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 15px rgba(255,71,87,0.4) !important;
+}
+.dashboard-nav-list li a:hover {
+    background: rgba(255,255,255,0.07) !important;
+    color: #fff !important;
+}
+
+/* Quick Access Grid — bypass Bootstrap column squashing */
+.rima-quick-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+    gap: 20px !important;
+    width: 100% !important;
+}
+.rima-quick-grid .quick-link-card {
+    width: auto !important;
+    float: none !important;
+    padding: 24px 16px !important;
+    text-align: center !important;
+    background: #fff !important;
+    border-radius: 16px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important;
+    text-decoration: none !important;
+    display: block !important;
+    transition: all 0.3s ease !important;
+}
+.rima-quick-grid .quick-link-card h4 {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #2d3748 !important;
+    margin: 0 0 6px !important;
+    word-break: normal !important;
+    white-space: normal !important;
+    overflow: visible !important;
+}
+.rima-quick-grid .quick-link-card p {
+    font-size: 12px !important;
+    color: #718096 !important;
+    margin: 0 !important;
+    line-height: 1.5 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    word-break: normal !important;
+}
+
+@media (max-width: 991px) {
+    .woocommerce-account .woocommerce-MyAccount-navigation { flex: 0 0 260px !important; max-width: 260px !important; }
+}
+@media (max-width: 767px) {
+    .woocommerce-account .woocommerce-MyAccount-navigation,
+    .woocommerce-account .woocommerce-MyAccount-content {
+        flex: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    .rima-quick-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+.bg-rima-navy { 
+    background: linear-gradient(150deg, #102d56 0%, #102d56 100%) !important;
+}
+
+/* ==========================================================================
+   BILINGUAL SYSTEM â€“ EN / RO
+   Default: English shown. When body.rima-lang-ro â†’ Romanian shown.
+   ========================================================================== */
+
+/* Default: show EN, hide RO */
+.rima-ro { display: none !important; }
+.rima-en { display: inline !important; }
+
+/* When Romanian active: show RO, hide EN */
+body.rima-lang-ro .rima-en { display: none !important; }
+body.rima-lang-ro .rima-ro { display: inline !important; }
+
+/* Block-level elements need display:block not inline */
+.rima-en.d-block,
+.rima-en.d-flex,
+.rima-en[style*="display:block"] { display: block !important; }
+
+body.rima-lang-ro .rima-en.d-block,
+body.rima-lang-ro .rima-en.d-flex,
+body.rima-lang-ro .rima-en[style*="display:block"] { display: none !important; }
+
+body.rima-lang-ro .rima-ro.d-block,
+body.rima-lang-ro .rima-ro.d-flex { display: block !important; }
+
+/* ==========================================================================
+   LANGUAGE TOGGLE SWITCH WIDGET
+   ========================================================================== */
+.rima-lang-switch {
+    position: relative;
+    width: 56px;
+    height: 28px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: background .3s ease;
+    flex-shrink: 0;
+}
+.rima-lang-switch:hover {
+    background: rgba(255,255,255,0.22);
+}
+.rima-lang-switch-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    transition: transform .3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* Thumb slides right when RO active */
+body.rima-lang-ro .rima-lang-switch-thumb {
+    transform: translateX(28px);
+}
+body.rima-lang-ro .rima-lang-switch {
+    background: linear-gradient(135deg, #102d56, #102d56);
+    border-color: #102d56;
+}
+
+/* Highlight active language label */
+.rima-lang-label-en,
+.rima-lang-label-ro {
+    transition: color .3s, font-weight .3s;
+    min-width: 24px;
+    text-align: center;
+}
+.rima-lang-label-en { color: rgba(255,255,255,0.9) !important; font-weight: 700 !important; }
+body.rima-lang-ro .rima-lang-label-en { color: rgba(255,255,255,0.4) !important; font-weight: 400 !important; }
+body.rima-lang-ro .rima-lang-label-ro { color: rgba(255,255,255,0.9) !important; font-weight: 700 !important; }
+
+/* ==========================================================================
+   FORCED TWO-COLUMN LAYOUT ON MY ACCOUNT PAGES (LOGGED IN)
+   Supports standard WooCommerce template & Academist template page wrappers
+   ========================================================================== */
+body.woocommerce-account.logged-in .woocommerce,
+body.woocommerce-account.logged-in .eltdf-page-content-holder,
+body.woocommerce-account.logged-in .eltdf-membership-main-wrapper {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important;
+    gap: 30px !important;
+    max-width: 1300px !important;
+    width: 100% !important;
+    margin: 40px auto !important;
+    padding: 30px !important;
+    background: #f4f6f9 !important;
+    border-radius: 32px !important;
+    box-sizing: border-box !important;
+    float: none !important;
+    clear: both !important;
+}
+
+body.woocommerce-account.logged-in .woocommerce::before,
+body.woocommerce-account.logged-in .woocommerce::after,
+body.woocommerce-account.logged-in .eltdf-page-content-holder::before,
+body.woocommerce-account.logged-in .eltdf-page-content-holder::after,
+body.woocommerce-account.logged-in .eltdf-membership-main-wrapper::before,
+body.woocommerce-account.logged-in .eltdf-membership-main-wrapper::after {
+    display: none !important;
+    content: none !important;
+}
+
+/* Sidebar Wrapper */
+body.woocommerce-account.logged-in .woocommerce-MyAccount-navigation,
+body.woocommerce-account.logged-in .eltdf-membership-dashboard-nav-holder {
+    flex: 0 0 300px !important;
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
+    float: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    align-self: flex-start !important;
+    background: transparent !important;
+}
+
+/* Content Wrapper */
+body.woocommerce-account.logged-in .woocommerce-MyAccount-content,
+body.woocommerce-account.logged-in .eltdf-membership-dashboard-content-holder {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    width: auto !important;
+    float: none !important;
+    margin: 0 !important;
+    padding: 40px !important;
+    background: #ffffff !important;
+    border-radius: 24px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06) !important;
+    border: none !important;
+}
+
+/* Clean up nested layout styles to prevent double padding/background */
+body.woocommerce-account.logged-in .eltdf-membership-dashboard-content-holder .woocommerce-MyAccount-content {
+    background: transparent !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    width: 100% !important;
+}
+
+@media (max-width: 991px) {
+    body.woocommerce-account.logged-in .woocommerce,
+    body.woocommerce-account.logged-in .eltdf-page-content-holder,
+    body.woocommerce-account.logged-in .eltdf-membership-main-wrapper {
+        flex-direction: column !important;
+        flex-wrap: wrap !important;
+        padding: 15px !important;
+        gap: 20px !important;
+        margin: 15px auto !important;
+    }
+    body.woocommerce-account.logged-in .woocommerce-MyAccount-navigation,
+    body.woocommerce-account.logged-in .eltdf-membership-dashboard-nav-holder,
+    body.woocommerce-account.logged-in .woocommerce-MyAccount-content,
+    body.woocommerce-account.logged-in .eltdf-membership-dashboard-content-holder {
+        flex: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    body.woocommerce-account.logged-in .woocommerce-MyAccount-content,
+    body.woocommerce-account.logged-in .eltdf-membership-dashboard-content-holder {
+        padding: 24px !important;
+    }
+
+    /* Scrollable horizontal navigation bar on mobile */
+    .dashboard-nav-list {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        gap: 8px !important;
+        padding: 4px 0 !important;
+        scrollbar-width: none;
+    }
+    .dashboard-nav-list::-webkit-scrollbar {
+        display: none !important;
+    }
+    .dashboard-nav-list li {
+        flex: 0 0 auto !important;
+        margin: 0 !important;
+    }
+    .dashboard-nav-list li a {
+        padding: 8px 14px !important;
+        font-size: 13px !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        border-radius: 10px !important;
+    }
+    .dashboard-nav-list li a .nav-icon {
+        display: none !important;
+    }
+
+    /* Grid Layout for profile card header on mobile */
+    .dashboard-user-profile-widget {
+        display: grid !important;
+        grid-template-columns: auto 1fr auto !important;
+        grid-template-rows: auto auto !important;
+        align-items: center !important;
+        text-align: left !important;
+        padding: 16px !important;
+        gap: 2px 14px !important;
+    }
+    .dashboard-user-profile-widget .rima-lang-toggle-wrapper {
+        grid-column: 3 / 4 !important;
+        grid-row: 1 / 3 !important;
+        margin: 0 !important;
+        align-self: center !important;
+    }
+    .dashboard-user-profile-widget .avatar-wrapper {
+        grid-column: 1 / 2 !important;
+        grid-row: 1 / 3 !important;
+        margin: 0 !important;
+        width: 54px !important;
+        height: 54px !important;
+    }
+    .dashboard-user-profile-widget h3 {
+        grid-column: 2 / 3 !important;
+        grid-row: 1 / 2 !important;
+        margin: 0 !important;
+        font-size: 15px !important;
+    }
+    .dashboard-user-profile-widget p.text-white-50 {
+        grid-column: 2 / 3 !important;
+        grid-row: 2 / 3 !important;
+        margin: 0 !important;
+        font-size: 11px !important;
+    }
+    .dashboard-user-profile-widget .user-member-since {
+        display: none !important;
+    }
+}
+

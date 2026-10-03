@@ -1,0 +1,494 @@
+/**
+ * RIMA Academy — Single Course Page (2026 MasterClass Concept)
+ * rima-single-course.css
+ */
+
+:root {
+    --rmc-blue:       #00E5FF;
+    --rmc-blue-dark:  #00B8CC;
+    --rmc-navy:       #0A1128;
+    --rmc-navy-mid:   #162547;
+    --rmc-white:      #ffffff;
+    --rmc-bg:         #f8f9fa;
+    --rmc-border:     #e9ecef;
+    --rmc-text:       #162547;
+    --rmc-muted:      #6c757d;
+    --rmc-radius:     24px;
+    --rmc-t:          0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.rmc-layout {
+    font-family: var(--rima-font-family, 'Inter', sans-serif);
+    color: var(--rmc-text);
+    background: var(--rmc-bg);
+}
+
+/* ══════════════════════════════════════════════════════
+   1. SPLIT HERO
+   ══════════════════════════════════════════════════════ */
+.rmc-hero {
+    background-color: var(--rmc-navy);
+    background-image: radial-gradient(circle at 80% 20%, rgba(0,229,255,0.1) 0%, transparent 50%),
+                      radial-gradient(circle at 20% 80%, rgba(22,37,71,0.5) 0%, transparent 50%);
+    color: var(--rmc-white);
+    padding: 140px 0 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+.rmc-hero-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+}
+
+/* Left Content */
+.rmc-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 24px;
+    font-weight: 500;
+}
+.rmc-breadcrumb a { color: rgba(255,255,255,0.8); text-decoration: none; transition: color 0.2s; }
+.rmc-breadcrumb a:hover { color: var(--rmc-white); }
+.rmc-breadcrumb svg { opacity: 0.5; }
+
+.rmc-badge {
+    display: inline-block;
+    background: rgba(0, 229, 255, 0.15);
+    color: var(--rmc-blue);
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+}
+
+.rmc-title {
+    font-family: var(--rima-font-heading, inherit);
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin: 0 0 20px;
+    color: var(--rmc-white);
+    letter-spacing: -0.03em;
+}
+
+.rmc-desc {
+    font-size: 18px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.8);
+    margin: 0 0 32px;
+    max-width: 500px;
+}
+
+.rmc-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-bottom: 40px;
+}
+.rmc-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.9);
+    font-weight: 500;
+}
+.rmc-stars { color: #fbbf24; letter-spacing: 1px; }
+
+/* Hero CTA Box */
+.rmc-hero-cta-box {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+.rmc-hero-price {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--rmc-white);
+}
+.rmc-hero-action form { margin: 0; }
+.rmc-hero-action button.single_add_to_cart_button,
+.rmc-btn-primary {
+    background: var(--rmc-blue);
+    color: var(--rmc-navy);
+    font-weight: 700;
+    font-size: 16px;
+    padding: 14px 32px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all var(--rmc-t);
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 10px 20px rgba(0, 229, 255, 0.2);
+}
+.rmc-hero-action button.single_add_to_cart_button:hover,
+.rmc-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 25px rgba(0, 229, 255, 0.3);
+    background: #fff;
+}
+
+.rmc-guarantees {
+    display: flex;
+    gap: 20px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+}
+.rmc-guarantees span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Right Media */
+.rmc-media-wrapper {
+    position: relative;
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+    aspect-ratio: 16/10;
+    background: var(--rmc-navy-mid);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.rmc-media-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.rmc-play-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background var(--rmc-t);
+}
+.rmc-play-overlay:hover { background: rgba(0,0,0,0.4); }
+.rmc-play-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: transform var(--rmc-t);
+}
+.rmc-play-overlay:hover .rmc-play-icon { transform: scale(1.05); }
+
+/* ══════════════════════════════════════════════════════
+   2. MAIN CONTENT (Centered)
+   ══════════════════════════════════════════════════════ */
+.rmc-main-content {
+    padding: 80px 24px;
+}
+.rmc-content-inner {
+    max-width: 1280px; /* Matched hero width for better WPBakery layouts */
+    margin: 0 auto;
+}
+
+.rmc-section {
+    margin-bottom: 64px;
+}
+.rmc-section-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0 0 32px;
+    color: var(--rmc-text);
+    letter-spacing: -0.02em;
+}
+
+/* What you'll learn */
+.rmc-outcomes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    background: #fff;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    border: 1px solid var(--rmc-border);
+}
+.rmc-outcome-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--rmc-text);
+}
+.rmc-outcome-icon {
+    color: var(--rmc-blue-dark);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* Instructor */
+.rmc-instructor-box {
+    display: flex;
+    gap: 24px;
+    background: #fff;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    border: 1px solid var(--rmc-border);
+    align-items: flex-start;
+}
+.rmc-instructor-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--rmc-bg);
+}
+.rmc-instructor-info h3 {
+    margin: 0 0 4px;
+    font-size: 20px;
+    font-weight: 800;
+}
+.rmc-instructor-title {
+    color: var(--rmc-blue-dark);
+    font-weight: 600;
+    font-size: 14px;
+    margin: 0 0 16px;
+}
+.rmc-instructor-bio {
+    font-size: 15px;
+    color: var(--rmc-muted);
+    line-height: 1.6;
+}
+.rmc-instructor-bio p:last-child { margin: 0; }
+
+/* ══════════════════════════════════════════════════════
+   3. TABS OVERRIDES (Academist LMS)
+   ══════════════════════════════════════════════════════ */
+.rmc-tabs-wrapper .eltdf-tabs .eltdf-tabs-nav {
+    border-bottom: 2px solid var(--rmc-border);
+    margin-bottom: 32px;
+    display: flex;
+    gap: 32px;
+}
+.rmc-tabs-wrapper .eltdf-tabs .eltdf-tabs-nav li {
+    margin: 0;
+    padding: 0;
+}
+.rmc-tabs-wrapper .eltdf-tabs .eltdf-tabs-nav li a {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--rmc-muted);
+    padding: 0 0 16px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+    text-transform: none;
+}
+.rmc-tabs-wrapper .eltdf-tabs .eltdf-tabs-nav li.ui-tabs-active a,
+.rmc-tabs-wrapper .eltdf-tabs .eltdf-tabs-nav li a:hover {
+    color: var(--rmc-blue-dark);
+    border-bottom-color: var(--rmc-blue-dark);
+}
+.rmc-tabs-wrapper .eltdf-tab-container {
+    background: #fff;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    border: 1px solid var(--rmc-border);
+    overflow: hidden; /* Added to contain any floating elements */
+}
+.eltdf-course-reviews-main-title p {
+    display: none !important;
+}
+
+/* Prevent WPBakery from breaking out of the container if user sets stretch row */
+.rmc-tabs-wrapper .eltdf-tab-container .vc_row[data-vc-full-width="true"] {
+    left: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.rmc-tabs-wrapper .eltdf-course-curriculum h3 {
+    font-size: 20px;
+    margin-bottom: 24px;
+}
+
+/* ══════════════════════════════════════════════════════
+   4. RELATED COURSES
+   ══════════════════════════════════════════════════════ */
+.rmc-related-wrap {
+    background: #fff;
+    padding: 80px 24px;
+    border-top: 1px solid var(--rmc-border);
+}
+.rmc-related-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+.rmc-related-title {
+    font-size: 32px;
+    font-weight: 800;
+    text-align: center;
+    margin: 0 0 48px;
+}
+.rmc-related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+}
+.rmc-card-link {
+    display: block;
+    text-decoration: none;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--rmc-border);
+    transition: all var(--rmc-t);
+}
+.rmc-card-link:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
+.rmc-card-img {
+    height: 200px;
+    background: var(--rmc-bg);
+}
+.rmc-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.rmc-card-body {
+    padding: 24px;
+}
+.rmc-card-body h3 {
+    margin: 0 0 12px;
+    font-size: 18px;
+    color: var(--rmc-text);
+    font-weight: 700;
+}
+.rmc-card-price {
+    font-weight: 800;
+    color: var(--rmc-blue-dark);
+}
+
+/* ══════════════════════════════════════════════════════
+   5. SMART STICKY BAR
+   ══════════════════════════════════════════════════════ */
+.rmc-smart-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--rmc-border);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    transform: translateY(-100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 9999;
+    padding: 12px 24px;
+}
+.rmc-smart-bar.rmc-visible {
+    transform: translateY(0);
+}
+/* If WP Admin bar exists */
+body.admin-bar .rmc-smart-bar { top: 32px; }
+
+.rmc-smart-bar-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.rmc-smart-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--rmc-text);
+}
+.rmc-smart-action {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+.rmc-smart-price {
+    font-size: 20px;
+    font-weight: 800;
+}
+.rmc-smart-action form { margin: 0; }
+.rmc-smart-action button.single_add_to_cart_button,
+.rmc-smart-action .rmc-btn-primary {
+    padding: 10px 24px;
+    font-size: 14px;
+}
+
+/* ══════════════════════════════════════════════════════
+   6. RESPONSIVE
+   ══════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .rmc-hero-inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 40px;
+    }
+    .rmc-breadcrumb { justify-content: center; }
+    .rmc-desc { margin: 0 auto 32px; }
+    .rmc-meta-row { justify-content: center; }
+    .rmc-hero-cta-box { flex-direction: column; text-align: center; }
+    .rmc-guarantees { justify-content: center; }
+    .rmc-related-grid { grid-template-columns: repeat(2, 1fr); }
+
+    /* Mobile Sticky Bar: Floating Dock at bottom instead of top */
+    .rmc-smart-bar {
+        top: auto !important;
+        bottom: 0 !important;
+        left: 0;
+        width: 100%;
+        border-radius: 0;
+        border-top: 1px solid var(--rmc-border);
+        border-bottom: none;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+        transform: translateY(100%);
+        padding: 16px 24px;
+        /* Padding bottom for safe area on modern phones */
+        padding-bottom: env(safe-area-inset-bottom, 16px);
+    }
+    .rmc-smart-info { display: none; /* Hide title on mobile dock */ }
+    .rmc-smart-action { width: 100%; justify-content: space-between; }
+    body.admin-bar .rmc-smart-bar { top: auto !important; bottom: 0 !important; }
+}
+
+@media (max-width: 768px) {
+    .rmc-hero { padding: 40px 0; }
+    .rmc-title { font-size: 2rem; }
+    .rmc-outcomes-grid { grid-template-columns: 1fr; padding: 24px; }
+    .rmc-instructor-box { flex-direction: column; text-align: center; align-items: center; padding: 24px; }
+    .rmc-tabs-wrapper .eltdf-tabs .eltdf-tabs-nav { flex-wrap: wrap; gap: 16px; }
+    .rmc-tabs-wrapper .eltdf-tab-container { padding: 24px; }
+    .rmc-related-grid { grid-template-columns: 1fr; }
+}

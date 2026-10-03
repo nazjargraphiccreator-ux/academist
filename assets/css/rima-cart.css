@@ -1,0 +1,1538 @@
+/**
+ * AnaCleaning Cart Page Styles
+ * 
+ * Premium cart with free shipping progress bar
+ * 
+ * @package AnaCleaning
+ * @version 1.0.0
+ */
+
+/* ========================================
+   Cart Container
+   ======================================== */
+
+.rima-cart-page .woocommerce {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--rima-space-6);
+}
+
+.rima-cart-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: var(--rima-space-6);
+    align-items: start;
+}
+
+/* ========================================
+   Free Shipping Progress Bar
+   ======================================== */
+
+.rima-free-shipping-bar {
+    grid-column: 1 / -1;
+    background: var(--rima-white);
+    border-radius: var(--rima-radius-lg);
+    box-shadow: var(--rima-shadow-card);
+    padding: var(--rima-space-5);
+    margin-bottom: var(--rima-space-2);
+}
+
+.rima-free-shipping-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--rima-space-3);
+}
+
+.rima-free-shipping-text {
+    font-size: var(--rima-font-size-sm);
+    font-weight: var(--rima-font-weight-medium);
+    color: var(--rima-text-primary);
+}
+
+.rima-free-shipping-amount {
+    font-size: var(--rima-font-size-sm);
+    font-weight: var(--rima-font-weight-bold);
+    color: var(--rima-primary);
+}
+
+.rima-free-shipping-progress {
+    height: 14px;
+    background: var(--rima-gray-200);
+    border-radius: var(--rima-radius-full);
+    overflow: hidden;
+    position: relative;
+}
+
+.rima-free-shipping-fill {
+    height: 100%;
+    background: var(--rima-gradient-primary);
+    border-radius: var(--rima-radius-full);
+    transition: width 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Liquid water wave effect - First layer (main wave) */
+.rima-free-shipping-fill::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+    animation: rima-liquid-wave 3s ease-in-out infinite;
+}
+
+/* Second wave layer for depth */
+.rima-free-shipping-fill::after {
+    content: '';
+    position: absolute;
+    top: -30%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+    animation: rima-liquid-wave-2 2.5s ease-in-out infinite;
+    animation-delay: 0.5s;
+}
+
+/* Main wave animation - simulates water sloshing */
+@keyframes rima-liquid-wave {
+
+    0%,
+    100% {
+        transform: translateX(-25%) translateY(0%) rotate(0deg);
+    }
+
+    25% {
+        transform: translateX(0%) translateY(-5%) rotate(5deg);
+    }
+
+    50% {
+        transform: translateX(25%) translateY(0%) rotate(0deg);
+    }
+
+    75% {
+        transform: translateX(0%) translateY(5%) rotate(-5deg);
+    }
+}
+
+/* Secondary wave with different timing */
+@keyframes rima-liquid-wave-2 {
+
+    0%,
+    100% {
+        transform: translateX(25%) translateY(5%) rotate(0deg);
+    }
+
+    25% {
+        transform: translateX(0%) translateY(0%) rotate(-3deg);
+    }
+
+    50% {
+        transform: translateX(-25%) translateY(-5%) rotate(0deg);
+    }
+
+    75% {
+        transform: translateX(0%) translateY(0%) rotate(3deg);
+    }
+}
+
+/* Success state */
+.rima-free-shipping-bar.is-complete {
+    background: linear-gradient(135deg, rgba(0, 191, 166, 0.1), rgba(0, 200, 83, 0.1));
+    border: 1px solid var(--rima-primary);
+}
+
+.rima-free-shipping-bar.is-complete .rima-free-shipping-text {
+    color: var(--rima-primary);
+}
+
+.rima-free-shipping-bar.is-complete .rima-free-shipping-fill {
+    background: var(--rima-success);
+}
+
+/* ========================================
+   Cart Products
+   ======================================== */
+
+.rima-cart-products {
+    background: var(--rima-white);
+    border-radius: var(--rima-radius-xl);
+    box-shadow: var(--rima-shadow-card);
+    overflow: hidden;
+}
+
+.rima-cart-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: var(--rima-space-4);
+    padding: var(--rima-space-4) var(--rima-space-5);
+    background: var(--rima-gray-50);
+    border-bottom: 1px solid var(--rima-gray-200);
+}
+
+.rima-cart-header-cell {
+    font-size: var(--rima-font-size-xs);
+    font-weight: var(--rima-font-weight-semibold);
+    color: var(--rima-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Product Row */
+.rima-cart-item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: var(--rima-space-4);
+    padding: var(--rima-space-5);
+    align-items: center;
+    border-bottom: 1px solid var(--rima-gray-100);
+    transition: background var(--rima-transition-fast);
+}
+
+.rima-cart-item:hover {
+    background: var(--rima-gray-50);
+}
+
+.rima-cart-item:last-child {
+    border-bottom: none;
+}
+
+/* Product Info */
+.rima-cart-product {
+    display: flex;
+    gap: var(--rima-space-4);
+    align-items: center;
+}
+
+.rima-cart-product-image {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--rima-radius-md);
+    object-fit: cover;
+    background: var(--rima-gray-100);
+}
+
+.rima-cart-product-details {
+    flex: 1;
+}
+
+.rima-cart-product-name {
+    font-size: var(--rima-font-size-sm);
+    font-weight: var(--rima-font-weight-medium);
+    color: var(--rima-text-primary);
+    text-decoration: none;
+    margin-bottom: var(--rima-space-1);
+    display: block;
+}
+
+.rima-cart-product-name:hover {
+    color: var(--rima-primary);
+}
+
+.rima-cart-product-meta {
+    font-size: var(--rima-font-size-xs);
+    color: var(--rima-text-muted);
+}
+
+/* Price */
+.rima-cart-price {
+    font-size: var(--rima-font-size-sm);
+    color: var(--rima-text-secondary);
+}
+
+/* Quantity Selector */
+.rima-cart-quantity {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.rima-cart-qty-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.rima-cart-qty-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--rima-gray-100);
+    border: 1px solid var(--rima-gray-300);
+    color: var(--rima-text-primary);
+    font-size: 16px;
+    cursor: pointer;
+    transition: all var(--rima-transition-fast);
+}
+
+.rima-cart-qty-btn:first-child {
+    border-radius: var(--rima-radius-md) 0 0 var(--rima-radius-md);
+}
+
+.rima-cart-qty-btn:last-child {
+    border-radius: 0 var(--rima-radius-md) var(--rima-radius-md) 0;
+}
+
+.rima-cart-qty-btn:hover {
+    background: var(--rima-primary);
+    border-color: var(--rima-primary);
+    color: var(--rima-text-inverse);
+}
+
+.rima-cart-qty-btn:active {
+    transform: scale(0.95);
+}
+
+.rima-cart-qty-input {
+    width: 60px !important;
+    height: 38px !important;
+    text-align: center !important;
+    font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #212121 !important;
+    border: 1px solid #d1d5db !important;
+    border-left: none !important;
+    border-right: none !important;
+    background: #ffffff !important;
+    padding: 0 !important;
+    transition: border-color 0.2s ease !important;
+}
+
+.rima-cart-qty-input:focus {
+    outline: none !important;
+    color: #212121 !important;
+    border-color: #00BCD4 !important;
+    background: #f8fafc !important;
+}
+
+/* Subtotal */
+.rima-cart-subtotal {
+    font-size: var(--rima-font-size-base);
+    font-weight: var(--rima-font-weight-semibold);
+    color: var(--rima-text-primary);
+}
+
+/* Remove Button */
+.rima-cart-remove {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--rima-text-muted);
+    cursor: pointer;
+    border-radius: var(--rima-radius-full);
+    transition: all var(--rima-transition-fast);
+}
+
+.rima-cart-remove:hover {
+    background: rgba(255, 82, 82, 0.1);
+    color: var(--rima-danger);
+}
+
+/* ========================================
+   Cart Summary Sidebar
+   ======================================== */
+
+.rima-cart-summary {
+    position: sticky;
+    top: var(--rima-space-6);
+    background: var(--rima-white);
+    border-radius: var(--rima-radius-xl);
+    box-shadow: var(--rima-shadow-card);
+    padding: var(--rima-space-6);
+}
+
+.rima-cart-summary-title {
+    font-size: var(--rima-font-size-lg);
+    font-weight: var(--rima-font-weight-semibold);
+    color: var(--rima-text-primary);
+    margin-bottom: var(--rima-space-5);
+    padding-bottom: var(--rima-space-4);
+    border-bottom: 1px solid var(--rima-gray-200);
+}
+
+/* Summary Rows */
+.rima-cart-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--rima-space-3) 0;
+    font-size: var(--rima-font-size-sm);
+}
+
+.rima-cart-summary-label {
+    color: var(--rima-text-secondary);
+}
+
+.rima-cart-summary-value {
+    font-weight: var(--rima-font-weight-medium);
+    color: var(--rima-text-primary);
+}
+
+/* Shipping */
+.rima-cart-summary-shipping {
+    display: flex;
+    align-items: center;
+    gap: var(--rima-space-2);
+}
+
+.rima-cart-summary-shipping .rima-icon {
+    color: var(--rima-primary);
+}
+
+/* Total */
+.rima-cart-summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--rima-space-4) 0;
+    margin-top: var(--rima-space-4);
+    border-top: 2px solid var(--rima-gray-200);
+}
+
+.rima-cart-summary-total-label {
+    font-size: var(--rima-font-size-base);
+    font-weight: var(--rima-font-weight-semibold);
+    color: var(--rima-text-primary);
+}
+
+.rima-cart-summary-total-value {
+    font-size: var(--rima-font-size-xl);
+    font-weight: var(--rima-font-weight-bold);
+    color: var(--rima-primary);
+}
+
+/* Coupon */
+.rima-coupon-form {
+    display: flex;
+    gap: var(--rima-space-2);
+    margin: var(--rima-space-4) 0;
+}
+
+.rima-coupon-input {
+    flex: 1;
+    padding: var(--rima-space-3);
+    font-size: var(--rima-font-size-sm);
+    border: 1px solid var(--rima-gray-300);
+    border-radius: var(--rima-radius-md);
+}
+
+.rima-coupon-btn {
+    padding: var(--rima-space-3) var(--rima-space-4);
+    font-size: var(--rima-font-size-sm);
+    font-weight: var(--rima-font-weight-medium);
+    background: var(--rima-gray-800);
+    color: var(--rima-text-inverse);
+    border: none;
+    border-radius: var(--rima-radius-md);
+    cursor: pointer;
+    transition: background var(--rima-transition-fast);
+}
+
+.rima-coupon-btn:hover {
+    background: var(--rima-black);
+}
+
+/* Checkout Button */
+.rima-checkout-btn {
+    width: 100%;
+    padding: var(--rima-space-4);
+    font-size: var(--rima-font-size-base);
+    font-weight: var(--rima-font-weight-semibold);
+    margin-top: var(--rima-space-4);
+}
+
+/* Trust Badges */
+.rima-cart-trust {
+    display: flex;
+    justify-content: center;
+    gap: var(--rima-space-4);
+    margin-top: var(--rima-space-6);
+    padding-top: var(--rima-space-4);
+    border-top: 1px solid var(--rima-gray-100);
+}
+
+.rima-cart-trust-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--rima-space-1);
+}
+
+.rima-cart-trust-icon {
+    font-size: 20px;
+    color: var(--rima-primary);
+}
+
+.rima-cart-trust-text {
+    font-size: var(--rima-font-size-xs);
+    color: var(--rima-text-muted);
+}
+
+/* B2B Notice */
+.rima-b2b-notice {
+    display: flex;
+    align-items: center;
+    gap: var(--rima-space-3);
+    padding: var(--rima-space-4);
+    background: rgba(var(--rima-secondary-rgb), 0.1);
+    border-radius: var(--rima-radius-md);
+    margin-top: var(--rima-space-4);
+}
+
+.rima-b2b-notice-icon {
+    color: var(--rima-secondary);
+    font-size: 20px;
+}
+
+.rima-b2b-notice-text {
+    font-size: var(--rima-font-size-sm);
+    color: var(--rima-text-primary);
+}
+
+/* ========================================
+   Continue Shopping
+   ======================================== */
+
+.rima-cart-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--rima-space-4) var(--rima-space-5);
+    border-top: 1px solid var(--rima-gray-100);
+}
+
+.rima-continue-shopping {
+    display: flex;
+    align-items: center;
+    gap: var(--rima-space-2);
+    font-size: var(--rima-font-size-sm);
+    color: var(--rima-secondary);
+    text-decoration: none;
+    font-weight: var(--rima-font-weight-medium);
+}
+
+.rima-continue-shopping:hover {
+    color: var(--rima-secondary-dark);
+    text-decoration: underline;
+}
+
+/* ========================================
+   Empty Cart
+   ======================================== */
+
+.rima-cart-empty {
+    text-align: center;
+    padding: var(--rima-space-16);
+    background: var(--rima-white);
+    border-radius: var(--rima-radius-xl);
+    box-shadow: var(--rima-shadow-card);
+}
+
+.rima-cart-empty-icon {
+    font-size: 64px;
+    color: var(--rima-gray-400);
+    margin-bottom: var(--rima-space-4);
+}
+
+.rima-cart-empty-title {
+    font-size: var(--rima-font-size-xl);
+    font-weight: var(--rima-font-weight-semibold);
+    color: var(--rima-text-primary);
+    margin-bottom: var(--rima-space-2);
+}
+
+.rima-cart-empty-text {
+    font-size: var(--rima-font-size-sm);
+    color: var(--rima-text-muted);
+    margin-bottom: var(--rima-space-6);
+}
+
+/* ========================================
+   Responsive Styles - COMPREHENSIVE
+   ======================================== */
+
+@media (max-width: 992px) {
+    .rima-cart-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .rima-cart-summary {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    .rima-cart-page .woocommerce {
+        padding: var(--rima-space-4);
+    }
+
+    .rima-desktop-cart-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+
+    .rima-continue-shopping-desktop {
+        width: 100%;
+        justify-content: center;
+        border-color: #e2e8f0;
+        color: #64748b;
+    }
+
+    .rima-continue-shopping-desktop:hover {
+        background: #f8fafc;
+        color: #1e293b;
+        border-color: #cbd5e1;
+    }
+
+    /* Cart Header - Hidden by default, shown on desktop */
+    .rima-cart-header {
+        display: none;
+    }
+
+    /* Hide desktop actions on mobile */
+    .rima-desktop-cart-actions {
+        display: none !important;
+    }
+
+    /* ========================================
+       MOBILE CART PRODUCT LAYOUT - PROFESSIONAL
+       Structure: Title → Image+Price → Quantity → Total
+       ======================================== */
+
+    .rima-cart-item {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0 !important;
+        position: relative !important;
+        padding: 16px !important;
+        border-radius: 12px !important;
+        margin-bottom: 16px !important;
+        background: #fff !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+
+    /* ===== 1. TITLE - FIRST, FULL WIDTH ===== */
+    .rima-cart-product-name,
+    .product-name,
+    .product-name a,
+    .cart_item .product-name,
+    .woocommerce-cart-form__cart-item .product-name,
+    td.product-name,
+    td.product-name a {
+        /* Position */
+        order: 1 !important;
+        width: 100% !important;
+        display: block !important;
+
+        /* Typography */
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        color: #1e293b !important;
+        line-height: 1.4 !important;
+
+        /* Spacing */
+        margin: 0 !important;
+        margin-bottom: 14px !important;
+        padding: 0 !important;
+        padding-bottom: 12px !important;
+        padding-right: 40px !important;
+        /* Space for delete button */
+
+        /* Border */
+        border-bottom: 1px solid #f1f5f9 !important;
+
+        /* Truncation - 2 lines */
+        /* Use standard multi-line display */
+        max-height: 2.8em !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        word-wrap: break-word !important;
+
+        /* Visibility */
+        visibility: visible !important;
+        opacity: 1 !important;
+        height: auto !important;
+
+        /* Link */
+        text-decoration: none !important;
+    }
+
+    /* ===== 2. IMAGE + PRICE ROW ===== */
+    .rima-cart-product {
+        order: 2 !important;
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: space-between !important;
+        gap: 12px !important;
+        width: 100% !important;
+        margin-bottom: 14px !important;
+        padding: 0 !important;
+    }
+
+    .rima-cart-product-image,
+    .rima-cart-product>a img,
+    .product-thumbnail img {
+        width: 70px !important;
+        height: 70px !important;
+        min-width: 70px !important;
+        border-radius: 8px !important;
+        object-fit: cover !important;
+        flex-shrink: 0 !important;
+    }
+
+    /* Price on the right */
+    .rima-cart-price {
+        order: 3 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-end !important;
+        justify-content: flex-start !important;
+        gap: 4px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        flex-shrink: 0 !important;
+    }
+
+    .rima-cart-price::before {
+        content: 'Preț unitar' !important;
+        font-size: 11px !important;
+        color: #64748b !important;
+        font-weight: 500 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    .rima-cart-price,
+    .woocommerce-Price-amount {
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        white-space: nowrap !important;
+    }
+
+    /* ===== 3. QUANTITY - BELOW IMAGE ===== */
+    .rima-cart-quantity {
+        order: 4 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        padding: 12px 0 !important;
+        margin: 0 !important;
+        border-top: 1px solid #f1f5f9 !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        gap: 12px !important;
+    }
+
+    .rima-cart-quantity::before {
+        content: 'Cantitate:' !important;
+        font-size: 14px !important;
+        color: #475569 !important;
+        font-weight: 600 !important;
+    }
+
+    .rima-cart-qty-wrapper {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0 !important;
+        flex-shrink: 0 !important;
+    }
+
+    .rima-cart-qty-btn {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 18px !important;
+        background: #f8fafc !important;
+        border: 2px solid #cbd5e1 !important;
+        color: #0f172a !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    .rima-cart-qty-btn:first-child {
+        border-radius: 8px 0 0 8px !important;
+    }
+
+    .rima-cart-qty-btn:last-child {
+        border-radius: 0 8px 8px 0 !important;
+    }
+
+    .rima-cart-qty-btn:active {
+        background: var(--rima-primary) !important;
+        border-color: var(--rima-primary) !important;
+        color: #fff !important;
+        transform: scale(0.95) !important;
+    }
+
+    .rima-cart-qty-input {
+        width: 50px !important;
+        height: 40px !important;
+        text-align: center !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        border: 2px solid #cbd5e1 !important;
+        border-left: none !important;
+        border-right: none !important;
+        background: #fff !important;
+        padding: 0 !important;
+    }
+
+    .rima-cart-qty-input:focus {
+        outline: none !important;
+        border-color: var(--rima-primary) !important;
+        background: #f8fafc !important;
+    }
+
+    /* ===== 4. SUBTOTAL - BOTTOM, PROMINENT ===== */
+    .rima-cart-subtotal {
+        order: 5 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: calc(100% + 32px) !important;
+        margin: 16px -16px -16px !important;
+        padding: 16px !important;
+        background: linear-gradient(135deg, rgba(0, 191, 166, 0.08), rgba(0, 200, 83, 0.08)) !important;
+        border-top: 2px solid var(--rima-primary) !important;
+        border-radius: 0 0 12px 12px !important;
+    }
+
+    .rima-cart-subtotal::before {
+        content: 'Subtotal produs:' !important;
+        font-size: 14px !important;
+        color: #0f172a !important;
+        font-weight: 600 !important;
+    }
+
+    .rima-cart-subtotal {
+        font-size: 20px !important;
+        font-weight: 700 !important;
+        color: var(--rima-primary) !important;
+        white-space: nowrap !important;
+    }
+
+    /* ===== REMOVE BUTTON - TOP RIGHT ===== */
+    .rima-cart-remove {
+        position: absolute !important;
+        top: 14px !important;
+        right: 14px !important;
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 50% !important;
+        background: rgba(239, 68, 68, 0.08) !important;
+        border: 1px solid rgba(239, 68, 68, 0.2) !important;
+        color: #ef4444 !important;
+        font-size: 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        z-index: 10 !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .rima-cart-remove:active {
+        background: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        transform: scale(1.05) !important;
+    }
+
+    /* Mobile Sticky Footer */
+    .rima-mobile-sticky-footer {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        padding: 16px;
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        gap: 12px;
+        border-top: 1px solid #e2e8f0;
+        display: none;
+        /* Default hidden */
+    }
+
+    .rima-mobile-sticky-footer .rima-sticky-btn {
+        flex: 1;
+        justify-content: center;
+        margin: 0 !important;
+        font-size: 14px;
+        padding: 12px !important;
+    }
+
+    @media (max-width: 768px) {
+        .rima-mobile-sticky-footer {
+            display: flex;
+        }
+
+        body {
+            padding-bottom: 80px;
+        }
+    }
+
+    /* Cart Actions - Mobile */
+    .rima-cart-actions {
+        display: none;
+        /* Hide desktop actions on mobile in favor of sticky footer */
+        flex-direction: column;
+        gap: var(--rima-space-3);
+        padding: var(--rima-space-4);
+    }
+
+    .rima-cart-actions .rima-continue-shopping {
+        order: 2;
+        justify-content: center;
+        padding: var(--rima-space-3);
+    }
+
+    .rima-cart-actions .rima-btn {
+        width: 100%;
+        justify-content: center;
+        order: 1;
+    }
+
+    /* Free Shipping Bar - Mobile */
+    .rima-free-shipping-bar {
+        padding: var(--rima-space-4);
+    }
+
+    .rima-free-shipping-header {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--rima-space-2);
+    }
+
+    .rima-free-shipping-text {
+        font-size: 14px;
+    }
+
+    .rima-free-shipping-amount {
+        font-size: 13px;
+    }
+
+    @media (max-width: 576px) {
+        .rima-cart-page .woocommerce {
+            padding: var(--rima-space-3);
+        }
+
+        /* Cart Summary - Mobile */
+        .rima-cart-summary {
+            padding: var(--rima-space-4);
+            border-radius: var(--rima-radius-lg);
+        }
+
+        .rima-cart-summary-title {
+            font-size: var(--rima-font-size-base);
+            padding-bottom: var(--rima-space-3);
+            margin-bottom: var(--rima-space-4);
+        }
+
+        .rima-cart-summary-row {
+            font-size: 14px;
+        }
+
+        .rima-cart-summary-total {
+            padding: var(--rima-space-3) 0;
+            margin-top: var(--rima-space-3);
+        }
+
+        .rima-cart-summary-total-value {
+            font-size: var(--rima-font-size-lg);
+        }
+
+        /* Coupon Form - Mobile */
+        .rima-coupon-form {
+            flex-direction: column;
+            gap: var(--rima-space-2);
+        }
+
+        .rima-coupon-input {
+            width: 100%;
+        }
+
+        .rima-coupon-btn {
+            width: 100%;
+            padding: var(--rima-space-3);
+        }
+
+        /* Checkout Button - Mobile */
+        .rima-checkout-btn {
+            padding: var(--rima-space-4);
+            font-size: var(--rima-font-size-base);
+        }
+
+        /* Trust Badges - Mobile */
+        .rima-cart-trust {
+            flex-wrap: wrap;
+            gap: var(--rima-space-3);
+            justify-content: center;
+        }
+
+        .rima-cart-trust-item {
+            flex: 0 0 auto;
+            padding: var(--rima-space-2);
+        }
+
+        .rima-cart-trust-icon {
+            font-size: 16px;
+        }
+
+        .rima-cart-trust-text {
+            font-size: 11px;
+        }
+
+        /* B2B Notice - Mobile */
+        .rima-b2b-notice {
+            flex-direction: column;
+            text-align: center;
+            gap: var(--rima-space-2);
+            padding: var(--rima-space-3);
+        }
+
+        .rima-b2b-notice-icon {
+            font-size: 18px;
+        }
+
+        .rima-b2b-notice-text {
+            font-size: 13px;
+        }
+
+        /* Empty Cart - Mobile */
+        .rima-cart-empty {
+            padding: var(--rima-space-8) var(--rima-space-4);
+        }
+
+        .rima-cart-empty-icon {
+            font-size: 48px;
+        }
+
+        .rima-cart-empty-title {
+            font-size: var(--rima-font-size-lg);
+        }
+
+        .rima-cart-empty-text {
+            font-size: 13px;
+        }
+
+        /* Product Item - Extra Small */
+        .rima-cart-item {
+            padding: var(--rima-space-3);
+        }
+
+        .rima-cart-product-image {
+            width: 60px;
+            height: 60px;
+        }
+    }
+
+    /* ========================================
+   PREMIUM MOBILE OPTIMIZATION
+   Based on rima-mobile-design-system.css
+   ======================================== */
+
+    @media (max-width: 768px) {
+
+        /* Container - Full Width Mobile */
+        .rima-cart-page .woocommerce {
+            padding: 0;
+            max-width: 100%;
+        }
+
+        /* Grid - Single Column Stack */
+        .rima-cart-wrapper {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        /* Product Cards - Premium Touch Optimized */
+        .rima-cart-item {
+            display: grid !important;
+            grid-template-columns: 80px 1fr;
+            grid-template-rows: auto auto;
+            gap: var(--mobile-space-md);
+            padding: var(--mobile-space-md) var(--mobile-container-padding) !important;
+            background: #ffffff;
+            border-bottom: 1px solid var(--mobile-gray-200);
+        }
+
+        .rima-cart-product-image {
+            grid-row: 1 / 3;
+            width: 80px !important;
+            height: 80px !important;
+            border-radius: var(--mobile-card-radius);
+        }
+
+        .rima-cart-product-details {
+            grid-column: 2;
+            display: flex;
+            flex-direction: column;
+            gap: var(--mobile-space-xs);
+        }
+
+        .rima-cart-product-name {
+            font-size: var(--mobile-font-base) !important;
+            font-weight: var(--mobile-font-semibold);
+            line-height: var(--mobile-leading-tight);
+            margin: 0 !important;
+        }
+
+        .rima-cart-product-price {
+            font-size: var(--mobile-font-lg) !important;
+            font-weight: var(--mobile-font-bold);
+            color: var(--mobile-primary);
+        }
+
+        /* Quantity Controls - Touch Optimized */
+        .rima-cart-product-quantity {
+            grid-column: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--mobile-space-md);
+            margin-top: var(--mobile-space-sm);
+        }
+
+        .quantity {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quantity .qty {
+            width: 60px !important;
+            height: var(--mobile-touch-min) !important;
+            font-size: var(--mobile-font-base) !important;
+            font-weight: var(--mobile-font-semibold) !important;
+            text-align: center !important;
+            border: 2px solid var(--mobile-gray-200) !important;
+            border-radius: 8px !important;
+            pointer-events: auto !important;
+            /* CRITICAL: Input must be editable */
+        }
+
+        .quantity .minus,
+        .quantity .plus {
+            width: var(--mobile-touch-min) !important;
+            height: var(--mobile-touch-min) !important;
+            min-width: var(--mobile-touch-min) !important;
+            min-height: var(--mobile-touch-min) !important;
+            border: 2px solid var(--mobile-gray-200) !important;
+            border-radius: 8px !important;
+            font-size: 20px !important;
+            font-weight: var(--mobile-font-bold) !important;
+            background: #ffffff !important;
+            color: var(--mobile-gray-900) !important;
+            -webkit-tap-highlight-color: transparent;
+            pointer-events: auto !important;
+            /* CRITICAL: Must be clickable */
+            cursor: pointer !important;
+            z-index: 10 !important;
+            position: relative !important;
+        }
+
+        .quantity .minus:active,
+        .quantity .plus:active {
+            background: var(--mobile-gray-100) !important;
+            border-color: var(--mobile-gray-300) !important;
+        }
+
+        /* Remove Button - Touch Target */
+        .rima-cart-product-remove {
+            min-width: var(--mobile-touch-min) !important;
+            min-height: var(--mobile-touch-min) !important;
+            padding: 10px !important;
+            border-radius: 8px !important;
+            background: var(--mobile-gray-100) !important;
+            color: var(--mobile-error) !important;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .rima-cart-product-remove:active {
+            background: rgba(239, 68, 68, 0.1) !important;
+        }
+
+        /* Free Shipping Bar - Mobile */
+        .rima-free-shipping-bar {
+            margin: 0;
+            border-radius: 0;
+            padding: var(--mobile-space-md) var(--mobile-container-padding);
+        }
+
+        .rima-free-shipping-text {
+            font-size: var(--mobile-font-sm);
+        }
+
+        .rima-free-shipping-amount {
+            font-size: var(--mobile-font-base);
+        }
+
+        /* Cart Summary - Sticky at Bottom - FIXED z-index conflict */
+        .rima-cart-summary {
+            position: sticky !important;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            /* Lowered from 100 to prevent blocking buttons */
+            background: #ffffff;
+            pointer-events: auto;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 0 !important;
+            padding: var(--mobile-space-md) var(--mobile-container-padding);
+            padding-bottom: max(var(--mobile-space-md), env(safe-area-inset-bottom));
+            margin: 0 !important;
+        }
+
+        .rima-cart-summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--mobile-space-sm) 0;
+            font-size: var(--mobile-font-base);
+        }
+
+        .rima-cart-summary-label {
+            font-weight: var(--mobile-font-medium);
+            color: var(--mobile-gray-700);
+        }
+
+        .rima-cart-summary-value {
+            font-weight: var(--mobile-font-bold);
+            color: var(--mobile-gray-900);
+        }
+
+        .rima-cart-summary-row.total {
+            border-top: 2px solid var(--mobile-gray-200);
+            padding-top: var(--mobile-space-md);
+            margin-top: var(--mobile-space-sm);
+        }
+
+        .rima-cart-summary-row.total .rima-cart-summary-label {
+            font-size: var(--mobile-font-lg);
+            font-weight: var(--mobile-font-bold);
+            color: var(--mobile-gray-900);
+        }
+
+        .rima-cart-summary-row.total .rima-cart-summary-value {
+            font-size: var(--mobile-font-xl);
+            color: var(--mobile-primary);
+        }
+
+        /* Checkout Button - Fullwidth Touch - FIXED interaction */
+        .rima-checkout-btn {
+            width: 100% !important;
+            min-height: var(--mobile-touch-comfortable) !important;
+            padding: 16px 24px !important;
+            font-size: var(--mobile-font-base) !important;
+            font-weight: var(--mobile-font-bold) !important;
+            pointer-events: auto !important;
+            /* Ensure clickable */
+            border-radius: var(--mobile-button-radius) !important;
+            background: linear-gradient(135deg, var(--mobile-primary) 0%, var(--mobile-primary-dark) 100%) !important;
+            color: #ffffff !important;
+            border: none !important;
+            box-shadow: 0 4px 12px rgba(0, 191, 166, 0.3);
+            margin-top: var(--mobile-space-md);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .rima-checkout-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(0, 191, 166, 0.3);
+        }
+
+        /* Coupon Section - Collapsible */
+        .rima-cart-coupon {
+            background: var(--mobile-gray-50);
+            padding: var(--mobile-space-md) var(--mobile-container-padding);
+            border-bottom: 1px solid var(--mobile-gray-200);
+        }
+
+        .rima-coupon-input {
+            width: 100% !important;
+            height: 48px !important;
+            padding: 14px 16px !important;
+            font-size: var(--mobile-font-base) !important;
+            border: 2px solid var(--mobile-gray-200) !important;
+            border-radius: var(--mobile-input-radius) !important;
+            margin-bottom: var(--mobile-space-sm) !important;
+        }
+
+        .rima-coupon-btn {
+            width: 100% !important;
+            min-height: var(--mobile-touch-min) !important;
+            padding: 14px 24px !important;
+            font-size: var(--mobile-font-base) !important;
+            border-radius: var(--mobile-button-radius) !important;
+        }
+
+        /* Trust Badges - Mobile Optimized */
+        .rima-cart-trust {
+            padding: var(--mobile-space-md) var(--mobile-container-padding);
+            background: var(--mobile-gray-50);
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--mobile-space-sm);
+            justify-content: center;
+        }
+
+        .rima-cart-trust-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: var(--mobile-space-xs);
+        }
+
+        .rima-cart-trust-icon {
+            font-size: 18px;
+            color: var(--mobile-primary);
+        }
+
+        .rima-cart-trust-text {
+            font-size: var(--mobile-font-xs);
+            color: var(--mobile-gray-600);
+            text-align: center;
+        }
+
+        /* Empty Cart - Mobile */
+        .rima-cart-empty {
+            padding: var(--mobile-space-xxl) var(--mobile-container-padding);
+            text-align: center;
+        }
+
+        .rima-cart-empty-icon {
+            font-size: 64px;
+            color: var(--mobile-gray-300);
+            margin-bottom: var(--mobile-space-lg);
+        }
+
+        .rima-cart-empty-title {
+            font-size: var(--mobile-font-xl);
+            font-weight: var(--mobile-font-bold);
+            color: var(--mobile-gray-900);
+            margin-bottom: var(--mobile-space-sm);
+        }
+
+        .rima-cart-empty-text {
+            font-size: var(--mobile-font-base);
+            color: var(--mobile-gray-600);
+            margin-bottom: var(--mobile-space-lg);
+        }
+
+        .rima-cart-empty-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: var(--mobile-touch-comfortable);
+            padding: 16px 32px;
+            font-size: var(--mobile-font-base);
+            font-weight: var(--mobile-font-bold);
+            border-radius: var(--mobile-button-radius);
+            background: linear-gradient(135deg, var(--mobile-primary) 0%, var(--mobile-primary-dark) 100%);
+            color: #ffffff;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 191, 166, 0.3);
+        }
+    }
+}
+
+/* ========================================
+   CART CARD STYLE (Synced with Checkout)
+   ======================================== */
+.rima-order-product.card-style {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Top Row */
+.rima-product-top-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    position: relative;
+}
+
+.rima-product-image-wrapper img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #f1f5f9;
+}
+
+.rima-product-info-wrapper {
+    flex: 1;
+}
+
+.rima-product-name-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.rima-order-product-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.4;
+    text-decoration: none;
+}
+
+.rima-order-product-name:hover {
+    color: #00BFA6;
+    text-decoration: none;
+}
+
+.rima-remove-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #ef4444;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.rima-remove-item:hover {
+    background: #fecaca;
+    color: #dc2626;
+    transform: scale(1.05);
+}
+
+/* Middle Row */
+.rima-product-middle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px solid #f8fafc;
+    padding-top: 12px;
+}
+
+.rima-unit-price-wrapper,
+.rima-quantity-wrapper-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.rima-label-small {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #000000;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.rima-price-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* Qty Buttons */
+.rima-order-product-qty-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    z-index: 1;
+}
+
+.rima-checkout-qty-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #64748b;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.rima-checkout-qty-btn:hover {
+    border-color: #00BFA6;
+    color: #00BFA6;
+    background: #f0fdfa;
+}
+
+.rima-order-qty-input {
+    width: 44px;
+    height: 32px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 14px;
+    padding: 0;
+    background: #fff;
+}
+
+/* Bottom Row */
+.rima-product-subtotal-row {
+    background: #eff6ff;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #102d56;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.rima-subtotal-value {
+    margin-left: auto;
+}
+
+/* Mobile Adjustments for Card Style */
+@media (max-width: 480px) {
+    .rima-product-subtotal-row {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+}

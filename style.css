@@ -1,0 +1,965 @@
+/*
+Theme Name: Academist Child
+Theme URI: https://academist.qodeinteractive.com/
+Description: A child theme of Academist Theme
+Author: Elated Themes
+Author URI: http://themeforest.net/user/elated-themes
+Version: 1.0.2
+Text Domain: academist
+Template: academist
+*/
+
+/*
+ * RIMA Academy Custom Fonts
+ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --rima-font-heading: 'Outfit', sans-serif;
+    --rima-font-body: 'Inter', sans-serif;
+}
+
+body, p, input, textarea, select {
+    font-family: var(--rima-font-body) !important;
+}
+
+h1, h2, h3, h4, h5, h6,
+.eltdf-page-title,
+.eltdf-menu-area, 
+.eltdf-mobile-header,
+.eltdf-main-menu > ul > li > a,
+.eltdf-mobile-nav a,
+.widget-title,
+button,
+button.button,
+.woocommerce-Button,
+.woocommerce-checkout-payment .button,
+input[type="submit"],
+.eltdf-btn,
+.eltdf-course-list-holder .eltdf-course-title {
+    font-family: var(--rima-font-heading) !important;
+}
+
+/* ==========================================================================
+   Modern SaaS Login/Register Modal Overrides
+   ========================================================================== */
+
+/* Hide Social Login */
+.eltdf-login-form-social-login {
+    display: none !important;
+}
+
+/* Modal Overlay & Container */
+.eltdf-modal-holder .eltdf-modal-content {
+    background: #ffffff !important;
+    border-radius: 20px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    border: 1px solid #e5e7eb !important;
+    padding: 40px !important;
+    max-width: 480px !important;
+    margin: 5% auto !important;
+    background-image: none !important;
+}
+
+/* Modal Title */
+.eltdf-modal-holder h3 {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    text-align: center !important;
+    margin-bottom: 30px !important;
+    letter-spacing: -0.02em !important;
+}
+
+/* Inputs */
+.eltdf-modal-holder input[type="text"],
+.eltdf-modal-holder input[type="email"],
+.eltdf-modal-holder input[type="password"] {
+    width: 100% !important;
+    background: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    padding: 12px 16px !important;
+    font-size: 15px !important;
+    color: #111827 !important;
+    transition: all 0.2s ease !important;
+    box-sizing: border-box !important;
+    margin-bottom: 20px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+
+.eltdf-modal-holder input[type="text"]:focus,
+.eltdf-modal-holder input[type="email"]:focus,
+.eltdf-modal-holder input[type="password"]:focus {
+    border-color: #000000 !important;
+    box-shadow: 0 0 0 1px #000000 !important;
+    outline: none !important;
+}
+
+/* Labels */
+.eltdf-modal-holder label {
+    display: block !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+    margin-bottom: 8px !important;
+    text-align: left !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+
+/* Button */
+.eltdf-modal-holder .eltdf-btn {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    padding: 14px 24px !important;
+    width: 100% !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+}
+
+.eltdf-modal-holder .eltdf-btn:hover {
+    background-color: #374151 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Links & Text below button */
+.eltdf-register-link-holder,
+.eltdf-lost-pass-remember-holder {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-top: 10px !important;
+    font-size: 14px !important;
+}
+
+/* Links */
+.eltdf-modal-holder a {
+    color: #4f46e5 !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    transition: color 0.2s ease !important;
+}
+
+.eltdf-modal-holder a:hover {
+    color: #4338ca !important;
+    text-decoration: underline !important;
+}
+
+/* Close Button */
+.eltdf-modal-holder .eltdf-modal-close {
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    color: #9ca3af !important;
+    font-size: 24px !important;
+    line-height: 1 !important;
+}
+
+.eltdf-modal-holder .eltdf-modal-close:hover {
+    color: #111827 !important;
+}
+
+/* ==========================================================================
+   WOOCOMMERCE MY ACCOUNT - GLOBAL CARD DESIGN (FALLBACK)
+   ========================================================================== */
+
+/* This CSS guarantees that even if the template override isn't loaded, 
+   the default WooCommerce Login/Register looks like a beautiful SaaS card */
+
+/* Main wrapper only when using default layout */
+body.woocommerce-account .eltdf-content .woocommerce {
+    background-color: transparent !important;
+}
+body.woocommerce-account .eltdf-content .woocommerce .u-columns.col2-set,
+body.woocommerce-account .eltdf-content .woocommerce > .login {
+    margin-top: 60px !important;
+    margin-bottom: 60px !important;
+}
+
+/* Container for split screen */
+body.woocommerce-account .eltdf-content .woocommerce .u-columns.col2-set {
+    background: #ffffff !important;
+    border-radius: 24px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    max-width: 1000px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    border: none !important;
+}
+
+/* Hide default pseudo dashes that theme might inject */
+body.woocommerce-account .woocommerce .u-columns.col2-set::before,
+body.woocommerce-account .woocommerce .u-columns.col2-set::after,
+body.woocommerce-account .woocommerce form label::before,
+body.woocommerce-account .woocommerce form label::after,
+body.woocommerce-account .woocommerce form h2::before,
+body.woocommerce-account .woocommerce form h2::after {
+    display: none !important;
+}
+
+/* Columns */
+body.woocommerce-account .eltdf-content .woocommerce .u-columns.col2-set .u-column1,
+body.woocommerce-account .eltdf-content .woocommerce .u-columns.col2-set .u-column2 {
+    flex: 1 1 450px !important;
+    padding: 60px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Left Column (Login) - Dark Premium */
+body.woocommerce-account .eltdf-content .woocommerce .u-columns.col2-set .u-column1 {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+    color: #ffffff !important;
+}
+
+/* Right Column (Register) - Clean White */
+body.woocommerce-account .eltdf-content .woocommerce .u-columns.col2-set .u-column2 {
+    background: #ffffff !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    body.woocommerce-account .eltdf-content .woocommerce .u-columns.col2-set .u-column1,
+    body.woocommerce-account .eltdf-content .woocommerce .u-columns.col2-set .u-column2 {
+        padding: 40px 30px !important;
+    }
+}
+
+/* Headings */
+body.woocommerce-account .eltdf-content .woocommerce .u-columns.col2-set h2 {
+    font-size: 32px !important;
+    font-weight: 800 !important;
+    margin-bottom: 35px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    letter-spacing: -0.03em !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+body.woocommerce-account .eltdf-content .woocommerce .u-columns.col2-set .u-column1 h2 {
+    color: #ffffff !important;
+}
+body.woocommerce-account .eltdf-content .woocommerce .u-columns.col2-set .u-column2 h2 {
+    color: #111827 !important;
+}
+
+/* Form layout */
+body.woocommerce-account .eltdf-content .woocommerce form.login, 
+body.woocommerce-account .eltdf-content .woocommerce form.register {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+}
+
+body.woocommerce-account .eltdf-content .woocommerce form .form-row {
+    margin-bottom: 24px !important;
+}
+
+body.woocommerce-account .eltdf-content .woocommerce form label {
+    display: block !important;
+    font-weight: 500 !important;
+    margin-bottom: 8px !important;
+    font-size: 14px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+
+/* Left Column Labels */
+body.woocommerce-account .eltdf-content .woocommerce .u-column1 form label {
+    color: #cbd5e1 !important;
+}
+/* Right Column Labels */
+body.woocommerce-account .eltdf-content .woocommerce .u-column2 form label,
+body.woocommerce-account .eltdf-content .woocommerce .u-column2 .woocommerce-privacy-policy-text {
+    color: #475569 !important;
+}
+
+/* Left Column Inputs (Dark Mode) */
+body.woocommerce-account .eltdf-content .woocommerce .u-column1 form input[type="text"],
+body.woocommerce-account .eltdf-content .woocommerce .u-column1 form input[type="email"],
+body.woocommerce-account .eltdf-content .woocommerce .u-column1 form input[type="password"] {
+    width: 100% !important;
+    padding: 16px 20px !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    border-radius: 12px !important;
+    background: rgba(255,255,255,0.05) !important;
+    font-size: 16px !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+}
+
+body.woocommerce-account .eltdf-content .woocommerce .u-column1 form input:focus {
+    border-color: #102d56 !important;
+    background: rgba(255,255,255,0.1) !important;
+    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1) !important;
+    outline: none !important;
+}
+
+/* Right Column Inputs (Light Mode) */
+body.woocommerce-account .eltdf-content .woocommerce .u-column2 form input[type="text"],
+body.woocommerce-account .eltdf-content .woocommerce .u-column2 form input[type="email"],
+body.woocommerce-account .eltdf-content .woocommerce .u-column2 form input[type="password"] {
+    width: 100% !important;
+    padding: 16px 20px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    background: #f8fafc !important;
+    font-size: 16px !important;
+    color: #0f172a !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+    box-sizing: border-box !important;
+}
+
+body.woocommerce-account .eltdf-content .woocommerce .u-column2 form input:focus {
+    border-color: #0f172a !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.1) !important;
+    outline: none !important;
+}
+
+/* Left Column Button (Light on Dark) */
+body.woocommerce-account .eltdf-content .woocommerce .u-column1 form .button {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    width: 100% !important;
+    padding: 16px !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    margin-top: 15px !important;
+}
+
+body.woocommerce-account .eltdf-content .woocommerce .u-column1 form .button:hover {
+    background: #f1f5f9 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Right Column Button (Dark on Light) */
+body.woocommerce-account .eltdf-content .woocommerce .u-column2 form .button {
+    background: #0f172a !important;
+    color: #ffffff !important;
+    width: 100% !important;
+    padding: 16px !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    margin-top: 15px !important;
+}
+
+body.woocommerce-account .eltdf-content .woocommerce .u-column2 form .button:hover {
+    background: #1e293b !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Lost Password Link */
+.woocommerce-account form .lost_password {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 0;
+}
+
+.woocommerce-account form .lost_password a {
+    color: #6b7280;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.woocommerce-account form .lost_password a:hover {
+    color: #ef4444;
+}
+
+/* Lost password page specific */
+.woocommerce-account form.lost_reset_password {
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+    max-width: 480px;
+    width: 100%;
+    margin: 40px auto;
+    padding: 50px !important;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.woocommerce-account form.lost_reset_password > p {
+    color: #4b5563;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.eltdf-register-label {
+    color: #6b7280 !important;
+}
+
+.eltdf-register-privacy-policy {
+    font-size: 13px !important;
+    color: #6b7280 !important;
+    line-height: 1.5 !important;
+    margin-bottom: 24px !important;
+}
+
+/* ==========================================================================
+   MY ACCOUNT PAGE GLOBAL BACKGROUND
+   ========================================================================== */
+body.woocommerce-account.logged-in,
+body.woocommerce-account.logged-in .eltdf-wrapper,
+body.woocommerce-account.logged-in .eltdf-wrapper-inner,
+body.woocommerce-account.logged-in .eltdf-content {
+    background: radial-gradient(circle at top right, #00122e, #0A192F, #00122e) !important;
+}
+
+/* ==========================================================================
+   FORCED TWO-COLUMN LAYOUT ON MY ACCOUNT PAGES (LOGGED IN)
+   Supports standard WooCommerce template & Academist template page wrappers
+   ========================================================================== */
+body.woocommerce-account.logged-in .woocommerce,
+body.woocommerce-account.logged-in .eltdf-page-content-holder,
+body.woocommerce-account.logged-in .eltdf-membership-main-wrapper {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important;
+    gap: 30px !important;
+    max-width: 1300px !important;
+    width: 100% !important;
+    margin: 40px auto !important;
+    padding: 0 15px !important;
+    background: transparent !important;
+    box-sizing: border-box !important;
+    float: none !important;
+    clear: both !important;
+}
+
+body.woocommerce-account.logged-in .woocommerce::before,
+body.woocommerce-account.logged-in .woocommerce::after,
+body.woocommerce-account.logged-in .eltdf-page-content-holder::before,
+body.woocommerce-account.logged-in .eltdf-page-content-holder::after,
+body.woocommerce-account.logged-in .eltdf-membership-main-wrapper::before,
+body.woocommerce-account.logged-in .eltdf-membership-main-wrapper::after {
+    display: none !important;
+    content: none !important;
+}
+
+/* Sidebar Wrapper */
+body.woocommerce-account.logged-in .woocommerce-MyAccount-navigation,
+body.woocommerce-account.logged-in .eltdf-membership-dashboard-nav-holder {
+    flex: 0 0 300px !important;
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
+    float: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    align-self: flex-start !important;
+    background: transparent !important;
+}
+
+/* Content Wrapper */
+body.woocommerce-account.logged-in .woocommerce-MyAccount-content,
+body.woocommerce-account.logged-in .eltdf-membership-dashboard-content-holder {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    width: auto !important;
+    float: none !important;
+    margin: 0 !important;
+    padding: 40px !important;
+    background: #ffffff !important;
+    border-radius: 24px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06) !important;
+    border: none !important;
+}
+
+/* Clean up nested layout styles to prevent double padding/background */
+body.woocommerce-account.logged-in .eltdf-membership-dashboard-content-holder .woocommerce-MyAccount-content {
+    background: transparent !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    width: 100% !important;
+}
+
+@media (max-width: 991px) {
+    body.woocommerce-account.logged-in .woocommerce,
+    body.woocommerce-account.logged-in .eltdf-page-content-holder,
+    body.woocommerce-account.logged-in .eltdf-membership-main-wrapper {
+        flex-direction: column !important;
+        flex-wrap: wrap !important;
+        padding: 15px !important;
+        gap: 20px !important;
+        margin: 15px auto !important;
+    }
+    body.woocommerce-account.logged-in .woocommerce-MyAccount-navigation,
+    body.woocommerce-account.logged-in .eltdf-membership-dashboard-nav-holder,
+    body.woocommerce-account.logged-in .woocommerce-MyAccount-content,
+    body.woocommerce-account.logged-in .eltdf-membership-dashboard-content-holder {
+        flex: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    body.woocommerce-account.logged-in .woocommerce-MyAccount-content,
+    body.woocommerce-account.logged-in .eltdf-membership-dashboard-content-holder {
+        padding: 24px !important;
+    }
+
+    /* Scrollable horizontal navigation bar on mobile */
+    .dashboard-nav-list {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        gap: 8px !important;
+        padding: 4px 0 !important;
+        scrollbar-width: none;
+    }
+    .dashboard-nav-list::-webkit-scrollbar {
+        display: none !important;
+    }
+    .dashboard-nav-list li {
+        flex: 0 0 auto !important;
+        margin: 0 !important;
+    }
+    .dashboard-nav-list li a {
+        padding: 8px 14px !important;
+        font-size: 13px !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+        border-radius: 10px !important;
+    }
+    .dashboard-nav-list li a .nav-icon {
+        display: none !important;
+    }
+
+    /* Grid Layout for profile card header on mobile */
+    .dashboard-user-profile-widget {
+        display: grid !important;
+        grid-template-columns: auto 1fr auto !important;
+        grid-template-rows: auto auto !important;
+        align-items: center !important;
+        text-align: left !important;
+        padding: 16px !important;
+        gap: 2px 14px !important;
+    }
+    .dashboard-user-profile-widget .rima-lang-toggle-wrapper {
+        grid-column: 3 / 4 !important;
+        grid-row: 1 / 3 !important;
+        margin: 0 !important;
+        align-self: center !important;
+    }
+    .dashboard-user-profile-widget .avatar-wrapper {
+        grid-column: 1 / 2 !important;
+        grid-row: 1 / 3 !important;
+        margin: 0 !important;
+        width: 54px !important;
+        height: 54px !important;
+    }
+    .dashboard-user-profile-widget h3 {
+        grid-column: 2 / 3 !important;
+        grid-row: 1 / 2 !important;
+        margin: 0 !important;
+        font-size: 15px !important;
+    }
+    .dashboard-user-profile-widget p.text-white-50 {
+        grid-column: 2 / 3 !important;
+        grid-row: 2 / 3 !important;
+        margin: 0 !important;
+        font-size: 11px !important;
+    }
+    .dashboard-user-profile-widget .user-member-since {
+        display: none !important;
+    }
+}
+
+/* ==========================================================================
+   GLOBAL BILINGUAL SYSTEM (EN / RO)
+   ========================================================================== */
+/* Default: hide RO, show EN */
+.rima-ro { display: none !important; }
+.rima-en { display: inline !important; }
+
+/* Block & Flex elements support */
+.rima-ro.d-block { display: none !important; }
+.rima-ro.d-flex { display: none !important; }
+.rima-en.d-block { display: block !important; }
+.rima-en.d-flex { display: flex !important; }
+
+/* When Romanian active: show RO, hide EN */
+body.rima-lang-ro .rima-en { display: none !important; }
+body.rima-lang-ro .rima-ro { display: inline !important; }
+
+body.rima-lang-ro .rima-en.d-block,
+body.rima-lang-ro .rima-en.d-flex { display: none !important; }
+body.rima-lang-ro .rima-ro.d-block { display: block !important; }
+body.rima-lang-ro .rima-ro.d-flex { display: flex !important; }
+
+/* Avoid Flash of Unstyled Content (FUNC) on load */
+html.rima-lang-ro-pending body .rima-ro { display: inline !important; }
+html.rima-lang-ro-pending body .rima-en { display: none !important; }
+html.rima-lang-ro-pending body .rima-ro.d-block { display: block !important; }
+html.rima-lang-ro-pending body .rima-ro.d-flex { display: flex !important; }
+html.rima-lang-ro-pending body .rima-en.d-block,
+html.rima-lang-ro-pending body .rima-en.d-flex { display: none !important; }
+
+/* Modern Quform Styling for Rima Academy */
+.rima-contact-form-header {
+    padding: 36px 40px 28px !important;
+}
+.rima-contact-form-body {
+    padding: 30px 40px 40px !important;
+}
+.rc-quform-wrapper .quform-outer,
+.rc-quform-wrapper .quform-inner,
+.rc-quform-wrapper .quform-elements,
+.rc-quform-wrapper .quform-element {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+.rc-quform-wrapper .quform-spacer {
+    padding-bottom: 22px;
+}
+.rc-quform-wrapper .quform-label {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-bottom: 8px !important;
+    padding: 0 !important;
+}
+.rc-quform-wrapper .quform-label-text {
+    font-weight: 600 !important;
+    color: #2c3e50 !important;
+    font-size: 14px !important;
+    margin-bottom: 0 !important;
+}
+.rc-quform-wrapper .quform-label-icon i {
+    color: #102d56 !important;
+    font-size: 15px !important;
+}
+.rc-quform-wrapper .quform-required {
+    color: #e74c3c !important;
+    margin-left: 3px !important;
+}
+.rc-quform-wrapper .quform-input input[type="text"],
+.rc-quform-wrapper .quform-input input[type="email"],
+.rc-quform-wrapper .quform-input textarea {
+    border: 1px solid #dcdfe6 !important;
+    border-radius: 10px !important;
+    padding: 14px 18px !important;
+    font-size: 15px !important;
+    background: #f8fafc !important;
+    color: #333 !important;
+    transition: all 0.3s ease !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+}
+.rc-quform-wrapper .quform-input input[type="text"]:focus,
+.rc-quform-wrapper .quform-input input[type="email"]:focus,
+.rc-quform-wrapper .quform-input textarea:focus {
+    border-color: #102d56 !important;
+    background: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(16, 45, 86, 0.08) !important;
+    outline: none !important;
+}
+.rc-quform-wrapper .quform-input input::placeholder,
+.rc-quform-wrapper .quform-input textarea::placeholder {
+    color: #a0aec0 !important;
+}
+.rc-quform-wrapper .quform-button-submit button {
+    background: linear-gradient(135deg, #102d56, #102d56) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 30px !important;
+    padding: 14px 36px !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 6px 15px rgba(16, 45, 86, 0.2) !important;
+    display: inline-block !important;
+    width: auto !important;
+}
+.rc-quform-wrapper .quform-button-submit button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(16, 45, 86, 0.3) !important;
+}
+
+/* ==========================================================================
+   Course Pages Redesign (Card & Single)
+   ========================================================================== */
+
+/* Modern Course Grid Card */
+.rima-modern-course-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #f1f5f9;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.rima-modern-course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+}
+.rima-modern-course-card .eltdf-cli-image {
+    position: relative;
+    overflow: hidden;
+}
+.rima-modern-course-card .eltdf-cli-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    transition: transform 0.4s ease;
+}
+.rima-modern-course-card:hover .eltdf-cli-image img {
+    transform: scale(1.05);
+}
+.rima-modern-course-card .rima-course-price-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #ffffff;
+    color: #1e293b;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+}
+.rima-modern-course-card .eltdf-cli-text-holder {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.rima-modern-course-card .eltdf-cli-title {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #0f172a;
+    margin-bottom: 10px;
+    margin-top: 0;
+}
+.rima-modern-course-card .eltdf-cli-instructor {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 12px;
+}
+.rima-modern-course-card .eltdf-cli-excerpt {
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+.rima-modern-course-card .rima-course-add-to-cart-wrapper {
+    margin-top: auto;
+}
+.rima-modern-course-card .rima-course-add-to-cart-wrapper a {
+    display: block;
+    width: 100%;
+    text-align: center;
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+/* Single Course Hero Section */
+.rima-single-course-hero {
+    position: relative;
+    padding: 80px 0;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #ffffff;
+    margin-bottom: 50px;
+    border-radius: 0 0 24px 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+.rima-hero-content {
+    max-width: 800px;
+}
+.rima-hero-category {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #94a3b8;
+    margin-bottom: 12px;
+    display: inline-block;
+}
+.rima-hero-title {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+.rima-hero-excerpt {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #cbd5e1;
+    margin-bottom: 30px;
+}
+.rima-hero-instructor {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.rima-hero-instructor img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+.rima-hero-instructor span {
+    font-size: 15px;
+    font-weight: 500;
+    color: #f8fafc;
+}
+
+/* Single Course Sticky Sidebar */
+.rima-sticky-sidebar {
+    position: sticky;
+    top: 100px; /* Adjust based on header height */
+    z-index: 10;
+}
+.rima-course-cart-card {
+    border: none !important;
+    border-radius: 16px !important;
+    padding: 30px !important;
+    background: #ffffff !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08) !important;
+}
+.rima-course-price-box {
+    text-align: center;
+}
+.rima-course-price-box .price {
+    font-size: 36px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1;
+}
+.rima-course-add-to-cart-container .single_add_to_cart_button {
+    width: 100%;
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* ==========================================================================
+   MODERN FOOTER SOCIAL BUTTONS (CUSTOM VARIANT)
+   ========================================================================== */
+.rhm-social-btn {
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    padding: 12px 18px !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    margin-bottom: 12px !important;
+    transition: all 0.3s ease !important;
+    width: fit-content !important;
+    min-width: 180px !important;
+    align-self: flex-start !important; /* Force to left and prevent stretch */
+    box-sizing: border-box !important;
+}
+
+/* Base Icon Styling - Ultramodern & Larger */
+.rhm-social-btn i,
+.rhm-social-btn i.fa-brands,
+.rhm-social-btn i.fab {
+    font-size: 24px !important; /* Force bigger icons */
+    color: #A0ABC0 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Hover base effect */
+.rhm-social-btn:hover {
+    transform: translateY(-3px) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+.rhm-social-btn:hover i {
+    transform: scale(1.15) !important;
+}
+
+/* Platform-Specific Colors (Hover + Glow) */
+/* Facebook */
+.rhm-social-btn.rhm-facebook:hover {
+    border-color: #1877F2 !important;
+    box-shadow: 0 8px 25px -5px rgba(24, 119, 242, 0.4) !important;
+}
+.rhm-social-btn.rhm-facebook:hover i { color: #1877F2 !important; }
+
+/* TikTok */
+.rhm-social-btn.rhm-tiktok:hover {
+    border-color: #ff0050 !important;
+    box-shadow: 0 8px 25px -5px rgba(255, 0, 80, 0.4) !important;
+}
+.rhm-social-btn.rhm-tiktok:hover i { color: #ff0050 !important; }
+
+/* WhatsApp */
+.rhm-social-btn.rhm-whatsapp {
+    border-radius: 30px !important; /* Pill shape */
+    border-color: rgba(37, 211, 102, 0.4) !important; /* Base faint green */
+}
+.rhm-social-btn.rhm-whatsapp:hover {
+    border-color: #25D366 !important;
+    box-shadow: 0 8px 25px -5px rgba(37, 211, 102, 0.4) !important;
+}
+.rhm-social-btn.rhm-whatsapp:hover i { color: #25D366 !important; }
+
+/* Fix massive gap at bottom of footer (Copyright row) */
+footer,
+.eltdf-page-footer,
+.eltdf-footer-inner,
+.eltdf-footer-bottom-holder,
+footer .vc_row,
+.eltdf-page-footer .vc_row,
+.eltdf-footer-bottom-holder .wpb_wrapper {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}

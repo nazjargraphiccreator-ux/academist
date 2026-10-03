@@ -1,0 +1,470 @@
+<?php
+/**
+ * Professional Bilingual Login / Register Page - RIMA Academy
+ * academist-child/woocommerce/myaccount/form-login.php
+ */
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+if ( is_user_logged_in() ) { return; }
+
+// Get logo URL
+$logo_id  = get_theme_mod('custom_logo');
+$logo_url = $logo_id ? wp_get_attachment_image_url($logo_id, 'medium') : '';
+if ( ! $logo_url && function_exists('academist_elated_options') ) {
+	$logo_url = academist_elated_options()->getOptionValue('logo_image');
+}
+
+do_action( 'woocommerce_before_customer_login_form' );
+?>
+
+<style>
+/* Custom Grid Layout for Login similar to xstore-child */
+.rima-login-page-wrapper {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+.rima-login-showcase {
+    background: linear-gradient(135deg, #0B1D3A 0%, #17325c 100%);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 3rem;
+}
+.rima-login-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+    position: relative;
+}
+@media (max-width: 992px) {
+    .rima-login-page-wrapper {
+        display: block; /* Switch to normal block flow on mobile */
+    }
+    .rima-login-showcase {
+        display: none; /* Hide branding panel on mobile */
+    }
+    .rima-login-form-container {
+        padding: 1.5rem;
+        padding-top: 3rem;
+        padding-bottom: 120px; /* Clear mobile navigation bar */
+        min-height: 100vh;
+    }
+}
+</style>
+
+<div class="rima-login-page-wrapper">
+
+	<!-- LEFT BRANDING PANEL -->
+	<div class="rima-login-showcase d-none d-lg-flex">
+		
+		<!-- Decorative Elements -->
+		<div class="position-absolute rounded-circle" style="width: 500px; height: 500px; background: rgba(255,25,73,0.15); filter: blur(80px); top: -150px; left: -150px;"></div>
+		<div class="position-absolute rounded-circle" style="width: 400px; height: 400px; background: rgba(16, 45, 86,0.15); filter: blur(60px); bottom: -100px; right: -100px;"></div>
+		
+		<div class="position-relative z-1" style="max-width: 420px;">
+			<?php if ( $logo_url ) : ?>
+				<img src="<?php echo esc_url($logo_url); ?>" alt="RIMA Academy" class="img-fluid mb-5" style="max-height: 90px; filter: brightness(0) invert(1);">
+			<?php else : ?>
+				<div class="mb-5">
+					<h1 class="display-4 fw-black text-white m-0 lh-1" style="letter-spacing:-1px">RIMA</h1>
+					<p class="text-danger fw-bold m-0" style="letter-spacing:3px">ACADEMY</p>
+				</div>
+			<?php endif; ?>
+
+			<h2 class="display-5 fw-bold text-white mb-4 lh-sm">
+				<span class="rima-en">Master a New Language</span>
+				<span class="rima-ro">Stăpânește o Limbă Nouă</span>
+			</h2>
+			<p class="fs-5 text-white-50 mb-5">
+				<span class="rima-en">Access premium courses, interactive study materials, and live Zoom sessions with expert instructors.</span>
+				<span class="rima-ro">Accesează cursuri premium, materiale interactive și sesiuni live pe Zoom cu instructori experți.</span>
+			</p>
+
+			<div class="d-flex flex-wrap justify-content-center gap-3">
+				<span class="badge bg-white bg-opacity-10 text-white rounded-pill px-4 py-2 fw-semibold tracking-wide border border-white border-opacity-25 shadow-sm">
+					<span class="rima-en">LEARN</span>
+					<span class="rima-ro">ÎNVAȚĂ</span>
+				</span>
+				<span class="badge bg-white bg-opacity-10 text-white rounded-pill px-4 py-2 fw-semibold tracking-wide border border-white border-opacity-25 shadow-sm">
+					<span class="rima-en">SPEAK</span>
+					<span class="rima-ro">VORBEȘTE</span>
+				</span>
+				<span class="badge bg-danger bg-opacity-75 text-white rounded-pill px-4 py-2 fw-semibold tracking-wide shadow-sm">
+					<span class="rima-en">CONNECT</span>
+					<span class="rima-ro">CONECTEAZĂ-TE</span>
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- RIGHT FORM PANEL -->
+	<div class="rima-login-form-container">
+		
+
+		<div class="w-100 rima-auth-card bg-white p-4 p-md-5 rounded-4 shadow-lg border-0" style="max-width: 480px;">
+
+			<!-- Tabs -->
+			<ul class="nav nav-pills nav-justified mb-5 bg-light p-1 rounded-pill border" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button class="nav-link active rounded-pill fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 0.85rem;" id="login-tab-btn" data-bs-toggle="pill" data-bs-target="#rima-login-tab" type="button" role="tab" aria-selected="true">
+						<span class="rima-en">Login</span>
+						<span class="rima-ro">Autentificare</span>
+					</button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button class="nav-link rounded-pill fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 0.85rem;" id="register-tab-btn" data-bs-toggle="pill" data-bs-target="#rima-register-tab" type="button" role="tab" aria-selected="false">
+						<span class="rima-en">Register</span>
+						<span class="rima-ro">Creare Cont</span>
+					</button>
+				</li>
+			</ul>
+
+			<div class="tab-content">
+				<!-- LOGIN FORM -->
+				<div class="tab-pane fade show active" id="rima-login-tab" role="tabpanel" aria-labelledby="login-tab-btn">
+					<h3 class="h3 fw-bold text-dark mb-4 text-center">
+						<span class="rima-en">Welcome back! 👋</span>
+						<span class="rima-ro">Bine ai revenit! 👋</span>
+					</h3>
+
+					<form class="woocommerce-form woocommerce-form-login login" method="post">
+						<?php do_action( 'woocommerce_login_form_start' ); ?>
+
+						<div class="mb-3 text-start">
+							<label for="username" class="form-label text-muted fw-bold small ms-1 mb-2">
+								<span class="rima-en">Username or email address</span>
+								<span class="rima-ro">Nume utilizator sau email</span>
+							</label>
+							<input type="text" class="form-control bg-light border-0 px-4 py-3 rounded-3 shadow-none"
+								   name="username" id="username" autocomplete="username" placeholder="name@example.com"
+								   value="<?php echo ( ! empty( $_POST['username'] ) ) ? esc_attr( wp_unslash( $_POST['username'] ) ) : ''; ?>" required style="height: 58px;" />
+						</div>
+
+						<div class="mb-4 text-start position-relative rima-password-wrapper">
+							<label for="password" class="form-label text-muted fw-bold small ms-1 mb-2">
+								<span class="rima-en">Password</span>
+								<span class="rima-ro">Parolă</span>
+							</label>
+							<input class="form-control bg-light border-0 px-4 py-3 rounded-3 shadow-none"
+								   type="password" name="password" id="password" autocomplete="current-password" placeholder="Password" required style="height: 58px; padding-right: 45px;" />
+							<button type="button" class="btn position-absolute text-muted rima-eye-btn" style="z-index:10; right: 5px; top: 38px;">👁️</button>
+						</div>
+
+						<?php 
+						// Math Captcha Logic for Login
+						$num1_login = rand(1, 9);
+						$num2_login = rand(1, 9);
+						$sum_login = $num1_login + $num2_login;
+						$hash_login = md5('rima_math_' . $sum_login);
+						?>
+						<div class="mb-4 text-start position-relative">
+							<label for="rima_math_answer_login" class="form-label fw-bold small ms-1 mb-2" style="color: #0B1D3A !important;">
+								<span class="rima-en">Anti-spam: What is <?php echo $num1_login; ?> + <?php echo $num2_login; ?>?</span>
+								<span class="rima-ro">Anti-spam: Cât fac <?php echo $num1_login; ?> + <?php echo $num2_login; ?>?</span>
+								<span class="text-danger">*</span>
+							</label>
+							<input type="number" class="form-control bg-light border-0 px-4 py-3 rounded-3 shadow-none" name="rima_math_answer_login" id="rima_math_answer_login" placeholder="Anti-spam" required style="height: 58px;" />
+							<input type="hidden" name="rima_math_hash_login" value="<?php echo esc_attr($hash_login); ?>">
+						</div>
+
+						<?php do_action( 'woocommerce_login_form' ); ?>
+
+						<div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-5 mt-2">
+							<div class="form-check">
+								<input class="form-check-input" name="rememberme" type="checkbox" id="rememberme" value="forever" />
+								<label class="form-check-label text-muted small user-select-none cursor-pointer ms-2" for="rememberme">
+									<span class="rima-en">Remember me</span>
+									<span class="rima-ro">Ține-mă minte</span>
+								</label>
+							</div>
+							<a href="<?php echo esc_url( wp_lostpassword_url() ); ?>" onclick="window.location.href=this.href; return false;" class="text-decoration-none text-danger small fw-semibold transition-all rima-hover-underline">
+								<span class="rima-en">Lost password?</span>
+								<span class="rima-ro">Ai uitat parola?</span>
+							</a>
+						</div>
+
+						<?php wp_nonce_field( 'woocommerce-login', 'woocommerce-login-nonce' ); ?>
+						<input type="hidden" name="redirect" value="<?php echo esc_url( wc_get_page_permalink('myaccount') ); ?>" />
+
+						<button type="submit" class="btn w-100 py-3 fw-bold rounded-pill shadow-sm text-uppercase" style="background-color: #991b1b !important; color: white !important; letter-spacing: 1px; border: none;" name="login" value="Login">
+							<i class="fa fa-sign-in me-2"></i>
+							<span class="rima-en">Login to Account</span>
+							<span class="rima-ro">Intră în cont</span>
+						</button>
+
+						<?php do_action( 'woocommerce_login_form_end' ); ?>
+					</form>
+				</div>
+
+				<!-- REGISTER FORM -->
+				<div class="tab-pane fade" id="rima-register-tab" role="tabpanel" aria-labelledby="register-tab-btn">
+					<h3 class="h3 fw-bold text-dark mb-4 text-center">
+						<span class="rima-en">Join RIMA Academy 🚀</span>
+						<span class="rima-ro">Vino în RIMA Academy 🚀</span>
+					</h3>
+
+					<form method="post" class="woocommerce-form woocommerce-form-register register">
+						<?php do_action( 'woocommerce_register_form_start' ); ?>
+
+						<?php if ( 'no' === get_option( 'woocommerce_registration_generate_username' ) ) : ?>
+						<div class="mb-3 text-start">
+							<label for="reg_username" class="form-label text-muted fw-bold small ms-1 mb-2">
+								<span class="rima-en">Username</span>
+								<span class="rima-ro">Nume utilizator</span>
+								<span class="text-danger">*</span>
+							</label>
+							<input type="text" class="form-control bg-light border-0 px-4 py-3 rounded-3 shadow-none"
+								   name="username" id="reg_username" autocomplete="username" placeholder="Username"
+								   value="<?php echo ( ! empty( $_POST['username'] ) ) ? esc_attr( wp_unslash( $_POST['username'] ) ) : ''; ?>" required style="height: 58px;" />
+						</div>
+						<?php endif; ?>
+
+						<div class="mb-3 text-start">
+							<label for="reg_email" class="form-label text-muted fw-bold small ms-1 mb-2">
+								<span class="rima-en">Email address</span>
+								<span class="rima-ro">Adresă de email</span>
+								<span class="text-danger">*</span>
+							</label>
+							<input type="email" class="form-control bg-light border-0 px-4 py-3 rounded-3 shadow-none"
+								   name="email" id="reg_email" autocomplete="email" placeholder="name@example.com"
+								   value="<?php echo ( ! empty( $_POST['email'] ) ) ? esc_attr( wp_unslash( $_POST['email'] ) ) : ''; ?>" required style="height: 58px;" />
+						</div>
+
+						<?php if ( 'no' === get_option( 'woocommerce_registration_generate_password' ) ) : ?>
+						<div class="mb-3 text-start position-relative rima-password-wrapper">
+							<label for="reg_password" class="form-label text-muted fw-bold small ms-1 mb-2">
+								<span class="rima-en">Password</span>
+								<span class="rima-ro">Parolă</span>
+								<span class="text-danger">*</span>
+							</label>
+							<input type="password" class="form-control bg-light border-0 px-4 py-3 rounded-3 shadow-none"
+								   name="password" id="reg_password" autocomplete="new-password" placeholder="Password" required style="height: 58px; padding-right: 45px;" />
+							<button type="button" class="btn position-absolute text-muted rima-eye-btn" style="z-index:10; right: 5px; top: 38px;">👁️</button>
+						</div>
+
+						<!-- Password Strength Meter -->
+						<div class="rima-password-strength-container mb-3" style="display:none; padding: 0 10px;">
+							<div class="d-flex gap-1" style="height: 6px;">
+								<div class="strength-segment rounded bg-secondary opacity-25 flex-fill transition-all" id="strength-1"></div>
+								<div class="strength-segment rounded bg-secondary opacity-25 flex-fill transition-all" id="strength-2"></div>
+								<div class="strength-segment rounded bg-secondary opacity-25 flex-fill transition-all" id="strength-3"></div>
+								<div class="strength-segment rounded bg-secondary opacity-25 flex-fill transition-all" id="strength-4"></div>
+							</div>
+							<div class="text-end mt-1">
+								<small id="rima-strength-text" class="fw-bold" style="font-size: 0.75rem;"></small>
+							</div>
+						</div>
+						
+						<div class="mb-4 text-start position-relative rima-password-wrapper">
+							<label for="rima_confirm_password" class="form-label text-muted fw-bold small ms-1 mb-2">
+								<span class="rima-en">Confirm Password</span>
+								<span class="rima-ro">Confirmă Parola</span>
+								<span class="text-danger">*</span>
+							</label>
+							<input type="password" class="form-control bg-light border-0 px-4 py-3 rounded-3 shadow-none"
+								   name="rima_confirm_password" id="rima_confirm_password" autocomplete="new-password" placeholder="Confirm Password" required style="height: 58px; padding-right: 45px;" />
+							<button type="button" class="btn position-absolute text-muted rima-eye-btn" style="z-index:10; right: 5px; top: 38px;">👁️</button>
+						</div>
+						<?php endif; ?>
+
+						<?php 
+						// Math Captcha Logic
+						$num1 = rand(1, 9);
+						$num2 = rand(1, 9);
+						$sum = $num1 + $num2;
+						$hash = md5('rima_math_' . $sum);
+						?>
+						<div class="mb-4 text-start position-relative">
+							<label for="rima_math_answer" class="form-label fw-bold small ms-1 mb-2" style="color: #0B1D3A !important;">
+								<span class="rima-en">Anti-spam: What is <?php echo $num1; ?> + <?php echo $num2; ?>?</span>
+								<span class="rima-ro">Anti-spam: Cât fac <?php echo $num1; ?> + <?php echo $num2; ?>?</span>
+								<span class="text-danger">*</span>
+							</label>
+							<input type="number" class="form-control bg-light border-0 px-4 py-3 rounded-3 shadow-none" name="rima_math_answer" id="rima_math_answer" placeholder="Anti-spam" required style="height: 58px;" />
+							<input type="hidden" name="rima_math_hash" value="<?php echo esc_attr($hash); ?>">
+						</div>
+
+						<?php do_action( 'woocommerce_register_form' ); ?>
+
+						<?php wp_nonce_field( 'woocommerce-register', 'woocommerce-register-nonce' ); ?>
+						<button type="submit" class="btn w-100 py-3 fw-bold rounded-pill shadow-sm mb-3 text-uppercase" style="background-color: #991b1b !important; color: white !important; letter-spacing: 1px; border: none;" name="register" value="Register">
+							<i class="fa fa-user-plus me-2"></i>
+							<span class="rima-en">Create Account</span>
+							<span class="rima-ro">Creează Contul</span>
+						</button>
+
+						<?php do_action( 'woocommerce_register_form_end' ); ?>
+					</form>
+
+					<p class="text-center text-muted small mt-4">
+						<span class="rima-en">By creating an account, you agree to our</span>
+						<span class="rima-ro">Creând un cont, ești de acord cu</span>
+						<br><a href="<?php echo esc_url( get_privacy_policy_url() ); ?>" class="text-decoration-none text-primary fw-semibold transition-all rima-hover-underline">
+							<span class="rima-en">Privacy Policy</span>
+							<span class="rima-ro">Politica de Confidențialitate</span>
+						</a>.
+					</p>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!-- /RIGHT FORM PANEL -->
+
+</div>
+
+<style>
+/* Reset form controls for floating labels to look elegant */
+.rima-auth-card .form-control {
+    height: 58px;
+    border-radius: 12px !important;
+}
+.rima-auth-card .form-control:focus {
+    box-shadow: 0 0 0 4px rgba(11, 29, 58, 0.1) !important;
+}
+.rima-auth-card .nav-pills .nav-link {
+    color: #6c757d !important;
+}
+.rima-auth-card .nav-pills .nav-link.active {
+    background-color: #0B1D3A !important;
+    color: white !important;
+}
+/* Ensure inputs have a slight gray background to stand out from the white card */
+.rima-auth-card .form-control {
+    background-color: #f3f4f6 !important;
+    color: #1e293b !important;
+}
+.rima-hover-underline:hover {
+    text-decoration: underline !important;
+}
+.rima-eye-btn {
+    z-index: 5; /* Ensure it stays above the floating label */
+}
+/* Language toggle specific to login page */
+body.rima-lang-ro #rima-lang-switch-login .rima-lang-switch-thumb {
+    transform: translateX(20px);
+}
+body.rima-lang-ro .rima-lang-label-en { opacity: 0.5; }
+body.rima-lang-ro .rima-lang-label-ro { opacity: 1; color: var(--rima-navy) !important; }
+body:not(.rima-lang-ro) .rima-lang-label-en { opacity: 1; color: var(--rima-navy) !important; }
+body:not(.rima-lang-ro) .rima-lang-label-ro { opacity: 0.5; }
+</style>
+
+<script>
+jQuery(document).ready(function($) {
+    // Read hash on load to switch to register tab automatically
+    if(window.location.hash === '#rima-register-tab') {
+        setTimeout(function() {
+            $('#register-tab-btn').trigger('click');
+        }, 50);
+    }
+
+    // 1. Manual Tab Switching (Fallback if Bootstrap JS is missing)
+    $('[data-bs-toggle="pill"]').on('click', function(e) {
+        e.preventDefault();
+        
+        // Remove active class from all tabs
+        $('[data-bs-toggle="pill"]').removeClass('active');
+        
+        // Add active class to clicked tab
+        $(this).addClass('active');
+        
+        // Hide all tab panes
+        $('.tab-pane').removeClass('show active');
+        
+        // Show target pane
+        var target = $(this).attr('data-bs-target');
+        $(target).addClass('show active');
+    });
+
+    // 2. Custom Password Toggle
+    $('.rima-eye-btn').on('click', function(e) {
+        e.preventDefault();
+        var input = $(this).siblings('input');
+        if (input.attr('type') === 'password') {
+            input.attr('type', 'text');
+            $(this).css('opacity', '0.5'); // visual feedback
+        } else {
+            input.attr('type', 'password');
+            $(this).css('opacity', '1');
+        }
+    });
+
+    // Custom Password Strength Meter
+    $('#reg_password').on('input', function() {
+        var val = $(this).val();
+        var container = $('.rima-password-strength-container');
+        var segments = $('.strength-segment');
+        var textEl = $('#rima-strength-text');
+        var isRo = document.body.classList.contains('rima-lang-ro');
+        
+        if (val.length === 0) {
+            container.slideUp(200);
+            return;
+        }
+        
+        container.slideDown(200);
+        
+        var score = 0;
+        if (val.length > 5) score += 1;
+        if (val.length > 8) score += 1;
+        if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score += 1;
+        if (/[0-9]/.test(val) && /[^A-Za-z0-9]/.test(val)) score += 1;
+        
+        segments.removeClass('bg-danger bg-warning bg-success opacity-25').addClass('bg-secondary opacity-25');
+        
+        if (score === 1 || score === 2) {
+            $('#strength-1').removeClass('bg-secondary opacity-25').addClass('bg-danger');
+            if (score === 2) $('#strength-2').removeClass('bg-secondary opacity-25').addClass('bg-danger');
+            textEl.text(isRo ? 'Slabă' : 'Weak').removeClass('text-warning text-success').addClass('text-danger');
+        } else if (score === 3) {
+            $('#strength-1, #strength-2, #strength-3').removeClass('bg-secondary opacity-25').addClass('bg-warning');
+            textEl.text(isRo ? 'Medie' : 'Medium').removeClass('text-danger text-success').addClass('text-warning');
+        } else if (score === 4) {
+            segments.removeClass('bg-secondary opacity-25').addClass('bg-success');
+            textEl.text(isRo ? 'Puternică' : 'Strong').removeClass('text-danger text-warning').addClass('text-success');
+        }
+    });
+    
+    // Login specific language toggle logic (since this is outside the dashboard sidebar)
+    $('#rima-lang-switch-login').on('click', function() {
+        var isRo = document.body.classList.contains('rima-lang-ro');
+        var newLang = isRo ? 'en' : 'ro';
+        
+        if (newLang === 'ro') {
+            document.body.classList.add('rima-lang-ro');
+        } else {
+            document.body.classList.remove('rima-lang-ro');
+        }
+        localStorage.setItem('rima_lang', newLang);
+
+        var domain = window.location.hostname;
+        document.cookie = "googtrans=/en/" + newLang + "; path=/; domain=" + domain;
+        document.cookie = "googtrans=/en/" + newLang + "; path=/";
+
+        var select = document.querySelector('select.goog-te-combo');
+        if (select) {
+            select.value = newLang;
+            select.dispatchEvent(new Event('change'));
+        }
+
+        // Save to server
+        $.post(rima_ajax_obj.ajax_url, {
+            action: 'rima_save_lang_pref',
+            lang:   newLang,
+            nonce:  rima_ajax_obj.nonce
+        }).always(function() {
+            window.location.reload();
+        });
+    });
+});
+</script>
+
+<?php do_action( 'woocommerce_after_customer_login_form' ); ?>

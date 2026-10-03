@@ -1,0 +1,884 @@
+/* ==========================================================================
+   RIMA ACADEMY 2026 — PREMIUM UI REDESIGN
+   Handles Our Courses, Single Course, Cart, Checkout, Dashboard
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   0. CSS Design Tokens (used by PHP templates via var())
+   -------------------------------------------------------------------------- */
+:root {
+    --rima-blue:      #17325c;
+    --rima-dark-blue: #0d1e38;
+    --rima-light-blue: #102d56;
+    --rima-gray:      #64748b;
+    --rima-border:    #e5e7eb;
+    --rima-bg:        #f8fafc;
+    --rima-radius-sm: 8px;
+    --rima-radius-md: 12px;
+    --rima-radius-lg: 20px;
+    --rima-glass:     rgba(255,255,255,0.85);
+}
+
+/* --------------------------------------------------------------------------
+   1. Language Switcher Global
+   -------------------------------------------------------------------------- */
+/* Default: EN mode */
+body .rima-ro { display: none !important; }
+body .rima-en { display: inline !important; }
+
+/* RO mode */
+body.rima-lang-ro .rima-ro { display: inline !important; }
+body.rima-lang-ro .rima-en { display: none !important; }
+
+/* Toggle switch track */
+.rima-lang-switch {
+    width: 42px; height: 22px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 11px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.3s;
+    flex-shrink: 0;
+}
+.rima-lang-switch-thumb {
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 16px; height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    transition: left 0.3s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+body.rima-lang-ro .rima-lang-switch-thumb { left: 23px; }
+body.rima-lang-ro .rima-lang-switch { background: var(--rima-light-blue); }
+
+/* --------------------------------------------------------------------------
+   2. Our Courses Grid — Modern Card Layout
+   -------------------------------------------------------------------------- */
+.rima-modern-course-card {
+    background: var(--rima-glass);
+    border-radius: var(--rima-radius-lg);
+    box-shadow: 0 8px 25px rgba(23,50,92,0.06);
+    border: 1px solid rgba(255,255,255,0.9);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275), box-shadow 0.4s ease;
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+}
+.rima-modern-course-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px rgba(23,50,92,0.14);
+}
+
+/* Price badge overlaid on image */
+.rima-course-price-badge {
+    position: absolute;
+    top: 16px; right: 16px;
+    z-index: 10;
+}
+.rima-course-price-badge .eltdf-ci-price-value,
+.rima-course-price-badge .eltdf-ci-price-free {
+    background: linear-gradient(135deg, var(--rima-light-blue), #102d56);
+    color: #fff !important;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(16, 45, 86,0.4);
+    display: inline-block;
+}
+
+/* Course image inside card */
+.rima-modern-course-card .eltdf-cli-image-holder {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+.rima-modern-course-card .eltdf-cli-image-holder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+.rima-modern-course-card:hover .eltdf-cli-image-holder img {
+    transform: scale(1.06);
+}
+
+/* Bottom text content */
+.rima-modern-course-card .eltdf-cli-text-holder {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+}
+.rima-modern-course-card .eltdf-cli-text-holder .eltdf-cli-title-holder h4 a {
+    color: var(--rima-blue) !important;
+    font-weight: 700 !important;
+    font-size: 18px !important;
+    line-height: 1.35 !important;
+    text-decoration: none !important;
+    transition: color 0.2s;
+}
+.rima-modern-course-card:hover .eltdf-cli-text-holder .eltdf-cli-title-holder h4 a {
+    color: var(--rima-light-blue) !important;
+}
+
+/* Add to cart wrapper */
+.rima-course-add-to-cart-wrapper {
+    margin-top: auto;
+    padding-top: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   3. Premium Blue CTA Button
+   -------------------------------------------------------------------------- */
+.rima-btn-blue,
+a.rima-btn-blue,
+.eltdf-btn.rima-btn-blue {
+    background: linear-gradient(135deg, var(--rima-light-blue), #102d56) !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: 0 6px 18px rgba(16, 45, 86,0.3);
+    transition: all 0.3s ease !important;
+    padding: 13px 24px !important;
+    font-weight: 600 !important;
+    border-radius: var(--rima-radius-sm) !important;
+    display: inline-block;
+    text-decoration: none !important;
+}
+.rima-btn-blue:hover,
+a.rima-btn-blue:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(16, 45, 86,0.4) !important;
+    color: #fff !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. Single Course — Hero Banner
+   -------------------------------------------------------------------------- */
+.rima-single-course-hero {
+    background: linear-gradient(135deg, var(--rima-blue) 0%, var(--rima-dark-blue) 100%);
+    padding: 70px 0 80px;
+    position: relative;
+    overflow: hidden;
+}
+.rima-single-course-hero::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(16, 45, 86,0.15) 0%, transparent 70%);
+    top: -150px; right: -100px;
+    pointer-events: none;
+}
+.rima-hero-content { color: #fff; max-width: 750px; }
+.rima-hero-category { margin-bottom: 14px; }
+.rima-hero-category a {
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    padding-bottom: 2px;
+    transition: color 0.2s;
+}
+.rima-hero-title {
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -1px;
+    color: #fff;
+    margin: 0 0 20px 0;
+}
+.rima-hero-excerpt {
+    font-size: 17px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.65;
+    margin-bottom: 24px;
+}
+.rima-hero-instructor {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    color: rgba(255,255,255,0.85);
+}
+.rima-hero-instructor img {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.4);
+    object-fit: cover;
+}
+
+/* Sticky sidebar cart card */
+.rima-sticky-sidebar { position: sticky; top: 100px; }
+.rima-course-cart-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(23,50,92,0.1);
+    overflow: hidden;
+    border: 1px solid var(--rima-border);
+}
+.rima-course-price-box .price {
+    text-align: center;
+    padding: 20px 25px 0;
+}
+.rima-course-price-box .eltdf-ci-price-value {
+    font-size: 38px !important;
+    font-weight: 800 !important;
+    color: var(--rima-blue) !important;
+    letter-spacing: -1px;
+}
+.rima-course-price-box .eltdf-ci-price-free {
+    font-size: 32px !important;
+    font-weight: 800 !important;
+    color: var(--rima-light-blue) !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. My Courses — Premium Grid
+   -------------------------------------------------------------------------- */
+.rima-premium-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 28px;
+    margin-top: 24px;
+}
+
+.rima-premium-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--rima-radius-lg);
+    box-shadow: 0 10px 30px rgba(23,50,92,0.05);
+    border: 1px solid rgba(255,255,255,0.8);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275), box-shadow 0.4s ease;
+    backdrop-filter: blur(10px);
+}
+.rima-premium-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 24px 48px rgba(23,50,92,0.12);
+}
+
+.rima-premium-card-image {
+    position: relative;
+    height: 190px;
+    overflow: hidden;
+    display: block;
+}
+.rima-premium-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+.rima-premium-card:hover .rima-premium-card-image img {
+    transform: scale(1.06);
+}
+
+/* Circular Progress Overlay */
+.rima-progress-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to top, rgba(13,30,56,0.75) 0%, transparent 60%);
+    display: flex;
+    align-items: flex-end;
+    padding: 18px;
+}
+.rima-progress-circle {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: conic-gradient(var(--rima-light-blue) calc(var(--progress, 0) * 3.6deg), rgba(255,255,255,0.2) 0deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 12px;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    position: relative;
+}
+.rima-progress-circle::before {
+    content: '';
+    position: absolute;
+    width: 42px; height: 42px;
+    background: var(--rima-dark-blue);
+    border-radius: 50%;
+}
+.rima-progress-circle span { position: relative; z-index: 1; }
+
+/* --------------------------------------------------------------------------
+   6. Dashboard — Glass Cards (single-course-dashboard.php)
+   -------------------------------------------------------------------------- */
+.rima-glass {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+/* --------------------------------------------------------------------------
+   7. Cart — Premium card polish
+   -------------------------------------------------------------------------- */
+.rima-cart-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 40px;
+    max-width: 1180px;
+    margin: 40px auto;
+    align-items: start;
+    padding: 0 20px;
+}
+.rima-cart-products {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    overflow: hidden;
+    border: 1px solid var(--rima-border);
+}
+.rima-cart-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 40px;
+    gap: 10px;
+    padding: 16px 24px;
+    background: var(--rima-bg);
+    border-bottom: 1px solid var(--rima-border);
+}
+.rima-cart-header-cell {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #94a3b8;
+}
+.rima-order-product {
+    padding: 24px;
+    border-bottom: 1px solid var(--rima-border);
+    transition: background 0.2s;
+}
+.rima-order-product:hover { background: #fafcff; }
+.rima-order-product:last-child { border-bottom: none; }
+.rima-product-top-row {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+}
+.rima-product-image-wrapper {
+    width: 72px; height: 72px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid var(--rima-border);
+}
+.rima-product-image-wrapper img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+}
+.rima-product-info-wrapper { flex: 1; }
+.rima-product-name-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+}
+.rima-order-product-name {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--rima-blue);
+    text-decoration: none;
+    line-height: 1.4;
+}
+.rima-remove-item {
+    color: #94a3b8;
+    font-size: 18px;
+    transition: color 0.2s;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+.rima-remove-item:hover { color: #ef4444; }
+.rima-product-middle-row {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.rima-label-small {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #94a3b8;
+    display: block;
+    margin-bottom: 5px;
+}
+.rima-price-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--rima-blue);
+}
+.rima-order-product-qty-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--rima-border);
+    border-radius: 30px;
+    overflow: hidden;
+    width: fit-content;
+}
+.rima-checkout-qty-btn {
+    background: transparent;
+    border: none;
+    width: 36px; height: 36px;
+    cursor: pointer;
+    color: var(--rima-blue);
+    font-size: 14px;
+    transition: background 0.2s;
+    display: flex; align-items: center; justify-content: center;
+}
+.rima-checkout-qty-btn:hover { background: var(--rima-bg); }
+.rima-order-qty-input, .rima-cart-qty-input {
+    width: 40px;
+    border: none;
+    text-align: center;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--rima-blue);
+    background: transparent;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+.rima-order-qty-input::-webkit-inner-spin-button,
+.rima-order-qty-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.rima-product-subtotal-row {
+    font-size: 14px;
+    color: var(--rima-gray);
+    margin-top: 10px;
+}
+.rima-subtotal-value { font-weight: 700; color: var(--rima-blue); }
+.rima-cart-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    background: var(--rima-bg);
+    border-top: 1px solid var(--rima-border);
+}
+.rima-continue-shopping {
+    color: var(--rima-gray);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+.rima-continue-shopping:hover { color: var(--rima-light-blue); }
+/* Cart Summary Sidebar */
+.rima-cart-summary {
+    background: #fff;
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    border: 1px solid var(--rima-border);
+    position: sticky;
+    top: 100px;
+}
+.rima-cart-summary-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--rima-blue);
+    margin: 0 0 20px 0;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rima-border);
+}
+.rima-cart-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    font-size: 15px;
+    border-bottom: 1px solid #f1f5f9;
+}
+.rima-cart-summary-label { color: var(--rima-gray); }
+.rima-cart-summary-value { font-weight: 600; color: var(--rima-blue); }
+.rima-cart-summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 0 0;
+    margin-top: 8px;
+}
+.rima-cart-summary-total-label {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--rima-blue);
+}
+.rima-cart-summary-total-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--rima-light-blue);
+}
+/* Coupon */
+.rima-coupon-form {
+    display: flex;
+    gap: 8px;
+    margin: 16px 0;
+}
+.rima-coupon-input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--rima-border);
+    border-radius: 30px;
+    font-size: 14px;
+    color: var(--rima-blue);
+    background: var(--rima-bg);
+    outline: none;
+    transition: border-color 0.2s;
+}
+.rima-coupon-input:focus { border-color: var(--rima-light-blue); }
+.rima-coupon-btn {
+    background: var(--rima-blue);
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.rima-coupon-btn:hover { background: var(--rima-light-blue); }
+.rima-desktop-cart-actions { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+.rima-checkout-btn {
+    display: block;
+    text-align: center;
+    padding: 16px !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    border-radius: 14px !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. SPA Dashboard Layout (single-course-dashboard.php)
+   -------------------------------------------------------------------------- */
+.rima-spa-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--rima-bg);
+}
+.rima-spa-sidebar {
+    width: 320px;
+    background: #fff;
+    border-right: 1px solid var(--rima-border);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.03);
+}
+.rima-spa-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.rima-spa-topbar {
+    height: 70px;
+    background: #fff;
+    border-bottom: 1px solid var(--rima-border);
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.rima-spa-main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 40px;
+}
+.rima-lesson-item {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f4f8;
+    cursor: pointer;
+    transition: background 0.2s, border-left-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--rima-gray);
+    font-weight: 500;
+    border-left: 3px solid transparent;
+}
+.rima-lesson-item:hover {
+    background: #f5f8ff;
+    color: var(--rima-blue);
+    border-left-color: rgba(16, 45, 86,0.4);
+}
+.rima-lesson-item.active {
+    background: #ebf2ff;
+    color: var(--rima-light-blue);
+    border-left-color: var(--rima-light-blue);
+    font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   9. Responsive Adjustments
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+    .rima-cart-wrapper {
+        grid-template-columns: 1fr;
+    }
+    .rima-cart-summary {
+        position: static;
+    }
+}
+@media (max-width: 768px) {
+    .rima-premium-grid {
+        grid-template-columns: 1fr;
+    }
+    .rima-cart-header { display: none; }
+    .rima-product-middle-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .rima-single-course-hero { padding: 40px 0 50px; }
+    .rima-hero-title { font-size: 28px; }
+    .rima-spa-layout { flex-direction: column; height: auto; }
+    .rima-spa-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--rima-border); max-height: 40vh; overflow-y: auto; }
+}
+
+
+/* --------------------------------------------------------------------------
+   1. Dashboard (My Courses) - Premium Grid & Progress Bar
+   -------------------------------------------------------------------------- */
+.rima-premium-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.rima-premium-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(23, 50, 92, 0.05);
+    border: 1px solid rgba(255,255,255,0.8);
+    overflow: hidden;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(10px);
+}
+
+.rima-premium-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(23, 50, 92, 0.12);
+}
+
+.rima-premium-card-image {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+}
+
+.rima-premium-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.rima-premium-card:hover .rima-premium-card-image img {
+    transform: scale(1.05);
+}
+
+/* Circular Progress Overlay */
+.rima-progress-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to top, rgba(23,50,92,0.8), transparent);
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+    color: white;
+}
+
+.rima-progress-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: conic-gradient(#102d56 var(--progress), rgba(255,255,255,0.2) 0deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.rima-progress-circle::after {
+    content: "";
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: #17325c;
+    border-radius: 50%;
+    z-index: -1;
+}
+
+/* --------------------------------------------------------------------------
+   2. WooCommerce Cart - Distraction Free & Sticky Summary
+   -------------------------------------------------------------------------- */
+.woocommerce-cart .woocommerce {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 40px auto;
+}
+
+.woocommerce-cart .woocommerce-cart-form {
+    flex: 1;
+    min-width: 60%;
+    background: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+.woocommerce-cart .cart-collaterals {
+    width: 350px;
+}
+
+.woocommerce-cart .cart_totals {
+    background: #f8faff;
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid #eef2fa;
+    position: sticky;
+    top: 120px;
+}
+
+/* Hide default table stuff to make it look like a list of cards */
+.woocommerce table.shop_table {
+    border: none;
+}
+.woocommerce table.shop_table th {
+    background: transparent;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: #999;
+    border: none;
+    border-bottom: 2px solid #f0f0f0;
+}
+.woocommerce table.shop_table td {
+    border-top: none;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 20px 10px;
+}
+
+/* --------------------------------------------------------------------------
+   3. WooCommerce Checkout - Floating Labels
+   -------------------------------------------------------------------------- */
+.woocommerce-checkout .woocommerce {
+    max-width: 1000px;
+    margin: 40px auto;
+}
+
+.rima-floating-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.rima-floating-group input {
+    width: 100%;
+    padding: 20px 15px 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    background: #fafafa;
+    transition: all 0.3s ease;
+}
+
+.rima-floating-group label {
+    position: absolute;
+    top: 18px;
+    left: 15px;
+    font-size: 16px;
+    color: #888;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+.rima-floating-group input:focus,
+.rima-floating-group input:not(:placeholder-shown) {
+    background: #fff;
+    border-color: #102d56;
+    box-shadow: 0 0 0 4px rgba(16, 45, 86, 0.1);
+}
+
+.rima-floating-group input:focus + label,
+.rima-floating-group input:not(:placeholder-shown) + label {
+    top: 5px;
+    font-size: 11px;
+    color: #102d56;
+    font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   4. SPA Dashboard Layout (single-course-dashboard.php)
+   -------------------------------------------------------------------------- */
+.rima-spa-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background: #f4f7f6;
+}
+
+.rima-spa-sidebar {
+    width: 320px;
+    background: #fff;
+    border-right: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.02);
+}
+
+.rima-spa-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.rima-spa-topbar {
+    height: 70px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    justify-content: space-between;
+}
+
+.rima-spa-main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 40px;
+}
+
+.rima-lesson-item {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f9f9f9;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+}
+.rima-lesson-item:hover {
+    background: #f5f8ff;
+}
+.rima-lesson-item.active {
+    background: #ebf2ff;
+    border-left: 4px solid #102d56;
+}

@@ -1,0 +1,415 @@
+/* =======================================================
+   RIMA ACADEMY - HOMEPAGE 2026 PREMIUM DESIGN
+   ======================================================= */
+
+:root {
+    --rh-dark: #070B14;
+    --rh-dark-alt: #0C1322;
+    --rh-blue: #00E5FF;
+    --rh-blue-glow: rgba(0, 229, 255, 0.4);
+    --rh-white: #FFFFFF;
+    --rh-text: #A0ABC0;
+    --rh-radius: 32px;
+}
+
+/* Base Overrides for WPBakery Rows */
+.rh26-section-hero, 
+.rh26-section-marquee, 
+.rh26-section-bento, 
+.rh26-section-method, 
+.rh26-section-cta {
+    background-color: var(--rh-dark) !important;
+    color: var(--rh-white);
+    padding: 0 !important;
+    margin: 0 !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Typography */
+.rh26-h2 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: var(--rh-white);
+    letter-spacing: -0.03em;
+}
+.rh26-p {
+    font-size: 1.1rem;
+    color: var(--rh-text);
+    max-width: 600px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+}
+.rh26-text-gradient {
+    background: linear-gradient(to right, #ffffff, var(--rh-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.rh26-section-header {
+    text-align: center;
+    margin-bottom: 60px;
+    position: relative;
+    z-index: 2;
+}
+
+/* --- 1. HERO SECTION --- */
+.rh26-hero-wrapper {
+    position: relative;
+    padding: 140px 20px 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 85vh;
+}
+.rh26-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    z-index: 0;
+    opacity: 0.4;
+}
+.rh26-orb-1 {
+    width: 40vw; height: 40vw;
+    background: #0055ff;
+    top: -10%; left: -10%;
+    animation: rh26-float 10s infinite ease-in-out alternate;
+}
+.rh26-orb-2 {
+    width: 30vw; height: 30vw;
+    background: var(--rh-blue);
+    bottom: -10%; right: -10%;
+    animation: rh26-float 12s infinite ease-in-out alternate-reverse;
+}
+@keyframes rh26-float {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+}
+
+.rh26-hero-glass {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 40px;
+    padding: 80px 40px;
+    max-width: 900px;
+    text-align: center;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+}
+.rh26-hero-badge {
+    display: inline-block;
+    background: rgba(0, 229, 255, 0.1);
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    color: var(--rh-blue);
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+}
+.rh26-title {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    letter-spacing: -0.04em;
+    color: #fff;
+}
+.rh26-subtitle {
+    font-size: 1.25rem;
+    color: var(--rh-text);
+    margin-bottom: 40px;
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+/* Buttons */
+.rh26-hero-cta {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 50px;
+    flex-wrap: wrap;
+}
+.rh26-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 36px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none !important;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+}
+.rh26-btn-glow {
+    background: var(--rh-blue);
+    color: var(--rh-dark) !important;
+    box-shadow: 0 0 20px var(--rh-blue-glow);
+}
+.rh26-btn-glow:hover {
+    box-shadow: 0 0 40px var(--rh-blue-glow);
+    transform: translateY(-4px);
+    color: var(--rh-dark) !important;
+}
+.rh26-btn-glass {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff !important;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+}
+.rh26-btn-glass:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-4px);
+    color: #fff !important;
+}
+
+/* Hero Stats */
+.rh26-hero-stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 30px;
+    flex-wrap: wrap;
+}
+.rh26-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.rh26-stat-num {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+.rh26-stat-lbl {
+    font-size: 0.85rem;
+    color: var(--rh-text);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+.rh26-stat-div {
+    width: 1px;
+    height: 40px;
+    background: rgba(255,255,255,0.15);
+}
+
+/* --- 2. MARQUEE INFINIT --- */
+.rh26-section-marquee {
+    padding: 24px 0 !important;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.rh26-marquee-container {
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    width: 100vw;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.rh26-marquee-track {
+    display: inline-flex;
+    gap: 80px;
+    padding-right: 80px;
+    animation: rh26-marquee 30s linear infinite;
+}
+.rh26-marquee-item {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.3);
+    display: flex;
+    align-items: center;
+    transition: color 0.3s ease;
+}
+.rh26-marquee-item:hover {
+    color: var(--rh-blue);
+}
+@keyframes rh26-marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* --- 3. BENTO GRID LIMBI --- */
+.rh26-section-bento {
+    padding: 120px 20px !important;
+    background: var(--rh-dark) !important;
+}
+.rh26-bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 280px;
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.rh26-bento-card {
+    position: relative;
+    border-radius: var(--rh-radius);
+    background: var(--bento-bg);
+    padding: 40px;
+    text-decoration: none !important;
+    color: #fff !important;
+    overflow: hidden;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+}
+.rh26-bento-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.3);
+}
+.rh26-bento-large {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+.rh26-bento-content {
+    position: relative;
+    z-index: 2;
+}
+.rh26-bento-content h3 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin: 0 0 10px;
+    color: #fff;
+    line-height: 1.2;
+}
+.rh26-bento-content p {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.8);
+    margin: 0;
+    line-height: 1.5;
+}
+.rh26-bento-tag {
+    display: inline-block;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+.rh26-bento-flag {
+    position: absolute;
+    right: -30px;
+    bottom: -30px;
+    width: 220px;
+    opacity: 0.3;
+    transform: rotate(-15deg);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1;
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.5));
+}
+.rh26-bento-large .rh26-bento-flag { width: 380px; right: -50px; bottom: -50px; }
+.rh26-bento-card:hover .rh26-bento-flag {
+    transform: rotate(0deg) scale(1.1) translateY(-10px);
+    opacity: 0.7;
+}
+
+/* --- 4. METODA RIMA --- */
+.rh26-section-method {
+    padding: 120px 20px !important;
+    background: linear-gradient(180deg, var(--rh-dark) 0%, var(--rh-dark-alt) 100%) !important;
+}
+.rh26-method-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.rh26-method-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+}
+.rh26-method-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--rh-radius);
+    padding: 50px 40px;
+    position: relative;
+    backdrop-filter: blur(12px);
+    transition: all 0.4s ease;
+}
+.rh26-method-card:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(0, 229, 255, 0.4);
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+.rh26-method-num {
+    font-size: 5rem;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255,255,255,0.1);
+    margin-bottom: 24px;
+    line-height: 1;
+    transition: all 0.4s ease;
+}
+.rh26-method-card:hover .rh26-method-num {
+    -webkit-text-stroke: 1.5px var(--rh-blue);
+    text-shadow: 0 0 30px var(--rh-blue-glow);
+}
+.rh26-method-card h4 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 15px;
+}
+.rh26-method-card p {
+    color: var(--rh-text);
+    line-height: 1.6;
+    font-size: 1.05rem;
+}
+
+/* --- 5. FINAL CTA --- */
+.rh26-section-cta {
+    padding: 100px 20px 140px !important;
+}
+.rh26-cta-box {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: radial-gradient(circle at top right, rgba(0, 229, 255, 0.15), transparent 60%),
+                rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 40px;
+    padding: 100px 40px;
+    text-align: center;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+}
+
+/* --- RESPONSIVITATE --- */
+@media (max-width: 1024px) {
+    .rh26-bento-grid { grid-template-columns: 1fr 1fr; }
+    .rh26-bento-large { grid-column: span 2; }
+}
+@media (max-width: 768px) {
+    .rh26-bento-grid { grid-template-columns: 1fr; grid-auto-rows: 250px; }
+    .rh26-bento-large { grid-column: span 1; grid-row: span 1; }
+    .rh26-hero-glass { padding: 50px 20px; border-radius: 30px; }
+    .rh26-hero-wrapper { padding: 100px 15px 60px; }
+    .rh26-cta-box { padding: 60px 20px; border-radius: 30px; }
+    .rh26-hero-stats { gap: 20px; }
+    .rh26-stat-div { display: none; }
+    .rh26-stat { width: 30%; }
+    .rh26-bento-flag { right: -20px; bottom: -20px; width: 160px; }
+    .rh26-bento-large .rh26-bento-flag { right: -20px; bottom: -20px; width: 180px; }
+}
