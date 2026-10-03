@@ -43,7 +43,7 @@ if (typeof window.rimaChangeQty === 'undefined') {
       action="<?php echo esc_url(wc_get_checkout_url()); ?>"
       enctype="multipart/form-data">
 
-    <div class="rima-checkout-wrapper">
+    <div class="rima-checkout-wrapper gsap-checkout-fade-up">
 
         <!-- ── HEADER ───────────────────────────────────── -->
         <div class="rima-checkout-header">
@@ -170,3 +170,14 @@ if (typeof window.rimaChangeQty === 'undefined') {
 <?php
 do_action('woocommerce_after_checkout_form', $checkout);
 
+<script>
+window.rimaVueAppsQueue = window.rimaVueAppsQueue || [];
+window.rimaVueAppsQueue.push(function() {
+    if (typeof gsap !== 'undefined') {
+        gsap.fromTo('.gsap-checkout-fade-up', 
+            { y: 40, opacity: 0, filter: "blur(10px)" },
+            { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.8, ease: "power3.out" }
+        );
+    }
+});
+</script>

@@ -19,7 +19,7 @@ do_action('woocommerce_before_cart');
 
 
 
-<div class="rima-cart-wrapper">
+<div class="rima-cart-wrapper gsap-checkout-fade-up">
 
     <!-- Cart Products -->
     <form class="woocommerce-cart-form" action="<?php echo esc_url(wc_get_cart_url()); ?>" method="post">
@@ -366,3 +366,14 @@ do_action('woocommerce_before_cart');
 })(jQuery);
 </script>
 
+<script>
+window.rimaVueAppsQueue = window.rimaVueAppsQueue || [];
+window.rimaVueAppsQueue.push(function() {
+    if (typeof gsap !== 'undefined') {
+        gsap.fromTo('.gsap-checkout-fade-up', 
+            { y: 40, opacity: 0, filter: "blur(10px)" },
+            { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.8, ease: "power3.out" }
+        );
+    }
+});
+</script>

@@ -1,20 +1,20 @@
-﻿<?php
+<?php
 /**
- * Academist Child Theme ââ‚¬â€ functions.php
+ * Academist Child Theme �€” functions.php
  * RIMA Academy Professional Dashboard
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-// â”€â”€ RIMA Email Notification System â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── RIMA Email Notification System ────────────────────────────
 require_once get_stylesheet_directory() . '/inc/rima-email-notifications.php';
 
-// â”€â”€ RIMA Secure PDF Tracker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── RIMA Secure PDF Tracker ────────────────────────────
 require_once get_stylesheet_directory() . '/inc/pdf-server.php';
 require_once get_stylesheet_directory() . '/inc/product-meta.php';
 require_once get_stylesheet_directory() . '/inc/rima-pricing-ajax.php';
 
-// â”€â”€ RIMA B2B Checkout Logic â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── RIMA B2B Checkout Logic ────────────────────────────
 require_once get_stylesheet_directory() . '/inc/rima-b2b-checkout.php';
 // Custom Shortcodes & Globe Helpers
 require_once get_stylesheet_directory() . '/inc/custom-shortcodes.php';
@@ -70,7 +70,7 @@ function rima_safe_open_graph_meta() {
 }
 
 
-// â”€â”€ RIMA Header & Footer Builder â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── RIMA Header & Footer Builder ────────────────────────────
 
 
 // Force WPBakery to enable on our new Template Post Type
@@ -88,7 +88,7 @@ function rima_enable_vc_for_templates() {
     }
 }
 
-// â”€â”€ RIMA Modern Cart & Checkout CSS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── RIMA Modern Cart & Checkout CSS ────────────────────────────
 add_action( 'wp_enqueue_scripts', 'rima_enqueue_modern_checkout_css', 999 );
 function rima_enqueue_modern_checkout_css() {
     if ( class_exists( 'WooCommerce' ) ) {
@@ -97,13 +97,13 @@ function rima_enqueue_modern_checkout_css() {
                 'rima-cart-checkout-modern',
                 get_stylesheet_directory_uri() . '/assets/css/rima-cart-checkout-modern.css',
                 array(),
-                '2026.2'
+                time()
             );
         }
     }
 }
 
-// â”€â”€ RIMA 2026 Design System Enqueue â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── RIMA 2026 Design System Enqueue ────────────────────────────
 add_action( 'wp_enqueue_scripts', 'rima_enqueue_design_system', 999 );
 function rima_enqueue_design_system() {
     // Core Tokens & Typography
@@ -210,13 +210,13 @@ function rima_bilingual_address_fields( $fields ) {
     $translations = array(
         'first_name' => 'Prenume',
         'last_name'  => 'Nume de familie',
-        'company'    => 'Companie (opțional)',
-        'country'    => 'Țară / Regiune',
-        'address_1'  => 'Adresă stradală',
-        'address_2'  => 'Apartament, suită, unitate etc. (opțional)',
-        'city'       => 'Localitate / Oraș',
-        'state'      => 'Județ / Sector',
-        'postcode'   => 'Cod poștal',
+        'company'    => 'Companie (op?ional)',
+        'country'    => '?ara / Regiune',
+        'address_1'  => 'Adresa stradala',
+        'address_2'  => 'Apartament, suita, unitate etc. (op?ional)',
+        'city'       => 'Localitate / Ora?',
+        'state'      => 'Jude? / Sector',
+        'postcode'   => 'Cod po?tal',
     );
     foreach ( $fields as $key => $field ) {
         if ( isset( $translations[ $key ] ) ) {
@@ -271,7 +271,7 @@ add_filter( 'woocommerce_billing_fields', 'rima_bilingual_billing_fields', 999 )
 function rima_bilingual_billing_fields( $fields ) {
     $translations = array(
         'billing_phone' => 'Telefon',
-        'billing_email' => 'Adresă de email',
+        'billing_email' => 'Adresa de email',
     );
     foreach ( $fields as $key => $field ) {
         if ( isset( $translations[ $key ] ) ) {
@@ -285,7 +285,7 @@ function rima_bilingual_billing_fields( $fields ) {
 
 require_once get_stylesheet_directory() . '/inc/enqueue-assets.php';
 /**
- * RIMA LOGIN PAGE â€” MOBILE APP LAYOUT
+ * RIMA LOGIN PAGE — MOBILE APP LAYOUT
  * Injected via wp_head with priority 999 (after all theme CSS) so it wins on mobile.
  * Only runs on the My Account page when user is not logged in.
  */
@@ -295,8 +295,8 @@ add_action( 'wp_head', function() {
     ?>
     <style id="rima-login-mobile-css">
     /* ============================================================
-       RIMA LOGIN â€” MOBILE APP LAYOUT  (â‰¤ 640px)
-       Loaded in <head> via wp_head priority 999 â€” beats all theme CSS
+       RIMA LOGIN — MOBILE APP LAYOUT  (≤ 640px)
+       Loaded in <head> via wp_head priority 999 — beats all theme CSS
        ============================================================ */
     @media screen and (max-width: 640px) {
 
@@ -343,7 +343,7 @@ add_action( 'wp_head', function() {
             opacity: 0.15 !important;
         }
 
-        /* 5. Wrapper â€” full width, stretch */
+        /* 5. Wrapper — full width, stretch */
         body.woocommerce-account:not(.logged-in) .rima-centered-wrapper {
             max-width: 100vw !important;
             width: 100vw !important;
@@ -462,14 +462,14 @@ add_action('wp_head', function() {
 }, 999);
 
 /* ============================================================
-   1e. WPBAKERY â€” Forțează assets + shortcodes global
+   1e. WPBAKERY — For?eaza assets + shortcodes global
    ============================================================
-   Permite shortcode-urile WPBakery (inclusiv static blocks) să
-   funcționeze pe orice template PHP, nu doar pe paginile editate
+   Permite shortcode-urile WPBakery (inclusiv static blocks) sa
+   func?ioneze pe orice template PHP, nu doar pe paginile editate
    cu WPBakery. Necesar pentru footer/header din Static Blocks.
    ============================================================ */
 
-// 1) Încarcă CSS-ul WPBakery pe toate paginile frontend
+// 1) �ncarca CSS-ul WPBakery pe toate paginile frontend
 add_action( 'wp_enqueue_scripts', function() {
     if ( class_exists( 'Vc_Manager' ) ) {
         wp_enqueue_style( 'js_composer_front' );
@@ -477,14 +477,14 @@ add_action( 'wp_enqueue_scripts', function() {
     }
 }, 30 );
 
-// 2) Încarcă JS-ul WPBakery pe toate paginile frontend
+// 2) �ncarca JS-ul WPBakery pe toate paginile frontend
 add_action( 'wp_enqueue_scripts', function() {
     if ( class_exists( 'Vc_Manager' ) ) {
         wp_enqueue_script( 'wpb_composer_front_js' );
     }
 }, 30 );
 
-// 3) Înregistrează Post Type 'static_block' pentru ca userul să aibă meniul "Static Blocks" înapoi
+// 3) �nregistreaza Post Type 'static_block' pentru ca userul sa aiba meniul "Static Blocks" �napoi
 add_action( 'init', 'rima_register_static_blocks_cpt' );
 function rima_register_static_blocks_cpt() {
     register_post_type( 'static_block', array(
@@ -509,7 +509,7 @@ function rima_register_static_blocks_cpt() {
     ) );
 }
 
-// 4) Forțează WPBakery să se activeze pe post type-ul 'static_block' implicit
+// 4) For?eaza WPBakery sa se activeze pe post type-ul 'static_block' implicit
 // 4) Force WPBakery in DB options so the editor appears for the user
 add_action( 'admin_init', function() {
     $pt = get_option( 'wpb_js_content_types' );
@@ -522,11 +522,11 @@ add_action( 'admin_init', function() {
     }
 } );
 
-// 5) Helper: randează un Static Block WPBakery după slug
-//    Folosire în template: rima_static_block( 'footer' );
+// 5) Helper: randeaza un Static Block WPBakery dupa slug
+//    Folosire �n template: rima_static_block( 'footer' );
 if ( ! function_exists( 'rima_static_block' ) ) {
     function rima_static_block( $slug, $echo = true ) {
-        // Caută post-ul de tip 'static_block' cu slug-ul dat
+        // Cauta post-ul de tip 'static_block' cu slug-ul dat
         $post = get_page_by_path( $slug, OBJECT, 'static_block' );
 
         if ( ! $post ) {
@@ -551,7 +551,7 @@ if ( ! function_exists( 'rima_static_block' ) ) {
             WPBMap::addAllMappedShortcodes();
         }
 
-        // Procesează shortcode-urile WPBakery și returnează HTML-ul
+        // Proceseaza shortcode-urile WPBakery ?i returneaza HTML-ul
         $content = apply_filters( 'the_content', $post->post_content );
         $content = do_shortcode( $content );
 
@@ -607,7 +607,7 @@ add_filter('rima_nav_icon', function($icon, $endpoint) {
 }, 10, 2);
 
 /* ============================================================
-   1b. LANGUAGE SYSTEM â€“ Inline CSS + initial body class (no flash)
+   1b. LANGUAGE SYSTEM – Inline CSS + initial body class (no flash)
    ============================================================ */
 add_action( 'wp_head', function() {
     // Determine active language: server pref (logged-in) > cookie (guest) > default EN
@@ -628,13 +628,13 @@ add_action( 'wp_head', function() {
     ?>
     <script>window.rimaInitLang = '<?php echo esc_js($lang); ?>';</script>
     <style id="rima-lang-style-inline">
-    /* â”€â”€ Manual bilingual spans â”€â”€ */
+    /* ── Manual bilingual spans ── */
     .rima-ro { display: none !important; }
     /* When body has rima-lang-ro: show RO spans, hide EN spans */
     body.rima-lang-ro .rima-ro { display: inline !important; }
     body.rima-lang-ro .rima-en { display: none !important; }
 
-    /* â”€â”€ Hide Google Translate toolbar â”€â”€ */
+    /* ── Hide Google Translate toolbar ── */
     .goog-te-banner-frame.skiptranslate,
     .goog-te-gadget-icon,
     #\:1\.container { display: none !important; }
@@ -656,7 +656,7 @@ add_action( 'wp_head', function() {
 }, 1 );
 
 /* ============================================================
-   1c. LANGUAGE SYSTEM â€“ Footer: Google Translate + unified toggle
+   1c. LANGUAGE SYSTEM – Footer: Google Translate + unified toggle
    ============================================================ */
 add_action( 'wp_footer', function() {
     $lang_pref     = 'en';
@@ -685,14 +685,14 @@ add_action( 'wp_footer', function() {
     (function() {
         'use strict';
 
-        // â”€â”€ State â”€â”€
+        // ── State ──
         var RIMA_LANG = {
             current: window.rimaInitLang || 'en',
             isLoggedIn: <?php echo $is_logged_in ? 'true' : 'false'; ?>,
             ajaxUrl: '<?php echo admin_url('admin-ajax.php'); ?>',
             nonce: '<?php echo wp_create_nonce('rima_lang_nonce'); ?>',
 
-            // â”€â”€ Helpers â”€â”€
+            // ── Helpers ──
             setBodyClass: function(lang) {
                 if (lang === 'ro') {
                     document.body.classList.add('rima-lang-ro');
@@ -731,7 +731,7 @@ add_action( 'wp_footer', function() {
                 xhr.send('action=rima_save_lang_pref&lang=' + lang + '&nonce=' + this.nonce);
             },
 
-            // â”€â”€ Main toggle â”€â”€
+            // ── Main toggle ──
             toggle: function() {
                 var newLang = (this.current === 'ro') ? 'en' : 'ro';
                 this.apply(newLang, true);
@@ -783,8 +783,8 @@ add_action( 'wp_footer', function() {
                     if (labelEl) {
                         labelEl.textContent = lang === 'ro' ? 'EN' : 'RO';
                     }
-                    btn.setAttribute('aria-label', lang === 'ro' ? 'Switch to English' : 'Comută în Română');
-                    btn.title = lang === 'ro' ? 'Switch to English' : 'Comută în Română';
+                    btn.setAttribute('aria-label', lang === 'ro' ? 'Switch to English' : 'Comuta �n Rom�na');
+                    btn.title = lang === 'ro' ? 'Switch to English' : 'Comuta �n Rom�na';
                 });
             },
 
@@ -792,14 +792,14 @@ add_action( 'wp_footer', function() {
                 var isRo = (lang === 'ro');
                 // Mini-cart
                 var emptyMsg = document.querySelector('.woocommerce-mini-cart__empty-message');
-                if (emptyMsg) emptyMsg.textContent = isRo ? 'Niciun produs în coș.' : 'No products in the cart.';
+                if (emptyMsg) emptyMsg.textContent = isRo ? 'Niciun produs �n co?.' : 'No products in the cart.';
                 var viewCart = document.querySelector('.woocommerce-mini-cart__buttons .button.wc-forward:not(.checkout)');
-                if (viewCart) viewCart.textContent = isRo ? 'Vezi Coșul' : 'View Cart';
+                if (viewCart) viewCart.textContent = isRo ? 'Vezi Co?ul' : 'View Cart';
                 var checkoutBtn = document.querySelector('.woocommerce-mini-cart__buttons .button.checkout');
-                if (checkoutBtn) checkoutBtn.textContent = isRo ? 'Finalizare Comandă' : 'Checkout';
+                if (checkoutBtn) checkoutBtn.textContent = isRo ? 'Finalizare Comanda' : 'Checkout';
             },
 
-            // â”€â”€ Init â”€â”€
+            // ── Init ──
             init: function() {
                 var self = this;
 
@@ -833,7 +833,7 @@ add_action( 'wp_footer', function() {
                     }
                 }, 400);
 
-                // WooCommerce cart update â†’ re-translate
+                // WooCommerce cart update → re-translate
                 if (typeof jQuery !== 'undefined') {
                     jQuery(document.body).on(
                         'wc_fragments_refreshed wc_fragments_loaded updated_wc_div added_to_cart',
@@ -915,8 +915,8 @@ function rima_handle_contact_form() {
     $admin_email  = get_option( 'admin_email' );
     $site_name    = get_bloginfo( 'name' );
 
-    // â”€â”€ Email to admin â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    $mail_subject = sprintf( '[%s] Contact: %s â€” %s', $site_name, $full_name, $subject ?: $topic );
+    // ── Email to admin ───────────────────────────────────────
+    $mail_subject = sprintf( '[%s] Contact: %s — %s', $site_name, $full_name, $subject ?: $topic );
     $mail_body    = "New contact message from {$full_name} <{$email}>\n\n"
                   . "Topic:   {$topic}\n"
                   . "Subject: {$subject}\n\n"
@@ -930,16 +930,16 @@ function rima_handle_contact_form() {
 
     wp_mail( $admin_email, $mail_subject, $mail_body, $mail_headers );
 
-    // â”€â”€ Auto-reply to sender â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    $reply_subject = sprintf( 'Am primit mesajul tău â€” %s', $site_name );
-    $reply_body    = "Bună {$first_name},\n\n"
-                   . "Mulțumim că ne-ai contactat! Am primit mesajul tău și îți vom răspunde în cel mult 24 de ore.\n\n"
+    // ── Auto-reply to sender ─────────────────────────────────
+    $reply_subject = sprintf( 'Am primit mesajul tau — %s', $site_name );
+    $reply_body    = "Buna {$first_name},\n\n"
+                   . "Mul?umim ca ne-ai contactat! Am primit mesajul tau ?i �?i vom raspunde �n cel mult 24 de ore.\n\n"
                    . "Echipa Rima Academy\n"
                    . get_site_url();
 
     wp_mail( $email, $reply_subject, $reply_body, array( 'Content-Type: text/plain; charset=UTF-8' ) );
 
-    // â”€â”€ Save to DB as custom post â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Save to DB as custom post ─────────────────────────────
     $post_id = wp_insert_post( array(
         'post_type'   => 'rima_contact_msg',
         'post_title'  => $mail_subject,
@@ -974,7 +974,7 @@ add_action( 'init', function() {
 } );
 
 /* ============================================================
-   2. AVATAR UPLOAD ââ‚¬â€ AJAX HANDLER
+   2. AVATAR UPLOAD �€” AJAX HANDLER
    ============================================================ */
 function academist_child_upload_avatar() {
 	check_ajax_referer( 'rima_nonce', 'nonce' );
