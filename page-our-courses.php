@@ -1,184 +1,3 @@
-<?php
-// 1. Fetch Languages and their Courses for the 3D Flip Cards
-$language_data = array();
-$course_cats = get_terms( array(
-    'taxonomy'   => 'course-category',
-    'hide_empty' => true,
-) );
-
-if ( ! empty( $course_cats ) && ! is_wp_error( $course_cats ) ) {
-    
-    foreach ( $course_cats as $cat ) {
-        $slug = strtolower($cat->slug);
-        
-        // Fetch image set in Academist LMS (course-category taxonomy)
-        $cat_img = get_term_meta( $cat->term_id, 'course_category_image', true );
-        
-        // Elated themes sometimes store the attachment ID instead of URL
-        if ( is_numeric( $cat_img ) ) {
-            $cat_img = wp_get_attachment_url( $cat_img );
-        }
-
-        // Fetch up to 4 courses for this category
-        $courses_args = array(
-            'post_type'      => 'course',
-            'posts_per_page' => 4,
-            'post_status'    => 'publish',
-            'orderby'        => 'title',
-            'order'          => 'ASC',
-            'tax_query'      => array(
-                array(
-                    'taxonomy' => 'course-category',
-                    'field'    => 'slug',
-                    'terms'    => $cat->slug,
-                ),
-            ),
-        );
-        $courses_query = new WP_Query($courses_args);
-        $cat_courses = array();
-
-        if ($courses_query->have_posts()) {
-            while ($courses_query->have_posts()) {
-                $courses_query->the_post();
-                $c_id = get_the_ID();
-                $price = function_exists( 'academist_lms_calculate_course_price' ) ? academist_lms_calculate_course_price( $c_id ) : 0;
-                
-                $price_html = '';
-                if ( $price > 0 ) {
-                    if ( function_exists( 'get_woocommerce_currency_symbol' ) ) {
-                        $pos = get_option( 'woocommerce_currency_pos', 'right' );
-                        $sym = get_woocommerce_currency_symbol();
-                        $price_html = $pos === 'left' ? esc_html( $sym . $price ) : esc_html( $price . ' ' . $sym );
-                    } else {
-                        $price_html = esc_html( $price );
-                    }
-                } else {
-                    $price_html = 'Free';
-                }
-
-                // Extract level (e.g. A1-A2) from title
-                $title = get_the_title();
-                $level = '';
-                if (preg_match('/([A-C][1-2]\s*-\s*[A-C][1-2])|([A-C][1-2])/', $title, $matches)) {
-                    $level = $matches[0];
-                    $title = trim(str_replace($level, '', $title));
-                    $title = trim(trim($title, '-:'));
-                }
-                
-                $excerpt = wp_trim_words(get_the_excerpt(), 8, '...');
-
-                $cat_courses[] = array(
-                    'title'      => $title,
-                    'level'      => $level ? $level : 'All Levels',
-                    'link'       => get_permalink(),
-                    'excerpt'    => $excerpt,
-                    'price_html' => $price_html
-                );
-                
-                // If the category has no custom image, use the featured image of the first course
-                if ( empty( $cat_img ) && has_post_thumbnail() ) {
-                    $cat_img = get_the_post_thumbnail_url( get_the_ID(), 'full' );
-                }
-            }
-            wp_reset_postdata();
-        }
-        
-        // Final fallback if absolutely no image exists
-        if ( empty( $cat_img ) ) {
-            $cat_img = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop';
-        }
-
-        // Only add language if it has courses
-        if (!empty($cat_courses)) {
-            $language_data[] = array(
-                'name'    => $cat->name,
-                'slug'    => $cat->slug,
-                'img'     => $cat_img,
-                'courses' => $cat_courses
-            );
-        }
-    }
-}
-
-// Reorder languages: Romanian, English, Japanese
-$ordered_data = array();
-$desired_order = array('romanian', 'english', 'japanese');
-foreach ($desired_order as $slug) {
-    foreach ($language_data as $lang) {
-        if (strtolower($lang['slug']) === $slug) {
-            $ordered_data[] = $lang;
-            break;
-        }
-    }
-}
-// Add any others that might exist
-foreach ($language_data as $lang) {
-    if (!in_array(strtolower($lang['slug']), $desired_order)) {
-        $ordered_data[] = $lang;
-    }
-}
-$language_data = $ordered_data;
-
-// 2. Fetch Real Testimonials (Fixed)
-$testimonial_args = array(
-    'post_type'      => 'testimonials',
-    'posts_per_page' => 10,
-    'post_status'    => 'publish'
-);
-$testimonial_query = new WP_Query($testimonial_args);
-$testimonial_items = array();
-
-if ($testimonial_query->have_posts()) {
-    while ($testimonial_query->have_posts()) {
-        $testimonial_query->the_post();
-        
-        // In Academist, the author is often a meta field 'eltdf_testimonial_author' or the post_title. 
-        // The text is usually the post_title or post_content. Let's grab both.
-        $text = wp_strip_all_tags(get_the_title());
-        $author = get_post_meta(get_the_ID(), 'eltdf_testimonial_author', true);
-        if (empty($author)) {
-            $author = "Student";
-        }
-        
-        // Sometimes the text is in the content
-        $content = wp_strip_all_tags(get_the_content());
-        if (!empty($content) && strlen($content) > 10) {
-            $text = $content;
-        }
-
-        if (!empty($text)) {
-            $testimonial_items[] = array(
-                'text' => $text,
-                'author' => $author
-            );
-        }
-    }
-    wp_reset_postdata();
-}
-
-// Fallback if no testimonials found
-if (empty($testimonial_items)) {
-    $testimonial_items = array(
-        array('text' => 'The best language platform I have ever used.', 'author' => 'Sarah T.'),
-        array('text' => 'Native tutors helped me pass JLPT N3 easily.', 'author' => 'John D.'),
-        array('text' => 'I love the live Zoom integration!', 'author' => 'Maria M.'),
-    );
-}
-
-// Enqueue specific assets for this page
-add_action('wp_enqueue_scripts', function() {
-    // Enqueue GSAP
-    wp_enqueue_script('gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js', array(), null, true);
-    wp_enqueue_script('gsap-scroll', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js', array('gsap'), null, true);
-    
-    // Enqueue Custom CSS & JS
-    wp_enqueue_style('rima-home-css', get_stylesheet_directory_uri() . '/assets/css/rima-home.css', array(), time());
-    wp_enqueue_script('rima-home-js', get_stylesheet_directory_uri() . '/assets/js/rima-home.js', array('gsap', 'gsap-scroll', 'jquery'), time(), true);
-});
-
-
-?>
-
 ﻿<?php
 /**
  * Template Name: Our Courses
@@ -198,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
 do_action( 'academist_elated_action_before_main_content' );
 
-// â”€â”€ Fetch all categories for the filter bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Fetch all categories for the filter bar ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 $categories = get_terms( array(
     'taxonomy'   => 'course-category',
     'hide_empty' => true,
@@ -206,31 +25,31 @@ $categories = get_terms( array(
     'order'      => 'ASC',
 ) );
 
-// â”€â”€ PHP Dictionary for Globe Mapping â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ PHP Dictionary for Globe Mapping ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 $globe_languages_map = array(
-    'english'  => array('isos' => array('GBR', 'USA', 'CAN', 'AUS', 'NZL', 'IRL', 'ZAF'), 'lat' => 51.5072, 'lng' => -0.1276, 'flag' => 'https://flagcdn.com/w320/gb.png', 'flagSmall' => 'https://flagcdn.com/w40/gb.png', 'name' => 'English', 'nativeName' => 'English', 'speakers' => '1.5B+', 'countriesText' => 'United Kingdom Â· United States Â· Canada Â· Australia Â· New Zealand Â· Ireland Â· South Africa'),
-    'engleza'  => array('isos' => array('GBR', 'USA', 'CAN', 'AUS', 'NZL', 'IRL', 'ZAF'), 'lat' => 51.5072, 'lng' => -0.1276, 'flag' => 'https://flagcdn.com/w320/gb.png', 'flagSmall' => 'https://flagcdn.com/w40/gb.png', 'name' => 'English', 'nativeName' => 'English', 'speakers' => '1.5B+', 'countriesText' => 'United Kingdom Â· United States Â· Canada Â· Australia Â· New Zealand Â· Ireland Â· South Africa'),
+    'english'  => array('isos' => array('GBR', 'USA', 'CAN', 'AUS', 'NZL', 'IRL', 'ZAF'), 'lat' => 51.5072, 'lng' => -0.1276, 'flag' => 'https://flagcdn.com/w320/gb.png', 'flagSmall' => 'https://flagcdn.com/w40/gb.png', 'name' => 'English', 'nativeName' => 'English', 'speakers' => '1.5B+', 'countriesText' => 'United Kingdom Ã‚Â· United States Ã‚Â· Canada Ã‚Â· Australia Ã‚Â· New Zealand Ã‚Â· Ireland Ã‚Â· South Africa'),
+    'engleza'  => array('isos' => array('GBR', 'USA', 'CAN', 'AUS', 'NZL', 'IRL', 'ZAF'), 'lat' => 51.5072, 'lng' => -0.1276, 'flag' => 'https://flagcdn.com/w320/gb.png', 'flagSmall' => 'https://flagcdn.com/w40/gb.png', 'name' => 'English', 'nativeName' => 'English', 'speakers' => '1.5B+', 'countriesText' => 'United Kingdom Ã‚Â· United States Ã‚Â· Canada Ã‚Â· Australia Ã‚Â· New Zealand Ã‚Â· Ireland Ã‚Â· South Africa'),
 
-    'romanian' => array('isos' => array('ROU', 'MDA'), 'lat' => 45.9432, 'lng' => 24.9668, 'flag' => 'https://flagcdn.com/w320/ro.png', 'flagSmall' => 'https://flagcdn.com/w40/ro.png', 'name' => 'Romanian', 'nativeName' => 'RomÃ¢nÄƒ', 'speakers' => '26M+', 'countriesText' => 'Romania Â· Republic of Moldova'),
-    'romana'   => array('isos' => array('ROU', 'MDA'), 'lat' => 45.9432, 'lng' => 24.9668, 'flag' => 'https://flagcdn.com/w320/ro.png', 'flagSmall' => 'https://flagcdn.com/w40/ro.png', 'name' => 'Romanian', 'nativeName' => 'RomÃ¢nÄƒ', 'speakers' => '26M+', 'countriesText' => 'Romania Â· Republic of Moldova'),
+    'romanian' => array('isos' => array('ROU', 'MDA'), 'lat' => 45.9432, 'lng' => 24.9668, 'flag' => 'https://flagcdn.com/w320/ro.png', 'flagSmall' => 'https://flagcdn.com/w40/ro.png', 'name' => 'Romanian', 'nativeName' => 'RomÃƒÂ¢nÃ„Æ’', 'speakers' => '26M+', 'countriesText' => 'Romania Ã‚Â· Republic of Moldova'),
+    'romana'   => array('isos' => array('ROU', 'MDA'), 'lat' => 45.9432, 'lng' => 24.9668, 'flag' => 'https://flagcdn.com/w320/ro.png', 'flagSmall' => 'https://flagcdn.com/w40/ro.png', 'name' => 'Romanian', 'nativeName' => 'RomÃƒÂ¢nÃ„Æ’', 'speakers' => '26M+', 'countriesText' => 'Romania Ã‚Â· Republic of Moldova'),
 
-    'japanese' => array('isos' => array('JPN'), 'lat' => 36.2048, 'lng' => 138.2529, 'flag' => 'https://flagcdn.com/w320/jp.png', 'flagSmall' => 'https://flagcdn.com/w40/jp.png', 'name' => 'Japanese', 'nativeName' => 'æ—¥æœ¬èªž', 'speakers' => '125M+', 'countriesText' => 'Japan'),
-    'japoneza' => array('isos' => array('JPN'), 'lat' => 36.2048, 'lng' => 138.2529, 'flag' => 'https://flagcdn.com/w320/jp.png', 'flagSmall' => 'https://flagcdn.com/w40/jp.png', 'name' => 'Japanese', 'nativeName' => 'æ—¥æœ¬èªž', 'speakers' => '125M+', 'countriesText' => 'Japan'),
+    'japanese' => array('isos' => array('JPN'), 'lat' => 36.2048, 'lng' => 138.2529, 'flag' => 'https://flagcdn.com/w320/jp.png', 'flagSmall' => 'https://flagcdn.com/w40/jp.png', 'name' => 'Japanese', 'nativeName' => 'ÃƒÂ¦Ã¢â‚¬â€Ã‚Â¥ÃƒÂ¦Ã…â€œÃ‚Â¬ÃƒÂ¨Ã‚ÂªÃ…Â¾', 'speakers' => '125M+', 'countriesText' => 'Japan'),
+    'japoneza' => array('isos' => array('JPN'), 'lat' => 36.2048, 'lng' => 138.2529, 'flag' => 'https://flagcdn.com/w320/jp.png', 'flagSmall' => 'https://flagcdn.com/w40/jp.png', 'name' => 'Japanese', 'nativeName' => 'ÃƒÂ¦Ã¢â‚¬â€Ã‚Â¥ÃƒÂ¦Ã…â€œÃ‚Â¬ÃƒÂ¨Ã‚ÂªÃ…Â¾', 'speakers' => '125M+', 'countriesText' => 'Japan'),
 
-    'spanish'  => array('isos' => array('ESP', 'MEX', 'ARG', 'COL', 'PER', 'VEN', 'CHL', 'CUB', 'DOM'), 'lat' => 40.4637, 'lng' => -3.7492, 'flag' => 'https://flagcdn.com/w320/es.png', 'flagSmall' => 'https://flagcdn.com/w40/es.png', 'name' => 'Spanish', 'nativeName' => 'EspaÃ±ol', 'speakers' => '580M+', 'countriesText' => 'Spain Â· Mexico Â· Argentina Â· Colombia Â· Peru Â· Chile Â· and 14 more'),
-    'spaniola' => array('isos' => array('ESP', 'MEX', 'ARG', 'COL', 'PER', 'VEN', 'CHL', 'CUB', 'DOM'), 'lat' => 40.4637, 'lng' => -3.7492, 'flag' => 'https://flagcdn.com/w320/es.png', 'flagSmall' => 'https://flagcdn.com/w40/es.png', 'name' => 'Spanish', 'nativeName' => 'EspaÃ±ol', 'speakers' => '580M+', 'countriesText' => 'Spain Â· Mexico Â· Argentina Â· Colombia Â· Peru Â· Chile Â· and 14 more'),
+    'spanish'  => array('isos' => array('ESP', 'MEX', 'ARG', 'COL', 'PER', 'VEN', 'CHL', 'CUB', 'DOM'), 'lat' => 40.4637, 'lng' => -3.7492, 'flag' => 'https://flagcdn.com/w320/es.png', 'flagSmall' => 'https://flagcdn.com/w40/es.png', 'name' => 'Spanish', 'nativeName' => 'EspaÃƒÆ’Ã‚Â±ol', 'speakers' => '580M+', 'countriesText' => 'Spain Ã‚Â· Mexico Ã‚Â· Argentina Ã‚Â· Colombia Ã‚Â· Peru Ã‚Â· Chile Ã‚Â· and 14 more'),
+    'spaniola' => array('isos' => array('ESP', 'MEX', 'ARG', 'COL', 'PER', 'VEN', 'CHL', 'CUB', 'DOM'), 'lat' => 40.4637, 'lng' => -3.7492, 'flag' => 'https://flagcdn.com/w320/es.png', 'flagSmall' => 'https://flagcdn.com/w40/es.png', 'name' => 'Spanish', 'nativeName' => 'EspaÃƒÆ’Ã‚Â±ol', 'speakers' => '580M+', 'countriesText' => 'Spain Ã‚Â· Mexico Ã‚Â· Argentina Ã‚Â· Colombia Ã‚Â· Peru Ã‚Â· Chile Ã‚Â· and 14 more'),
 
-    'french'   => array('isos' => array('FRA', 'CAN', 'BEL', 'CHE', 'SEN', 'CIV', 'CMR', 'MLI'), 'lat' => 46.2276, 'lng' => 2.2137, 'flag' => 'https://flagcdn.com/w320/fr.png', 'flagSmall' => 'https://flagcdn.com/w40/fr.png', 'name' => 'French', 'nativeName' => 'FranÃ§ais', 'speakers' => '321M+', 'countriesText' => 'France Â· Belgium Â· Switzerland Â· Canada Â· Senegal Â· and 24 more'),
-    'franceza' => array('isos' => array('FRA', 'CAN', 'BEL', 'CHE', 'SEN', 'CIV', 'CMR', 'MLI'), 'lat' => 46.2276, 'lng' => 2.2137, 'flag' => 'https://flagcdn.com/w320/fr.png', 'flagSmall' => 'https://flagcdn.com/w40/fr.png', 'name' => 'French', 'nativeName' => 'FranÃ§ais', 'speakers' => '321M+', 'countriesText' => 'France Â· Belgium Â· Switzerland Â· Canada Â· Senegal Â· and 24 more'),
+    'french'   => array('isos' => array('FRA', 'CAN', 'BEL', 'CHE', 'SEN', 'CIV', 'CMR', 'MLI'), 'lat' => 46.2276, 'lng' => 2.2137, 'flag' => 'https://flagcdn.com/w320/fr.png', 'flagSmall' => 'https://flagcdn.com/w40/fr.png', 'name' => 'French', 'nativeName' => 'FranÃƒÆ’Ã‚Â§ais', 'speakers' => '321M+', 'countriesText' => 'France Ã‚Â· Belgium Ã‚Â· Switzerland Ã‚Â· Canada Ã‚Â· Senegal Ã‚Â· and 24 more'),
+    'franceza' => array('isos' => array('FRA', 'CAN', 'BEL', 'CHE', 'SEN', 'CIV', 'CMR', 'MLI'), 'lat' => 46.2276, 'lng' => 2.2137, 'flag' => 'https://flagcdn.com/w320/fr.png', 'flagSmall' => 'https://flagcdn.com/w40/fr.png', 'name' => 'French', 'nativeName' => 'FranÃƒÆ’Ã‚Â§ais', 'speakers' => '321M+', 'countriesText' => 'France Ã‚Â· Belgium Ã‚Â· Switzerland Ã‚Â· Canada Ã‚Â· Senegal Ã‚Â· and 24 more'),
 
-    'german'   => array('isos' => array('DEU', 'AUT', 'CHE'), 'lat' => 51.1657, 'lng' => 10.4515, 'flag' => 'https://flagcdn.com/w320/de.png', 'flagSmall' => 'https://flagcdn.com/w40/de.png', 'name' => 'German', 'nativeName' => 'Deutsch', 'speakers' => '130M+', 'countriesText' => 'Germany Â· Austria Â· Switzerland'),
-    'germana'  => array('isos' => array('DEU', 'AUT', 'CHE'), 'lat' => 51.1657, 'lng' => 10.4515, 'flag' => 'https://flagcdn.com/w320/de.png', 'flagSmall' => 'https://flagcdn.com/w40/de.png', 'name' => 'German', 'nativeName' => 'Deutsch', 'speakers' => '130M+', 'countriesText' => 'Germany Â· Austria Â· Switzerland'),
+    'german'   => array('isos' => array('DEU', 'AUT', 'CHE'), 'lat' => 51.1657, 'lng' => 10.4515, 'flag' => 'https://flagcdn.com/w320/de.png', 'flagSmall' => 'https://flagcdn.com/w40/de.png', 'name' => 'German', 'nativeName' => 'Deutsch', 'speakers' => '130M+', 'countriesText' => 'Germany Ã‚Â· Austria Ã‚Â· Switzerland'),
+    'germana'  => array('isos' => array('DEU', 'AUT', 'CHE'), 'lat' => 51.1657, 'lng' => 10.4515, 'flag' => 'https://flagcdn.com/w320/de.png', 'flagSmall' => 'https://flagcdn.com/w40/de.png', 'name' => 'German', 'nativeName' => 'Deutsch', 'speakers' => '130M+', 'countriesText' => 'Germany Ã‚Â· Austria Ã‚Â· Switzerland'),
 
-    'italian'  => array('isos' => array('ITA', 'CHE', 'SMR'), 'lat' => 41.8719, 'lng' => 12.5674, 'flag' => 'https://flagcdn.com/w320/it.png', 'flagSmall' => 'https://flagcdn.com/w40/it.png', 'name' => 'Italian', 'nativeName' => 'Italiano', 'speakers' => '85M+', 'countriesText' => 'Italy Â· Switzerland Â· San Marino'),
-    'italiana' => array('isos' => array('ITA', 'CHE', 'SMR'), 'lat' => 41.8719, 'lng' => 12.5674, 'flag' => 'https://flagcdn.com/w320/it.png', 'flagSmall' => 'https://flagcdn.com/w40/it.png', 'name' => 'Italian', 'nativeName' => 'Italiano', 'speakers' => '85M+', 'countriesText' => 'Italy Â· Switzerland Â· San Marino'),
+    'italian'  => array('isos' => array('ITA', 'CHE', 'SMR'), 'lat' => 41.8719, 'lng' => 12.5674, 'flag' => 'https://flagcdn.com/w320/it.png', 'flagSmall' => 'https://flagcdn.com/w40/it.png', 'name' => 'Italian', 'nativeName' => 'Italiano', 'speakers' => '85M+', 'countriesText' => 'Italy Ã‚Â· Switzerland Ã‚Â· San Marino'),
+    'italiana' => array('isos' => array('ITA', 'CHE', 'SMR'), 'lat' => 41.8719, 'lng' => 12.5674, 'flag' => 'https://flagcdn.com/w320/it.png', 'flagSmall' => 'https://flagcdn.com/w40/it.png', 'name' => 'Italian', 'nativeName' => 'Italiano', 'speakers' => '85M+', 'countriesText' => 'Italy Ã‚Â· Switzerland Ã‚Â· San Marino'),
 
-    'chinese'  => array('isos' => array('CHN', 'TWN', 'SGP'), 'lat' => 35.8617, 'lng' => 104.1954, 'flag' => 'https://flagcdn.com/w320/cn.png', 'flagSmall' => 'https://flagcdn.com/w40/cn.png', 'name' => 'Chinese', 'nativeName' => 'ä¸­æ–‡', 'speakers' => '1.1B+', 'countriesText' => 'China Â· Taiwan Â· Singapore'),
-    'chineza'  => array('isos' => array('CHN', 'TWN', 'SGP'), 'lat' => 35.8617, 'lng' => 104.1954, 'flag' => 'https://flagcdn.com/w320/cn.png', 'flagSmall' => 'https://flagcdn.com/w40/cn.png', 'name' => 'Chinese', 'nativeName' => 'ä¸­æ–‡', 'speakers' => '1.1B+', 'countriesText' => 'China Â· Taiwan Â· Singapore'),
+    'chinese'  => array('isos' => array('CHN', 'TWN', 'SGP'), 'lat' => 35.8617, 'lng' => 104.1954, 'flag' => 'https://flagcdn.com/w320/cn.png', 'flagSmall' => 'https://flagcdn.com/w40/cn.png', 'name' => 'Chinese', 'nativeName' => 'ÃƒÂ¤Ã‚Â¸Ã‚Â­ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡', 'speakers' => '1.1B+', 'countriesText' => 'China Ã‚Â· Taiwan Ã‚Â· Singapore'),
+    'chineza'  => array('isos' => array('CHN', 'TWN', 'SGP'), 'lat' => 35.8617, 'lng' => 104.1954, 'flag' => 'https://flagcdn.com/w320/cn.png', 'flagSmall' => 'https://flagcdn.com/w40/cn.png', 'name' => 'Chinese', 'nativeName' => 'ÃƒÂ¤Ã‚Â¸Ã‚Â­ÃƒÂ¦Ã¢â‚¬â€œÃ¢â‚¬Â¡', 'speakers' => '1.1B+', 'countriesText' => 'China Ã‚Â· Taiwan Ã‚Â· Singapore'),
 );
 
 $active_globe_langs = array();
@@ -244,7 +63,7 @@ if ( ! is_wp_error( $categories ) && ! empty( $categories ) ) {
     }
 }
 
-// â”€â”€ Initial course query (9 per page) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Initial course query (9 per page) ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 $paged       = max( 1, get_query_var( 'paged' ) );
 $per_page    = 9;
 $query_args  = array(
@@ -258,7 +77,7 @@ $query_args  = array(
 $courses_query = new WP_Query( $query_args );
 $total_courses = (int) wp_count_posts( 'course' )->publish;
 
-// â”€â”€ REAL STATS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ REAL STATS ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 
 /**
  * Real student count:
@@ -325,9 +144,9 @@ $display_rating = $rating_count > 0
 ?>
 
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- ÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚Â
      HERO SECTION
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+     ÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚Â -->
 <section class="roc-hero" id="roc-hero-section" aria-label="Our Courses">
     <div class="roc-hero-bg-wrapper" id="roc-parallax-wrapper">
         <div id="roc-globe-viz"></div>
@@ -349,7 +168,7 @@ $display_rating = $rating_count > 0
                 </div>
                 <div class="roc-stat-divider"></div>
                 <div class="roc-stat">
-                    <span class="roc-stat-number"><?php echo esc_html( $display_rating ); ?>â˜…</span>
+                    <span class="roc-stat-number"><?php echo esc_html( $display_rating ); ?>ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦</span>
                     <span class="roc-stat-label">Rating</span>
                 </div>
             </div>
@@ -367,10 +186,10 @@ $display_rating = $rating_count > 0
     </div>
 </section>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- ÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚Â
      INTERACTIVE LANGUAGE SHOWCASE REEL (replaces courses.mp4)
-     Dynamic â€” reads from $active_globe_langs (auto-updates with new categories)
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+     Dynamic ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â reads from $active_globe_langs (auto-updates with new categories)
+     ÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚Â -->
 <?php if ( ! empty( $active_globe_langs ) ) : ?>
 <section class="roc-lang-reel" id="roc-lang-reel" aria-label="Language Showcase">
     <div class="roc-reel-canvas">
@@ -396,7 +215,7 @@ $display_rating = $rating_count > 0
                     <h3 class="roc-reel-name"><?php echo esc_html( $rlang['name'] ); ?></h3>
                     <p class="roc-reel-countries">Spoken as a first language in<br><strong><?php echo esc_html( $rlang['countriesText'] ?? '' ); ?></strong></p>
                     <div class="roc-reel-stat">
-                        <span class="roc-reel-stat-num"><?php echo esc_html( $rlang['speakers'] ?? 'â€”' ); ?></span>
+                        <span class="roc-reel-stat-num"><?php echo esc_html( $rlang['speakers'] ?? 'Ã¢â‚¬â€' ); ?></span>
                         <span class="roc-reel-stat-lbl">Speakers Worldwide</span>
                     </div>
                     <button class="roc-reel-cta" data-slug="<?php echo esc_attr( $rlang['slug'] ); ?>">
@@ -441,9 +260,427 @@ $display_rating = $rating_count > 0
 </section>
 <?php endif; ?>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-     FILTER BAR
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<!-- 
+     PREMIUM PACKAGES CONFIGURATOR (VUE 3) - BENTO GRID & STICKY CART
+-->
+<?php 
+// ─── Packages & UI settings ─────────────────────────────────────────
+if ( function_exists('rima_get_packages') ) {
+    $pricing_data = rima_get_packages();
+    $ui_settings  = rima_get_packages_ui();
+} else {
+    $pricing_data = get_option('rima_pricing_packages', []);
+    $ui_settings  = array_merge([
+        'title'    => 'Build Your Package',
+        'subtitle' => 'Select your language, level, and addons.',
+        'cta'      => 'PROCEED TO CHECKOUT',
+        'features' => [
+            'Full access to Rima LMS',
+            'Interactive exercises',
+            'Self-paced progress tracking',
+            'Official Certificate included',
+        ],
+    ], $pricing_data['ui'] ?? []);
+}
+$encoded_pricing = json_encode($pricing_data);
+$encoded_ui      = json_encode($ui_settings);
+?>
+
+<section class="roc-packages-configurator tw-py-24 tw-bg-[#030408] tw-font-sans tw-relative tw-overflow-hidden" id="rima-packages-app" v-cloak>
+    
+    <!-- Ambient Glows -->
+    <div class="tw-absolute tw-top-[-10%] tw-left-[-10%] tw-w-[40%] tw-h-[50%] tw-bg-[#E11D48] tw-rounded-full tw-mix-blend-screen tw-filter tw-blur-[150px] tw-opacity-20 tw-pointer-events-none"></div>
+    <div class="tw-absolute tw-bottom-[-10%] tw-right-[-10%] tw-w-[40%] tw-h-[50%] tw-bg-[#12308E] tw-rounded-full tw-mix-blend-screen tw-filter tw-blur-[150px] tw-opacity-20 tw-pointer-events-none"></div>
+
+    <div class="tw-max-w-7xl tw-mx-auto tw-px-4 sm:tw-px-6 tw-relative tw-z-10">
+        
+        <div class="tw-mb-12 tw-text-center lg:tw-text-left">
+            <h2 class="tw-text-5xl tw-font-display tw-font-extrabold tw-text-white tw-tracking-tight tw-mb-4"><?php echo esc_html($ui_settings['title']); ?></h2>
+            <p class="tw-text-lg tw-text-gray-400 tw-max-w-2xl"><?php echo esc_html($ui_settings['subtitle']); ?></p>
+        </div>
+
+        <div class="tw-flex tw-flex-col-reverse lg:tw-flex-row tw-gap-10 tw-items-start">
+            
+            <!-- Left: Options Grid (Bento) -->
+            <div class="tw-flex-1 tw-space-y-10 tw-w-full">
+                
+                <!-- 1. Language -->
+                <div>
+                    <h3 class="tw-text-2xl tw-font-bold tw-text-white tw-mb-6 tw-flex tw-items-center tw-gap-3">
+                        <div class="tw-w-8 tw-h-8 tw-rounded-full tw-bg-white/10 tw-flex tw-items-center tw-justify-center tw-text-sm">1</div>
+                        Language
+                    </h3>
+                    <div class="tw-grid tw-grid-cols-2 md:tw-grid-cols-3 tw-gap-4">
+                        <button v-for="lang in languages" :key="lang.id" 
+                                @click="selection.language = lang.id"
+                                :class="['tw-relative tw-p-6 tw-rounded-[1.5rem] tw-border tw-transition-all tw-duration-300 tw-ease-out tw-text-left tw-flex tw-flex-col tw-gap-4 group tw-overflow-hidden', 
+                                         selection.language === lang.id ? 'tw-border-[#E11D48] tw-bg-gradient-to-br tw-from-[#E11D48]/20 tw-to-[#12308E]/20 tw-text-white' : 'tw-border-white/5 tw-bg-white/[0.03] hover:tw-bg-white/[0.06] hover:tw-border-white/20 tw-text-gray-300']">
+                            
+                            <img :src="lang.flag" class="tw-w-16 tw-h-12 tw-rounded-lg tw-shadow-md tw-object-cover group-hover:tw-scale-105 tw-transition-transform tw-duration-300" />
+                            <div>
+                                <div :class="['tw-font-bold tw-text-xl tw-tracking-wide tw-mb-1', selection.language === lang.id ? 'tw-text-white' : 'tw-text-white']">{{ lang.name }}</div>
+                                <div :class="['tw-text-sm', selection.language === lang.id ? 'tw-text-gray-300' : 'tw-text-gray-500']">{{ lang.native }}</div>
+                            </div>
+                            
+                            <!-- Check -->
+                            <div v-if="selection.language === lang.id" class="tw-absolute tw-top-4 tw-right-4 tw-w-6 tw-h-6 tw-bg-[#E11D48] tw-text-white tw-rounded-full tw-flex tw-items-center tw-justify-center tw-shadow-lg">
+                                <i data-lucide="check" class="tw-w-3.5 tw-h-3.5 tw-stroke-[3]"></i>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. Level -->
+                <div>
+                    <h3 class="tw-text-2xl tw-font-bold tw-text-white tw-mb-6 tw-flex tw-items-center tw-gap-3">
+                        <div class="tw-w-8 tw-h-8 tw-rounded-full tw-bg-white/10 tw-flex tw-items-center tw-justify-center tw-text-sm">2</div>
+                        CEFR Level
+                    </h3>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-4">
+                        <button v-for="level in levels" :key="level.id"
+                                @click="selection.level = level.id"
+                                :class="['tw-relative tw-p-6 tw-rounded-[1.5rem] tw-border tw-transition-all tw-duration-300 tw-ease-out tw-text-left tw-flex tw-flex-col group', 
+                                         selection.level === level.id ? 'tw-border-[#12308E] tw-bg-gradient-to-br tw-from-[#12308E]/20 tw-to-transparent tw-shadow-[0_0_20px_rgba(18,48,142,0.2)]' : 'tw-border-white/5 tw-bg-white/[0.03] hover:tw-bg-white/[0.06] hover:tw-border-white/20']">
+                            
+                            <div class="tw-flex tw-items-center tw-justify-between tw-mb-3">
+                                <span :class="['tw-font-bold tw-text-2xl', selection.level === level.id ? 'tw-text-white' : 'tw-text-white']">{{ level.name }}</span>
+                                <div :class="['tw-w-3 tw-h-3 tw-rounded-full', selection.level === level.id ? 'tw-bg-[#12308E] tw-shadow-[0_0_8px_#12308E]' : 'tw-bg-white/20']"></div>
+                            </div>
+                            <div :class="['tw-font-semibold tw-mb-2', selection.level === level.id ? 'tw-text-[#60a5fa]' : 'tw-text-gray-300']">{{ level.title }}</div>
+                            <div class="tw-text-sm tw-text-gray-400 tw-leading-relaxed">{{ level.desc }}</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3. Format -->
+                <div>
+                    <h3 class="tw-text-2xl tw-font-bold tw-text-white tw-mb-6 tw-flex tw-items-center tw-gap-3">
+                        <div class="tw-w-8 tw-h-8 tw-rounded-full tw-bg-white/10 tw-flex tw-items-center tw-justify-center tw-text-sm">3</div>
+                        Learning Format
+                    </h3>
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-4">
+                        <button v-for="format in formats" :key="format.id"
+                                @click="selection.format = format.id; selection.duration = format.defaultDuration"
+                                :class="['tw-relative tw-p-6 tw-rounded-[1.5rem] tw-border tw-transition-all tw-duration-300 tw-ease-out tw-text-left tw-flex tw-items-start tw-gap-5 group', 
+                                         selection.format === format.id ? 'tw-border-white/30 tw-bg-white/10' : 'tw-border-white/5 tw-bg-white/[0.03] hover:tw-bg-white/[0.06] hover:tw-border-white/20']">
+                            
+                            <div :class="['tw-w-14 tw-h-14 tw-rounded-2xl tw-flex tw-items-center tw-justify-center tw-shrink-0 tw-transition-colors', selection.format === format.id ? 'tw-bg-white tw-text-black' : 'tw-bg-white/10 tw-text-gray-400 group-hover:tw-text-white']">
+                                <i :data-lucide="format.icon" class="tw-w-6 tw-h-6"></i>
+                            </div>
+                            <div>
+                                <div :class="['tw-font-bold tw-text-xl tw-mb-1', selection.format === format.id ? 'tw-text-white' : 'tw-text-gray-200']">{{ format.name }}</div>
+                                <div class="tw-text-sm tw-text-gray-400">{{ format.desc }}</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4. Duration (Only for non-platform) -->
+                <transition name="fade-up">
+                    <div v-if="selection.format !== 'platform'">
+                        <h3 class="tw-text-2xl tw-font-bold tw-text-white tw-mb-6 tw-flex tw-items-center tw-gap-3">
+                            <div class="tw-w-8 tw-h-8 tw-rounded-full tw-bg-white/10 tw-flex tw-items-center tw-justify-center tw-text-sm">4</div>
+                            Duration
+                        </h3>
+                        <div class="tw-grid tw-grid-cols-3 tw-gap-4">
+                            <button v-for="dur in durations" :key="dur.id"
+                                    @click="selection.duration = dur.id"
+                                    :class="['tw-p-5 tw-rounded-[1.5rem] tw-border tw-transition-all tw-duration-300 tw-ease-out tw-text-center tw-font-bold', 
+                                            selection.duration === dur.id ? 'tw-border-white/30 tw-bg-white/10 tw-text-white' : 'tw-border-white/5 tw-bg-white/[0.03] tw-text-gray-400 hover:tw-bg-white/[0.06] hover:tw-text-white hover:tw-border-white/20']">
+                                {{ dur.name }}
+                            </button>
+                        </div>
+                    </div>
+                </transition>
+
+            </div>
+
+            <!-- Right: The "Apple Store" Sticky Cart -->
+            <div class="tw-w-full lg:tw-w-[420px] tw-sticky tw-top-24 tw-shrink-0">
+                <div class="tw-bg-[#0f111a] tw-border tw-border-white/10 tw-rounded-[2rem] tw-overflow-hidden tw-shadow-2xl">
+                    
+                    <div class="tw-p-8">
+                        <h3 class="tw-text-sm tw-font-bold tw-text-gray-400 tw-uppercase tw-tracking-widest tw-mb-6">Your Package</h3>
+                        
+                        <!-- Dynamic Selections (Receipt style) -->
+                        <div class="tw-space-y-4 tw-mb-8">
+                            <!-- Course Selection -->
+                            <div class="tw-flex tw-items-start tw-gap-4 tw-p-4 tw-bg-white/5 tw-rounded-2xl tw-border tw-border-white/5">
+                                <img :src="currentLanguageFlag" class="tw-w-10 tw-h-8 tw-rounded tw-object-cover tw-shrink-0" />
+                                <div class="tw-flex-1">
+                                    <div class="tw-font-bold tw-text-white">{{ currentLanguageName }} {{ currentLevelName }}</div>
+                                    <div class="tw-text-xs tw-text-gray-400">{{ currentFormatName }} <span v-if="selection.format !== 'platform'">• {{ currentDurationName }}</span></div>
+                                </div>
+                                <div class="tw-font-medium tw-text-white">
+                                    {{ calculatedBasePrice }} RON
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Add-ons -->
+                        <div class="tw-mb-8">
+                            <h4 class="tw-text-sm tw-font-bold tw-text-gray-400 tw-mb-4">Add-Ons</h4>
+                            <div class="tw-space-y-3">
+                                
+                                <label class="tw-flex tw-items-center tw-justify-between tw-p-4 tw-rounded-2xl tw-border tw-border-white/5 tw-bg-white/[0.02] tw-cursor-pointer hover:tw-bg-white/[0.04] tw-transition-colors">
+                                    <div class="tw-flex-1">
+                                        <div class="tw-font-bold tw-text-white tw-text-sm">1-on-1 Mentoring</div>
+                                        <div class="tw-text-xs tw-text-gray-500">2h/week dedicated support</div>
+                                    </div>
+                                    <div class="tw-flex tw-items-center tw-gap-4">
+                                        <span class="tw-text-sm tw-font-medium tw-text-gray-300">+990 RON</span>
+                                        <div :class="['tw-w-11 tw-h-6 tw-rounded-full tw-p-1 tw-transition-colors tw-duration-300 tw-ease-in-out', addons.mentoring ? 'tw-bg-[#E11D48]' : 'tw-bg-gray-600']">
+                                            <input type="checkbox" v-model="addons.mentoring" class="tw-sr-only">
+                                            <div :class="['tw-w-4 tw-h-4 tw-bg-white tw-rounded-full tw-shadow-sm tw-transition-transform tw-duration-300 tw-ease-in-out', addons.mentoring ? 'tw-translate-x-5' : 'tw-translate-x-0']"></div>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label class="tw-flex tw-items-center tw-justify-between tw-p-4 tw-rounded-2xl tw-border tw-border-white/5 tw-bg-white/[0.02] tw-cursor-pointer hover:tw-bg-white/[0.04] tw-transition-colors">
+                                    <div class="tw-flex-1">
+                                        <div class="tw-font-bold tw-text-white tw-text-sm">Premium Certificate</div>
+                                        <div class="tw-text-xs tw-text-gray-500">Physical copy sent globally</div>
+                                    </div>
+                                    <div class="tw-flex tw-items-center tw-gap-4">
+                                        <span class="tw-text-sm tw-font-medium tw-text-gray-300">+190 RON</span>
+                                        <div :class="['tw-w-11 tw-h-6 tw-rounded-full tw-p-1 tw-transition-colors tw-duration-300 tw-ease-in-out', addons.certificate ? 'tw-bg-[#E11D48]' : 'tw-bg-gray-600']">
+                                            <input type="checkbox" v-model="addons.certificate" class="tw-sr-only">
+                                            <div :class="['tw-w-4 tw-h-4 tw-bg-white tw-rounded-full tw-shadow-sm tw-transition-transform tw-duration-300 tw-ease-in-out', addons.certificate ? 'tw-translate-x-5' : 'tw-translate-x-0']"></div>
+                                        </div>
+                                    </div>
+                                </label>
+
+                            </div>
+                        </div>
+
+                        <!-- Total -->
+                        <div class="tw-border-t tw-border-white/10 tw-pt-6 tw-mb-6">
+                            <div class="tw-flex tw-items-center tw-justify-between tw-mb-2">
+                                <span class="tw-text-gray-400">Total</span>
+                                <div class="tw-flex tw-items-baseline tw-gap-1">
+                                    <span class="tw-text-4xl tw-font-display tw-font-bold tw-text-white">{{ totalPrice }}</span>
+                                    <span class="tw-text-lg tw-text-gray-400">RON</span>
+                                </div>
+                            </div>
+                            <div class="tw-text-right tw-text-xs tw-text-[#10B981] tw-font-medium" v-if="addons.mentoring || addons.certificate">
+                                Includes add-ons
+                            </div>
+                        </div>
+
+                        <button class="tw-w-full tw-py-4 tw-bg-white hover:tw-bg-gray-200 tw-text-black tw-rounded-xl tw-font-bold tw-text-[15px] tw-tracking-wide tw-transition-colors tw-flex tw-items-center tw-justify-center tw-gap-2">
+                            <?php echo esc_html($ui_settings['cta']); ?>
+                        </button>
+                    </div>
+
+                    <!-- Features -->
+                    <div class="tw-bg-black/30 tw-p-6">
+                        <ul class="tw-space-y-3 tw-text-sm tw-text-gray-400">
+                            <?php foreach ($ui_settings['features'] as $feature) : ?>
+                            <li class="tw-flex tw-items-center tw-gap-3">
+                                <i data-lucide="check-circle-2" class="tw-w-4 tw-h-4 tw-text-[#E11D48]"></i>
+                                <?php echo esc_html($feature); ?>
+                            </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<style>
+/* Animations */
+.scale-in-enter-active, .scale-in-leave-active { transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1); }
+.scale-in-enter-from, .scale-in-leave-to { opacity: 0; transform: scale(0.5); }
+.fade-up-enter-active, .fade-up-leave-active { transition: all 0.4s cubic-bezier(0.32, 0.72, 0, 1); }
+.fade-up-enter-from, .fade-up-leave-to { opacity: 0; transform: translateY(10px); }
+.fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+</style>
+
+<!-- Include Vue 3 & Lucide -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const { createApp, ref, computed, watch, nextTick } = Vue;
+    
+    // Inject pricing data from PHP
+    const pricingData = <?php echo $encoded_pricing; ?>;
+    const uiSettings = <?php echo $encoded_ui; ?>;
+    
+    createApp({
+        setup() {
+            const languages = [
+                { id: 'en', name: 'English', native: 'English', flag: 'https://flagcdn.com/w80/gb.png' },
+                { id: 'ro', name: 'Romanian', native: 'Română', flag: 'https://flagcdn.com/w80/ro.png' },
+                { id: 'jp', name: 'Japanese', native: '日本語', flag: 'https://flagcdn.com/w80/jp.png' }
+            ];
+
+            const levels = [
+                { id: 'a1_a2', name: 'A1-A2', title: 'Beginner / Elem.', desc: 'Basic communication and everyday situations.', color: 'tw-bg-[#10B981]' },
+                { id: 'b1_b2', name: 'B1-B2', title: 'Intermediate', desc: 'Express yourself with confidence.', color: 'tw-bg-[#3B82F6]' },
+                { id: 'c1_c2', name: 'C1-C2', title: 'Advanced', desc: 'Mastery and near-native fluency.', color: 'tw-bg-[#8B5CF6]' }
+            ];
+
+            const formats = [
+                { id: 'platform', name: 'Platform Only', desc: 'Self-paced learning on our advanced LMS.', icon: 'monitor', defaultDuration: null },
+                { id: 'individual', name: '1-on-1 Sessions', desc: 'Zoom sessions with a dedicated tutor.', icon: 'user', defaultDuration: '1_month' },
+                { id: 'group', name: 'Group Cohort', desc: 'Small groups (3-8 students).', icon: 'users', defaultDuration: '1_month' },
+                { id: 'corporate', name: 'Corporate', desc: 'B2B custom plans for teams and employees.', icon: 'building-2', defaultDuration: '1_month' }
+            ];
+
+            const durations = [
+                { id: '1_month', name: '1 Month' },
+                { id: '3_months', name: '3 Months' },
+                { id: '6_months', name: '6 Months' }
+            ];
+
+            const selection = ref({
+                language: 'en',
+                level: 'b1_b2',
+                format: 'platform',
+                duration: null
+            });
+
+            const addons = ref({
+                mentoring: false,
+                certificate: false
+            });
+
+            const currentLanguageName = computed(() => languages.find(l => l.id === selection.value.language)?.name || '');
+            const currentLanguageFlag = computed(() => languages.find(l => l.id === selection.value.language)?.flag || '');
+            const currentLevelName = computed(() => levels.find(l => l.id === selection.value.level)?.name || '');
+            const currentFormatName = computed(() => formats.find(f => f.id === selection.value.format)?.name || '');
+            const currentDurationName = computed(() => {
+                if(selection.value.format === 'platform') return '-';
+                return durations.find(d => d.id === selection.value.duration)?.name || '';
+            });
+
+            const calculatedBasePrice = computed(() => {
+                try {
+                    let price = 0;
+                    const format = selection.value.format;
+                    const level = selection.value.level;
+                    const lang = selection.value.language;
+                    
+                    if (format === 'platform') {
+                        price = pricingData.platform[level][lang];
+                    } else if (format === 'individual' || format === 'corporate' || format === 'group') {
+                        const duration = selection.value.duration || '1_month';
+                        if (pricingData[format] && pricingData[format][level] && pricingData[format][level][duration]) {
+                            price = pricingData[format][level][duration][lang];
+                        } else {
+                            // Fallback
+                            price = (pricingData['individual'][level][duration][lang] * 0.7) || 0;
+                        }
+                    }
+                    return Math.round(price) || 0;
+                } catch (e) {
+                    return 0;
+                }
+            });
+
+            const totalPrice = computed(() => {
+                let total = calculatedBasePrice.value;
+                if (addons.value.mentoring) total += 990;
+                if (addons.value.certificate) total += 190;
+                return total;
+            });
+
+            watch(selection, () => {
+                nextTick(() => {
+                    if (window.lucide) lucide.createIcons();
+                });
+            }, { deep: true });
+
+            watch(addons, () => {
+            }, { deep: true });
+
+            // Init icons on mount
+            nextTick(() => { if (window.lucide) lucide.createIcons(); });
+
+            return {
+                languages, levels, formats, durations, selection, addons,
+                currentLanguageName, currentLanguageFlag, currentLevelName, currentFormatName, currentDurationName,
+                calculatedBasePrice, totalPrice
+            }
+        }
+    }).mount('#rima-packages-app');
+});
+</script>
+
+<!-- THE ACADEMY EXPERIENCE (BENTO GRID) -->
+<section class="tw-bg-[#030408] tw-py-20 tw-font-sans tw-relative">
+    <div class="tw-max-w-7xl tw-mx-auto tw-px-4 sm:tw-px-6 tw-relative tw-z-10">
+        
+        <div class="tw-mb-12 tw-text-center">
+            <h2 class="tw-text-4xl tw-font-display tw-font-extrabold tw-text-white tw-tracking-tight tw-mb-4">The Academy Experience</h2>
+            <p class="tw-text-gray-400 tw-text-lg">Premium learning features included in every plan.</p>
+        </div>
+
+        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-6 tw-auto-rows-[300px]">
+            
+            <!-- Large Card (Span 2) -->
+            <div class="md:tw-col-span-2 tw-relative tw-rounded-[2rem] tw-overflow-hidden tw-group">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1000&auto=format&fit=crop" class="tw-absolute tw-inset-0 tw-w-full tw-h-full tw-object-cover tw-transition-transform tw-duration-700 group-hover:tw-scale-105" />
+                <div class="tw-absolute tw-inset-0 tw-bg-gradient-to-t tw-from-[#030408] tw-via-[#030408]/60 tw-to-transparent"></div>
+                <div class="tw-absolute tw-bottom-0 tw-left-0 tw-p-8">
+                    <div class="tw-w-12 tw-h-12 tw-bg-[#E11D48] tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mb-4">
+                        <i data-lucide="video" class="tw-w-6 tw-h-6 tw-text-white"></i>
+                    </div>
+                    <h3 class="tw-text-2xl tw-font-bold tw-text-white tw-mb-2">Immersive Live Sessions</h3>
+                    <p class="tw-text-gray-300 tw-max-w-md">Connect directly with native speakers and expert tutors in high-quality interactive environments.</p>
+                </div>
+            </div>
+
+            <!-- Small Card -->
+            <div class="tw-relative tw-rounded-[2rem] tw-overflow-hidden tw-bg-[#0f111a] tw-border tw-border-white/5 hover:tw-border-white/20 tw-transition-colors tw-group">
+                <div class="tw-p-8 tw-flex tw-flex-col tw-h-full tw-justify-end">
+                    <div class="tw-w-12 tw-h-12 tw-bg-[#12308E] tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mb-auto tw-shrink-0">
+                        <i data-lucide="activity" class="tw-w-6 tw-h-6 tw-text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="tw-text-xl tw-font-bold tw-text-white tw-mb-2">Advanced Analytics</h3>
+                        <p class="tw-text-sm tw-text-gray-400">Track your fluency progress in real-time with our proprietary AI dashboard.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Small Card -->
+            <div class="tw-relative tw-rounded-[2rem] tw-overflow-hidden tw-bg-[#0f111a] tw-border tw-border-white/5 hover:tw-border-white/20 tw-transition-colors tw-group">
+                <div class="tw-p-8 tw-flex tw-flex-col tw-h-full tw-justify-end">
+                    <div class="tw-w-12 tw-h-12 tw-bg-[#10B981] tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mb-auto tw-shrink-0">
+                        <i data-lucide="file-check-2" class="tw-w-6 tw-h-6 tw-text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="tw-text-xl tw-font-bold tw-text-white tw-mb-2">Detailed Feedback</h3>
+                        <p class="tw-text-sm tw-text-gray-400">Receive precise corrections on pronunciation, grammar, and vocabulary.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Large Card (Span 2) -->
+            <div class="md:tw-col-span-2 tw-relative tw-rounded-[2rem] tw-overflow-hidden tw-group">
+                <img src="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?q=80&w=1000&auto=format&fit=crop" class="tw-absolute tw-inset-0 tw-w-full tw-h-full tw-object-cover tw-transition-transform tw-duration-700 group-hover:tw-scale-105" />
+                <div class="tw-absolute tw-inset-0 tw-bg-gradient-to-t tw-from-[#030408] tw-via-[#030408]/60 tw-to-transparent"></div>
+                <div class="tw-absolute tw-bottom-0 tw-left-0 tw-p-8">
+                    <div class="tw-w-12 tw-h-12 tw-bg-white/10 tw-backdrop-blur-md tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mb-4 tw-border tw-border-white/20">
+                        <i data-lucide="globe-2" class="tw-w-6 tw-h-6 tw-text-white"></i>
+                    </div>
+                    <h3 class="tw-text-2xl tw-font-bold tw-text-white tw-mb-2">Global Community</h3>
+                    <p class="tw-text-gray-300 tw-max-w-md">Join thousands of professionals mastering new languages and expanding their horizons daily.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
 <div class="roc-filter-bar" id="roc-filter-bar" role="search" aria-label="Course filters">
     <div class="roc-filter-inner">
 
@@ -485,8 +722,8 @@ $display_rating = $rating_count > 0
             <div class="roc-sort-wrap">
                 <select id="roc-sort" class="roc-sort-select" aria-label="Sort courses">
                     <option value="newest"><span class="rima-en">Newest</span></option>
-                    <option value="price_asc"><span class="rima-en">Price: Low â†’ High</span></option>
-                    <option value="price_desc"><span class="rima-en">Price: High â†’ Low</span></option>
+                    <option value="price_asc"><span class="rima-en">Price: Low ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ High</span></option>
+                    <option value="price_desc"><span class="rima-en">Price: High ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ Low</span></option>
                     <option value="popular"><span class="rima-en">Most Popular</span></option>
                 </select>
             </div>
@@ -516,100 +753,154 @@ $display_rating = $rating_count > 0
     </div>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- ÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚Â
      COURSE GRID
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+     ÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚Â -->
+<div class="roc-page-container">
+<div class="roc-page-wrap">
+    <div class="roc-grid-wrap roc-view-grid-mode" id="roc-grid" role="main" aria-label="Course listings">
 
-<div class="rhm-courses" id="courses" style="padding-top: 50px;">
-    <div class="rhm-container">
-        
-            <div class="rhm-flip-grid">
-                <?php if(!empty($language_data)): foreach($language_data as $lang): ?>
-                
-                <div class="rhm-flip-container">
-                    <div class="rhm-flip-inner">
-                        
-                        <!-- FRONT OF CARD (Language) -->
-                        <div class="rhm-flip-front" style="background-image: url('<?php echo esc_url($lang['img']); ?>');">
-                            <div class="rhm-flip-front-overlay"></div>
-                            
-                            <?php 
-                                $slug = strtolower($lang['slug']);
-                                $stampClass = 'rhm-stamp';
-                                $stampText = '';
-                                if (in_array($slug, array('romanian', 'romana'))) {
-                                    $stampText = '⭐ For Foreigners';
-                                    $stampClass .= ' rhm-stamp-romanian';
-                                } elseif (in_array($slug, array('english'))) {
-                                    $stampText = 'Most Popular';
-                                    $stampClass .= ' rhm-stamp-blue';
-                                } elseif (in_array($slug, array('japanese'))) {
-                                    $stampText = 'Trending';
-                                    $stampClass .= ' rhm-stamp-purple';
-                                }
-                            ?>
-                            <?php if ($stampText): ?>
-                            <div class="<?php echo esc_attr($stampClass); ?>"><?php echo esc_html($stampText); ?></div>
+        <?php if ( $courses_query->have_posts() ) : ?>
+            <?php while ( $courses_query->have_posts() ) : $courses_query->the_post(); ?>
+                <?php
+                $c_id          = get_the_ID();
+                $c_cats        = get_the_terms( $c_id, 'course-category' );
+                $c_cat_name    = ( ! is_wp_error( $c_cats ) && ! empty( $c_cats ) ) ? $c_cats[0]->name : '';
+                $c_cat_slug    = ( ! is_wp_error( $c_cats ) && ! empty( $c_cats ) ) ? $c_cats[0]->slug : '';
+                $instructor_id = get_post_meta( $c_id, 'eltdf_course_instructor_meta', true );
+                $instr_name    = $instructor_id ? get_the_title( $instructor_id ) : '';
+                $price         = function_exists( 'academist_lms_calculate_course_price' ) ? academist_lms_calculate_course_price( $c_id ) : 0;
+                $thumb_url     = get_the_post_thumbnail_url( $c_id, 'large' );
+                $lesson_count  = get_post_meta( $c_id, 'eltdf_course_lessons_count', true );
+                $duration      = get_post_meta( $c_id, 'eltdf_course_duration', true );
+                ?>
+                <article class="roc-card" data-category="<?php echo esc_attr( $c_cat_slug ); ?>" itemscope itemtype="https://schema.org/Course">
+                    <a href="<?php the_permalink(); ?>" class="roc-card-image-link" tabindex="-1" aria-hidden="true">
+                        <div class="roc-card-image">
+                            <?php if ( $thumb_url ) : ?>
+                                <img src="<?php echo esc_url( $thumb_url ); ?>"
+                                     alt="<?php echo esc_attr( get_the_title() ); ?>"
+                                     loading="lazy"
+                                     itemprop="image" />
+                            <?php else : ?>
+                                <div class="roc-card-image-placeholder">
+                                    <svg width="56" height="56" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                                </div>
                             <?php endif; ?>
 
-                            <div class="rhm-flip-front-content">
-                                <h3><?php echo esc_html($lang['name']); ?></h3>
-                                <div class="rhm-flip-hint-wrapper">
-                                    <button class="rhm-flip-open" aria-label="View Courses">
-                                        <span>View Courses</span>
-                                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                                    </button>
-                                </div>
+                            <?php if ( $c_cat_name ) : ?>
+                                <span class="roc-card-badge-cat"><?php echo esc_html( $c_cat_name ); ?></span>
+                            <?php endif; ?>
+
+                            <?php if ( $price > 0 ) : ?>
+                                <span class="roc-card-badge-price">
+                                    <?php
+                                    if ( function_exists( 'get_woocommerce_currency_symbol' ) ) {
+                                        $pos = get_option( 'woocommerce_currency_pos', 'right' );
+                                        $sym = get_woocommerce_currency_symbol();
+                                        echo $pos === 'left' ? esc_html( $sym . $price ) : esc_html( $price . ' ' . $sym );
+                                    } else {
+                                        echo esc_html( $price );
+                                    }
+                                    ?>
+                                </span>
+                            <?php else : ?>
+                                <span class="roc-card-badge-price roc-badge-free">
+                                    <span class="rima-en">Free</span><span class="rima-ro">Gratuit</span>
+                                </span>
+                            <?php endif; ?>
+                        </div>
+                    </a>
+
+                    <div class="roc-card-body">
+                        <h2 class="roc-card-title" itemprop="name">
+                            <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                        </h2>
+
+                        <?php if ( $instr_name ) : ?>
+                            <div class="roc-card-instructor">
+                                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                <span><?php echo esc_html( $instr_name ); ?></span>
                             </div>
+                        <?php endif; ?>
+
+                        <div class="roc-card-excerpt">
+                            <?php
+                            if ( has_excerpt() ) {
+                                echo wp_trim_words( get_the_excerpt(), 18 );
+                            } else {
+                                echo wp_trim_words( get_the_content(), 18 );
+                            }
+                            ?>
                         </div>
 
-                        <!-- BACK OF CARD (Courses) -->
-                        <div class="rhm-flip-back" style="background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(2, 6, 23, 0.95) 100%), url('<?php echo esc_url($lang['img']); ?>'); background-size: cover; background-position: center;">
-                            <div class="rhm-flip-back-header">
-                                <h3>
-                                    <?php echo esc_html($lang['name']); ?> Courses
-                                    <?php if ($stampText): ?>
-                                        <div class="<?php echo esc_attr($stampClass); ?> rhm-stamp-back"><?php echo esc_html($stampText); ?></div>
-                                    <?php endif; ?>
-                                </h3>
-                                <button class="rhm-flip-close" aria-label="Close" title="Back to Languages">
-                                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                                </button>
-                            </div>
-                            
-                            <div class="rhm-flip-course-list">
-                                <?php foreach($lang['courses'] as $course): ?>
-                                <a href="<?php echo esc_url($course['link']); ?>" class="rhm-course-list-card" onclick="window.location.href='<?php echo esc_url($course['link']); ?>'; return false;">
-                                    <div class="rhm-clc-left">
-                                        <div class="rhm-clc-level"><?php echo esc_html($course['level']); ?></div>
-                                        <div class="rhm-clc-details">
-                                            <p class="rhm-clc-excerpt"><?php echo esc_html($course['excerpt']); ?></p>
-                                        </div>
-                                    </div>
-                                    <div class="rhm-clc-right">
-                                        <div class="rhm-clc-price"><?php echo wp_kses_post($course['price_html']); ?></div>
-                                        <div class="rhm-btn-view">View</div>
-                                    </div>
-                                </a>
-                                <?php endforeach; ?>
-                            </div>
-                            
-                            <div class="rhm-flip-back-footer">
-                                <a href="/courses/" class="rhm-flip-view-all">View all <?php echo esc_html($lang['name']); ?> courses &rarr;</a>
-                            </div>
+                        <!-- List-view meta row (hidden in grid mode) -->
+                        <div class="roc-card-meta-row">
+                            <?php if ( $lesson_count ) : ?>
+                                <span class="roc-meta-item">
+                                    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/></svg>
+                                    <?php echo esc_html( $lesson_count ); ?>
+                                    <span class="rima-en"> lessons</span><span class="rima-ro"> lecÃˆâ€ºii</span>
+                                </span>
+                            <?php endif; ?>
+                            <?php if ( $duration ) : ?>
+                                <span class="roc-meta-item">
+                                    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    <?php echo esc_html( $duration ); ?>
+                                </span>
+                            <?php endif; ?>
                         </div>
 
+                        <a href="<?php the_permalink(); ?>"
+                           class="roc-card-cta eltdf-btn eltdf-btn-solid rima-btn-blue"
+                           itemprop="url">
+                            <span class="rima-en">View Course</span>
+                            <span class="rima-ro">Vezi Cursul</span>
+                            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
                     </div>
-                </div>
-                
-                <?php endforeach; endif; ?>
-            </div>
+                </article>
+            <?php endwhile; ?>
+            <?php wp_reset_postdata(); ?>
+        <?php endif; ?>
 
+        <!-- Skeleton cards (shown during AJAX load) -->
+        <?php for ( $i = 0; $i < 3; $i++ ) : ?>
+            <div class="roc-card roc-skeleton" aria-hidden="true">
+                <div class="roc-skeleton-image"></div>
+                <div class="roc-card-body">
+                    <div class="roc-skeleton-line roc-skeleton-title"></div>
+                    <div class="roc-skeleton-line roc-skeleton-sub"></div>
+                    <div class="roc-skeleton-line roc-skeleton-text"></div>
+                    <div class="roc-skeleton-line roc-skeleton-text roc-skeleton-short"></div>
+                    <div class="roc-skeleton-line roc-skeleton-btn"></div>
+                </div>
+            </div>
+        <?php endfor; ?>
+    </div>
+
+    <!-- ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Empty State ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ -->
+    <div class="roc-empty-state" id="roc-empty-state" aria-live="polite" style="display:none;">
+            <button class="eltdf-btn eltdf-btn-solid rima-btn-blue" id="roc-reset-filters">
+            Clear Filters
+        </button>
+    </div>
+
+    <!-- ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Load More ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ -->
+    <?php if ( $courses_query->max_num_pages > 1 ) : ?>
+        <div class="roc-load-more-wrap" id="roc-load-more-wrap">
+            <button class="roc-load-more-btn" id="roc-load-more"
+                    data-page="1"
+                    data-max-pages="<?php echo esc_attr( $courses_query->max_num_pages ); ?>"
+                    aria-label="Load more courses">
+                <span class="roc-load-more-text">Load More Courses</span>
+                <span class="roc-load-more-spinner" aria-hidden="true"></span>
+            </button>
         </div>
-    </div>
+    <?php endif; ?>
 </div>
-    </div>
-</div>
+</div> <!-- /.roc-page-container -->
+
 <script src="https://unpkg.com/globe.gl"></script>
 <?php
 // Pass dynamic languages to JS
@@ -740,15 +1031,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+<!-- ÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚Â
      INTERACTIVE REEL JS
-     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+     ÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚ÂÃƒÂ¢Ã¢â‚¬Â¢Ã‚Â -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const reelSection = document.getElementById('roc-lang-reel');
     if (!reelSection) return;
 
-    // â”€â”€ Particle Background â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Particle Background ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
     const canvas = document.getElementById('roc-reel-particles');
     if (canvas) {
         const ctx = canvas.getContext('2d');
@@ -803,7 +1094,7 @@ document.addEventListener('DOMContentLoaded', () => {
         drawParticles();
     }
 
-    // â”€â”€ Slide Controller â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Slide Controller ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
     const slides = reelSection.querySelectorAll('.roc-reel-slide');
     const dots = reelSection.querySelectorAll('.roc-reel-dot');
     const progressFill = document.getElementById('roc-reel-progress-fill');
@@ -883,7 +1174,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // CTA button â€” filter courses and zoom globe
+    // CTA button ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â filter courses and zoom globe
     reelSection.querySelectorAll('.roc-reel-cta').forEach(btn => {
         btn.addEventListener('click', () => {
             const slug = btn.dataset.slug;
@@ -912,29 +1203,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.rhm-flip-open').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const container = btn.closest('.rhm-flip-container');
-            document.querySelectorAll('.rhm-flip-container.is-flipped').forEach(c => {
-                if (c !== container) c.classList.remove('is-flipped');
-            });
-            container.classList.add('is-flipped');
-        });
-    });
-    document.querySelectorAll('.rhm-flip-close').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const container = btn.closest('.rhm-flip-container');
-            container.classList.remove('is-flipped');
-        });
-    });
-});
-</script>
-
 <?php get_footer(); ?>
-<!-- trigger sync -->
+
+
+
+
+
+
+
