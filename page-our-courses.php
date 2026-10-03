@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Template Name: Our Courses
  *
@@ -80,67 +80,46 @@ $total_courses = (int) wp_count_posts( 'course' )->publish;
 // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ REAL STATS ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 
 /**
- * Real student count:
- * Count unique users who have enrolled (eltdf_user_courses user meta).
- * Falls back to counting all completed WC orders that contain LMS products.
+ * Real student count & rating (Cached with Transients for extreme performance)
  */
-$real_student_count = 0;
+$stats_cache = get_transient( 'rima_real_course_stats' );
+if ( false === $stats_cache ) {
+    // Student Count
+    global $wpdb;
+    $real_student_count = (int) $wpdb->get_var("SELECT COUNT(DISTINCT user_id) FROM {$wpdb->usermeta} WHERE meta_key = 'eltdf_user_courses'");
+    
+    if ( $real_student_count === 0 && function_exists( 'wc_get_orders' ) ) {
+        $real_student_count = (int) $wpdb->get_var("SELECT COUNT(ID) FROM {$wpdb->posts} WHERE post_type = 'shop_order' AND post_status IN ('wc-completed', 'wc-processing')");
+    }
+    $display_students = $real_student_count > 0 ? ( floor( $real_student_count / 10 ) * 10 ) . '+' : '0+';
 
-// Method 1: count users who have at least one enrolled course
-$enrolled_users = get_users( array(
-    'meta_key'     => 'eltdf_user_courses',
-    'meta_compare' => 'EXISTS',
-    'fields'       => 'ID',
-    'number'       => -1,
-) );
-$real_student_count = count( $enrolled_users );
-
-// Fallback: if no LMS meta found, count WC customers with completed orders
-if ( $real_student_count === 0 && function_exists( 'wc_get_orders' ) ) {
-    $orders = wc_get_orders( array(
-        'status' => array( 'wc-completed', 'wc-processing' ),
-        'limit'  => -1,
-        'return' => 'ids',
-    ) );
-    $real_student_count = count( $orders );
-}
-
-// Friendly display: round down to nearest 10, add "+"
-$display_students = $real_student_count > 0
-    ? ( floor( $real_student_count / 10 ) * 10 ) . '+'
-    : '0+';
-
-/**
- * Real average rating:
- * Pull the WooCommerce product IDs linked to each course via
- * eltdf_course_woo_product_meta and average their star ratings.
- */
-$all_course_ids = get_posts( array(
-    'post_type'      => 'course',
-    'post_status'    => 'publish',
-    'posts_per_page' => -1,
-    'fields'         => 'ids',
-) );
-
-$rating_sum   = 0;
-$rating_count = 0;
-
-foreach ( $all_course_ids as $cid ) {
-    $product_id = get_post_meta( $cid, 'eltdf_course_woo_product_meta', true );
-    if ( $product_id ) {
-        $rating = get_post_meta( $product_id, '_wc_average_rating', true );
-        if ( $rating && (float) $rating > 0 ) {
-            $rating_sum   += (float) $rating;
-            $rating_count++;
+    // Average Rating
+    $rating_sum = 0;
+    $rating_count = 0;
+    $course_products = $wpdb->get_col("SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key = 'eltdf_course_woo_product_meta' AND meta_value != ''");
+    
+    if (!empty($course_products)) {
+        $product_ids = implode(',', array_map('intval', $course_products));
+        $ratings = $wpdb->get_col("SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key = '_wc_average_rating' AND post_id IN ($product_ids)");
+        foreach ($ratings as $r) {
+            if ((float) $r > 0) {
+                $rating_sum += (float) $r;
+                $rating_count++;
+            }
         }
     }
+    
+    $display_rating = $rating_count > 0 ? number_format( $rating_sum / $rating_count, 1 ) : '5.0';
+
+    $stats_cache = array(
+        'display_students' => $display_students,
+        'display_rating'   => $display_rating
+    );
+    set_transient( 'rima_real_course_stats', $stats_cache, 12 * HOUR_IN_SECONDS );
 }
 
-// If no WC product ratings exist yet, show a placeholder of 5.0
-$display_rating = $rating_count > 0
-    ? number_format( $rating_sum / $rating_count, 1 )
-    : '5.0';
-
+$display_students = $stats_cache['display_students'];
+$display_rating   = $stats_cache['display_rating'];
 ?>
 
 
