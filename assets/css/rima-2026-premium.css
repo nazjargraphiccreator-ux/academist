@@ -882,3 +882,17 @@ a.rima-btn-blue:hover {
     background: #ebf2ff;
     border-left: 4px solid #102d56;
 }
+
+/* RIMA Modern Payment Methods */
+.wc_payment_methods { list-style: none !important; padding: 0 !important; margin: 0 0 20px 0 !important; display: flex; flex-direction: column; gap: 12px; }
+.rima-payment-method-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; transition: all 0.2s ease; cursor: pointer; }
+.rima-payment-method-card:has(input[type="radio"]:checked) { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
+.rima-payment-method-label { display: flex !important; align-items: center; gap: 15px; width: 100%; cursor: pointer; margin: 0 !important; font-weight: 500; font-size: 15px; color: #fff; }
+.rima-payment-method-label input[type="radio"] { display: none; }
+.rima-payment-radio-custom { width: 20px; height: 20px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.2s; }
+.rima-payment-method-card input:checked + label .rima-payment-radio-custom { border-color: #3b82f6; }
+.rima-payment-method-card input:checked + label .rima-payment-radio-custom::after { content: ''; width: 10px; height: 10px; background: #3b82f6; border-radius: 50%; }
+.rima-payment-method-info { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+.rima-payment-icon img { height: 24px; max-width: 80px; object-fit: contain; }
+.rima-payment-method-card .payment_box { margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px; font-size: 13.5px; color: #9ca3af; }
+

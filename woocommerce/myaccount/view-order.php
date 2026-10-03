@@ -97,65 +97,75 @@ $cls = $status_colors[$status] ?? array( 'bg' => '#f3f4f6', 'text' => '#374151',
         }
         ?>
 
-        <!-- Order Items Table -->
+        <!-- Order Items List (Modern) -->
         <div class="mt-5 mb-5">
             <h4 class="h5 fw-bold mb-3 text-dark">
                 <span class="rima-en">Order Items</span><span class="rima-ro">Produsele Comandate</span>
             </h4>
-            <div class="table-responsive">
-                <table class="table table-borderless align-middle mb-0">
-                    <thead>
-                        <tr class="table-light rounded-3" style="font-size:13px; color:#555;">
-                            <th scope="col" class="py-3 px-3"><span class="rima-en">Product</span><span class="rima-ro">Produs</span></th>
-                            <th scope="col" class="py-3 text-center"><span class="rima-en">Quantity</span><span class="rima-ro">Cantitate</span></th>
-                            <th scope="col" class="py-3 text-end px-3"><span class="rima-en">Total</span><span class="rima-ro">Preț</span></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ( $order->get_items() as $item ) : 
-                            $product = $item->get_product();
-                            $img = $product ? $product->get_image(array(50, 50), array('class' => 'rounded-2 shadow-sm')) : '';
-                        ?>
-                            <tr class="border-bottom" style="font-size:14px;">
-                                <td class="py-3 px-3">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <?php if ($img) echo $img; ?>
-                                        <div>
-                                            <strong class="text-dark d-block"><?php echo esc_html($item->get_name()); ?></strong>
-                                            
-                                            <!-- Completed order extra files/zoom access directly here! -->
-                                            <?php if ( $status === 'completed' && $product ) : 
-                                                $pid = $product->get_id();
-                                                $prod_zoom = get_post_meta( $pid, '_rima_zoom_sessions', true ) ?: array();
-                                                $prod_docs = get_post_meta( $pid, '_rima_course_documents', true ) ?: array();
-                                                
-                                                if ( ! empty($prod_docs) || ! empty($prod_zoom) ) :
-                                            ?>
-                                                <div class="mt-2 d-flex flex-wrap gap-2">
-                                                    <?php if ( ! empty($prod_docs) ) : ?>
-                                                        <a href="<?php echo esc_url( wc_get_account_endpoint_url('course-documents') . $pid . '/' ); ?>" 
-                                                           class="btn btn-xs btn-outline-danger fw-semibold px-2 py-1" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">
-                                                            <i class="fa fa-file-pdf-o"></i> Materiale curs (<?php echo count($prod_docs); ?>)
-                                                        </a>
-                                                    <?php endif; ?>
-                                                    <?php if ( ! empty($prod_zoom) ) : ?>
-                                                        <a href="<?php echo esc_url( wc_get_account_endpoint_url('course-documents') . $pid . '/' ); ?>" 
-                                                           class="btn btn-xs btn-outline-primary fw-semibold px-2 py-1" style="font-size: 11px; padding: 4px 8px; border-radius: 6px;">
-                                                            <i class="fa fa-video-camera"></i> Zoom Sesiuni (<?php echo count($prod_zoom); ?>)
-                                                        </a>
-                                                    <?php endif; ?>
-                                                </div>
-                                            <?php endif; endif; ?>
-                                        </div>
+            <div class="d-flex flex-column gap-3">
+                <?php foreach ( $order->get_items() as $item ) : 
+                    $product = $item->get_product();
+                    $img = $product ? $product->get_image(array(80, 80), array('class' => 'rounded-3 shadow-sm', 'style' => 'width: 80px; height: 80px; object-fit: cover;')) : '';
+                    $product_url = $product ? $product->get_permalink() : '#';
+                ?>
+                    <div class="p-3 rounded-4 border bg-white shadow-sm d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 rima-order-item-card transition-all" style="transition: all 0.2s ease;">
+                        <div class="d-flex align-items-center gap-3 flex-grow-1">
+                            <?php if ($img) : ?>
+                                <a href="<?php echo esc_url($product_url); ?>" class="flex-shrink-0 text-decoration-none">
+                                    <?php echo $img; ?>
+                                </a>
+                            <?php endif; ?>
+                            
+                            <div>
+                                <a href="<?php echo esc_url($product_url); ?>" class="text-decoration-none">
+                                    <strong class="text-dark d-block fs-6 mb-1 rima-product-title-hover" style="transition: color 0.2s;"><?php echo esc_html($item->get_name()); ?></strong>
+                                </a>
+                                <span class="badge bg-light text-secondary border fw-normal mb-2" style="font-size:12px;">x<?php echo esc_html($item->get_quantity()); ?></span>
+                                
+                                <!-- Completed order extra files/zoom access -->
+                                <?php if ( $status === 'completed' && $product ) : 
+                                    $pid = $product->get_id();
+                                    $prod_zoom = get_post_meta( $pid, '_rima_zoom_sessions', true ) ?: array();
+                                    $prod_docs = get_post_meta( $pid, '_rima_course_documents', true ) ?: array();
+                                    
+                                    if ( ! empty($prod_docs) || ! empty($prod_zoom) ) :
+                                ?>
+                                    <div class="d-flex flex-wrap gap-2 mt-1">
+                                        <?php if ( ! empty($prod_docs) ) : ?>
+                                            <a href="<?php echo esc_url( wc_get_account_endpoint_url('course-documents') . $pid . '/' ); ?>" 
+                                               class="btn btn-sm btn-outline-danger fw-semibold rounded-pill px-3 py-1" style="font-size: 11px;">
+                                                <i class="fa fa-file-pdf-o me-1"></i> Materiale curs
+                                            </a>
+                                        <?php endif; ?>
+                                        <?php if ( ! empty($prod_zoom) ) : ?>
+                                            <a href="<?php echo esc_url( wc_get_account_endpoint_url('course-documents') . $pid . '/' ); ?>" 
+                                               class="btn btn-sm btn-outline-primary fw-semibold rounded-pill px-3 py-1" style="font-size: 11px;">
+                                                <i class="fa fa-video-camera me-1"></i> Zoom
+                                            </a>
+                                        <?php endif; ?>
                                     </div>
-                                </td>
-                                <td class="py-3 text-center text-dark">x<?php echo esc_html($item->get_quantity()); ?></td>
-                                <td class="py-3 text-end px-3 fw-bold text-dark"><?php echo $order->get_formatted_line_subtotal($item); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                                <?php endif; endif; ?>
+                            </div>
+                        </div>
+                        
+                        <div class="text-md-end border-top border-md-top-0 pt-3 pt-md-0 mt-2 mt-md-0 text-end">
+                            <span class="small text-muted d-block mb-1"><span class="rima-en">Total</span><span class="rima-ro">Preț</span></span>
+                            <span class="fw-bold text-dark fs-5"><?php echo $order->get_formatted_line_subtotal($item); ?></span>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
+            
+            <style>
+                .rima-order-item-card:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+                    border-color: #cbd5e1 !important;
+                }
+                .rima-product-title-hover:hover {
+                    color: #2563eb !important;
+                }
+            </style>
         </div>
 
         <!-- Order Totals -->

@@ -1,0 +1,147 @@
+/* ==========================================================================
+   RIMA ACADEMY - FOOTER STYLES (PREMIUM)
+   ========================================================================== */
+
+/* Main Footer Container */
+.rima-site-footer {
+    background: #1E293B !important; /* Slate Blue */
+    color: var(--rima-text-inverse, #ffffff);
+    padding: var(--rima-space-2xl, 80px) 0 var(--rima-space-md, 24px);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle accent line at the top of the footer */
+.rima-footer-top-accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #B41527, #D4AF37); /* Crimson Red to Academic Gold */
+}
+
+/* The Grid Layout */
+.rima-footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+/* Columns */
+.rima-footer-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.rima-footer-col h4 {
+    color: var(--rima-text-inverse, #ffffff);
+    font-size: 1.1rem;
+    font-family: 'Inter', 'Outfit', sans-serif;
+    font-weight: 600;
+    margin-bottom: 24px;
+    text-transform: none; /* No ALL-CAPS */
+    letter-spacing: 0;
+}
+
+.rima-footer-col ul {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.rima-footer-col ul li {
+    margin-bottom: 12px;
+}
+
+.rima-footer-col a {
+    color: var(--rima-gray-400, #94a3b8);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.rima-footer-col a:hover {
+    color: #D4AF37; /* Academic Gold */
+}
+
+.rima-footer-brand p {
+    color: var(--rima-gray-400, #94a3b8);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-top: 16px;
+}
+
+/* Social Icons */
+.rima-social-icons {
+    display: flex;
+    gap: 16px;
+}
+
+.rima-social-icons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--rima-text-inverse, #ffffff);
+    transition: all 0.3s ease;
+}
+
+.rima-social-icons a:hover {
+    background: #B41527; /* Crimson Red */
+    color: #ffffff;
+    transform: translateY(-3px);
+}
+
+/* Bottom Bar */
+.rima-footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rima-footer-bottom-links {
+    display: flex;
+    gap: 24px;
+}
+
+.rima-footer-bottom-links a {
+    color: var(--rima-gray-400, #94a3b8);
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.rima-footer-bottom-links a:hover {
+    color: var(--rima-text-inverse, #ffffff);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .rima-footer-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .rima-footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .rima-footer-bottom {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .rima-footer-grid {
+        grid-template-columns: 1fr;
+    }
+}

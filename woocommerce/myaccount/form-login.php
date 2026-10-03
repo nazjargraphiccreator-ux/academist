@@ -1095,6 +1095,131 @@ body:not(.rima-lang-ro) .rima-ro { display: none !important; }
                             <i class="fa fa-envelope rima-lp-field-icon"></i>
                         </div>
 
+                        <!-- CUSTOM RIMA REGISTRATION FIELDS -->
+                        <div style="display:flex; gap:15px; margin-top: 15px;">
+                            <div class="rima-lp-field" style="flex:1;">
+                                <label class="rima-lp-label" for="reg_billing_first_name">
+                                    <span class="rima-en">First Name</span>
+                                    <span class="rima-ro">Prenume</span>
+                                    <span class="required">*</span>
+                                </label>
+                                <input type="text" class="rima-lp-input" name="billing_first_name" id="reg_billing_first_name" required value="<?php echo ( ! empty( $_POST['billing_first_name'] ) ) ? esc_attr( wp_unslash( $_POST['billing_first_name'] ) ) : ''; ?>" />
+                            </div>
+                            <div class="rima-lp-field" style="flex:1;">
+                                <label class="rima-lp-label" for="reg_billing_last_name">
+                                    <span class="rima-en">Last Name</span>
+                                    <span class="rima-ro">Nume</span>
+                                    <span class="required">*</span>
+                                </label>
+                                <input type="text" class="rima-lp-input" name="billing_last_name" id="reg_billing_last_name" required value="<?php echo ( ! empty( $_POST['billing_last_name'] ) ) ? esc_attr( wp_unslash( $_POST['billing_last_name'] ) ) : ''; ?>" />
+                            </div>
+                        </div>
+
+                        <div class="rima-lp-field rima-account-type-selector" style="margin-top: 10px;">
+                            <label class="rima-lp-label">
+                                <span class="rima-en">Account Type</span>
+                                <span class="rima-ro">Tip Cont</span>
+                            </label>
+                            <div class="rima-lp-radio-group" style="display: flex; gap: 20px; margin-top: 10px; margin-bottom: 15px;">
+                                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; color: var(--rima-lp-text);">
+                                    <input type="radio" name="rima_account_type" value="pf" checked onchange="document.getElementById('rima_pj_fields').style.display='none'; document.getElementById('reg_billing_company').required=false; document.getElementById('reg_billing_cui').required=false;">
+                                    <span>Persoană Fizică</span>
+                                </label>
+                                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; color: var(--rima-lp-text);">
+                                    <input type="radio" name="rima_account_type" value="pj" onchange="document.getElementById('rima_pj_fields').style.display='block'; document.getElementById('reg_billing_company').required=true; document.getElementById('reg_billing_cui').required=true;">
+                                    <span>Persoană Juridică (Firma)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="rima_pj_fields" style="display:none; padding: 15px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px;">
+                            <div class="rima-lp-field">
+                                <label class="rima-lp-label" for="reg_billing_company">
+                                    <span class="rima-ro">Nume Companie</span>
+                                    <span class="required">*</span>
+                                </label>
+                                <input type="text" class="rima-lp-input" name="billing_company" id="reg_billing_company" value="<?php echo ( ! empty( $_POST['billing_company'] ) ) ? esc_attr( wp_unslash( $_POST['billing_company'] ) ) : ''; ?>" />
+                            </div>
+                            <div style="display:flex; gap:15px; margin-top: 15px;">
+                                <div class="rima-lp-field" style="flex:1;">
+                                    <label class="rima-lp-label" for="reg_billing_cui">
+                                        <span class="rima-ro">CUI / CIF</span>
+                                        <span class="required">*</span>
+                                    </label>
+                                    <input type="text" class="rima-lp-input" name="billing_cui" id="reg_billing_cui" value="<?php echo ( ! empty( $_POST['billing_cui'] ) ) ? esc_attr( wp_unslash( $_POST['billing_cui'] ) ) : ''; ?>" />
+                                </div>
+                                <div class="rima-lp-field" style="flex:1;">
+                                    <label class="rima-lp-label" for="reg_billing_reg_com">
+                                        <span class="rima-ro">Reg. Comerțului</span>
+                                    </label>
+                                    <input type="text" class="rima-lp-input" name="billing_reg_com" id="reg_billing_reg_com" placeholder="J.../..." value="<?php echo ( ! empty( $_POST['billing_reg_com'] ) ) ? esc_attr( wp_unslash( $_POST['billing_reg_com'] ) ) : ''; ?>" />
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:15px; margin-top: 15px;">
+                                <div class="rima-lp-field" style="flex:1;">
+                                    <label class="rima-lp-label" for="reg_billing_iban">
+                                        <span class="rima-ro">IBAN</span>
+                                    </label>
+                                    <input type="text" class="rima-lp-input" name="billing_iban" id="reg_billing_iban" placeholder="RO..." value="<?php echo ( ! empty( $_POST['billing_iban'] ) ) ? esc_attr( wp_unslash( $_POST['billing_iban'] ) ) : ''; ?>" oninput="rima_detect_bank(this.value)" />
+                                </div>
+                                <div class="rima-lp-field" style="flex:1;">
+                                    <label class="rima-lp-label" for="reg_billing_bank">
+                                        <span class="rima-ro">Banca</span>
+                                    </label>
+                                    <input type="text" class="rima-lp-input" name="billing_bank" id="reg_billing_bank" readonly style="background: rgba(0,0,0,0.2); cursor: not-allowed; opacity: 0.8;" value="<?php echo ( ! empty( $_POST['billing_bank'] ) ) ? esc_attr( wp_unslash( $_POST['billing_bank'] ) ) : ''; ?>" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                        function rima_detect_bank(iban) {
+                            const bankInput = document.getElementById('reg_billing_bank');
+                            let cleanIban = iban.replace(/\s+/g, '').toUpperCase();
+                            
+                            if (cleanIban.length >= 8 && cleanIban.startsWith('RO')) {
+                                const bankCode = cleanIban.substring(4, 8);
+                                const banks = {
+                                    'BTRL': 'Banca Transilvania',
+                                    'INGB': 'ING Bank',
+                                    'RZBR': 'Raiffeisen Bank',
+                                    'BREL': 'Libra Internet Bank',
+                                    'BRDE': 'BRD Groupe Societe Generale',
+                                    'RNCB': 'Banca Comerciala Romana (BCR)',
+                                    'UGBI': 'Garanti Bank',
+                                    'TREZ': 'Trezoreria Statului',
+                                    'OTPV': 'OTP Bank Romania',
+                                    'BACX': 'UniCredit Bank',
+                                    'CECE': 'CEC Bank',
+                                    'BACA': 'Alpha Bank',
+                                    'CRDZ': 'Credito Emiliano',
+                                    'BROM': 'Banca Romaneasca',
+                                    'MIRO': 'ProCredit Bank',
+                                    'BNPA': 'BNP Paribas',
+                                    'CITI': 'Citibank Europe',
+                                    'EXIM': 'EximBank',
+                                    'CARP': 'Banca Comerciala Intesa Sanpaolo',
+                                    'PORL': 'Porsche Bank',
+                                    'FNNB': 'First Bank',
+                                    'VIST': 'Vista Bank'
+                                };
+                                
+                                if (banks[bankCode]) {
+                                    bankInput.value = banks[bankCode];
+                                } else {
+                                    bankInput.value = 'Bancă Necunoscută (' + bankCode + ')';
+                                }
+                            } else {
+                                bankInput.value = '';
+                            }
+                        }
+                        // Run once on load if IBAN is prefilled
+                        document.addEventListener('DOMContentLoaded', function() {
+                            let prefilledIban = document.getElementById('reg_billing_iban').value;
+                            if(prefilledIban) { rima_detect_bank(prefilledIban); }
+                        });
+                        </script>
+                        <!-- END CUSTOM RIMA REGISTRATION FIELDS -->
+
                         <?php if ( 'no' === get_option( 'woocommerce_registration_generate_password' ) ) : ?>
                         <div class="rima-lp-field">
                             <label class="rima-lp-label" for="reg_password">

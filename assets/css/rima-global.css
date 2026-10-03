@@ -1,0 +1,592 @@
+/* ==========================================================================
+   RIMA ACADEMY — GLOBAL SITE STYLES 2026
+   White header everywhere. Dark footer. Premium inner pages.
+   Outfit font. Performance-first (no layout shifts).
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ── 0. DESIGN TOKENS ─────────────────────────────────────────────────────── */
+:root {
+  /* Brand */
+  --rima-red:           #e62243;
+  --rima-navy:          #12308e;
+  --rima-dark-bg:       #030408;
+  /* Typography */
+  --rima-font:          'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Header — always white */
+  --rima-header-bg:     #ffffff;
+  --rima-header-border: rgba(0,0,0,0.07);
+  --rima-header-text:   #0f172a;
+  --rima-header-muted:  #64748b;
+  --rima-header-h:      72px;
+  /* Footer — dark branded */
+  --rima-footer-bg:     #05080f;
+  --rima-footer-text:   rgba(255,255,255,0.65);
+  --rima-footer-border: rgba(255,255,255,0.07);
+  /* Utility */
+  --rima-radius:        16px;
+  --rima-radius-sm:     10px;
+  --rima-radius-pill:   9999px;
+  --rima-transition:    all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --rima-shadow-sm:     0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+  --rima-shadow:        0 4px 16px rgba(0,0,0,0.1);
+  --rima-shadow-lg:     0 16px 48px rgba(0,0,0,0.15);
+  --rima-container:     1240px;
+}
+
+/* ── 1. GLOBAL RESET / BASE ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: var(--rima-font) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Performance: reduce layout-triggering during paint */
+img, video, canvas, svg { display: block; max-width: 100%; }
+
+/* ── 2. GLOBAL CONTAINER ──────────────────────────────────────────────────── */
+.rima-container {
+  max-width: var(--rima-container);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(16px, 4vw, 48px);
+  padding-right: clamp(16px, 4vw, 48px);
+}
+
+/* ── 3. HEADER — WHITE, STICKY, ELEGANT ──────────────────────────────────── */
+.rima-site-header {
+  background: var(--rima-header-bg) !important;
+  border-bottom: 1px solid var(--rima-header-border);
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 9999;
+  width: 100%;
+  transition: box-shadow 0.3s ease;
+  /* Ensure it's visible above page content */
+}
+
+.rima-site-header.is-scrolled {
+  box-shadow: var(--rima-shadow) !important;
+}
+
+.rima-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--rima-header-h);
+}
+
+/* Logo */
+.rima-header-logo a {
+  display: flex;
+  align-items: center;
+  text-decoration: none !important;
+}
+
+.rima-header-logo img {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Text logo fallback */
+.rima-text-logo {
+  color: var(--rima-header-text) !important;
+  font-size: 22px !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.03em !important;
+}
+
+/* Desktop nav */
+.rima-header-nav {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.rima-header-nav ul,
+.rima-header-nav > div > ul {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center;
+  gap: 4px;
+}
+
+.rima-header-nav ul li {
+  list-style: none !important;
+  margin: 0 !important;
+  position: relative;
+}
+
+/* CRITICAL: Force black text on nav links on ALL pages */
+.rima-header-nav ul li a,
+.rima-header-nav > div ul li a,
+#primary-menu li a {
+  color: var(--rima-header-text) !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+  text-decoration: none !important;
+  padding: 8px 14px !important;
+  border-radius: 8px !important;
+  transition: var(--rima-transition) !important;
+  display: block !important;
+  white-space: nowrap;
+}
+
+.rima-header-nav ul li a:hover,
+.rima-header-nav ul li.current-menu-item > a,
+.rima-header-nav ul li.current-menu-ancestor > a {
+  color: var(--rima-red) !important;
+  background: rgba(230,34,67,0.06) !important;
+}
+
+/* Tools area */
+.rima-header-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Language slider - on white header */
+.rima-lang-slider {
+  background: rgba(0,0,0,0.06) !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+.rima-lang-pill {
+  background: rgba(0,0,0,0.12) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15) !important;
+}
+
+/* Cart icon - dark on white header */
+.rima-header-cart {
+  color: var(--rima-header-text) !important;
+  display: flex;
+  align-items: center;
+  transition: var(--rima-transition);
+}
+
+.rima-header-cart:hover {
+  color: var(--rima-red) !important;
+}
+
+.rima-mob-cart-badge {
+  background: var(--rima-red) !important;
+}
+
+/* Mobile hamburger - dark on white */
+.rima-mobile-toggle {
+  color: var(--rima-header-text) !important;
+  background: none !important;
+  border: none !important;
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* User avatar trigger - for white header */
+.rima-user-trigger {
+  background: rgba(0,0,0,0.05) !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+.rima-user-trigger span {
+  color: var(--rima-header-text) !important;
+}
+
+.rima-user-trigger:hover {
+  background: rgba(0,0,0,0.09) !important;
+}
+
+/* Header CTAs on white bg */
+.rima-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: var(--rima-radius-pill);
+  padding: 10px 22px;
+  transition: var(--rima-transition);
+  text-decoration: none !important;
+  white-space: nowrap;
+  cursor: pointer;
+  border: none;
+}
+
+.rima-btn-primary {
+  background: var(--rima-red) !important;
+  color: #ffffff !important;
+}
+
+.rima-btn-primary:hover {
+  background: #c71d3b !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(230,34,67,0.35) !important;
+}
+
+.rima-btn-secondary {
+  background: transparent !important;
+  color: var(--rima-header-text) !important;
+  border: 1.5px solid rgba(0,0,0,0.15) !important;
+}
+
+.rima-btn-secondary:hover {
+  border-color: var(--rima-red) !important;
+  color: var(--rima-red) !important;
+}
+
+/* ── 4. HOMEPAGE HERO — transparent header override REMOVED ───────────────── */
+/* NO transparent header on homepage anymore — always white */
+body.home .rima-site-header {
+  position: sticky !important;
+  background: var(--rima-header-bg) !important;
+  border-bottom: 1px solid var(--rima-header-border) !important;
+}
+
+/* Override any white text from previous transparent state */
+body.home .rima-site-header .rima-header-nav ul li a,
+body.home .rima-site-header .rima-header-cart,
+body.home .rima-site-header .rima-mobile-toggle,
+body.home .rima-site-header .rima-text-logo,
+body.home .rima-site-header .rima-user-trigger span {
+  color: var(--rima-header-text) !important;
+}
+
+/* ── 5. MOBILE DRAWER — dark background, good contrast ───────────────────── */
+.rima-mobile-drawer {
+  background: #0a0f1a !important;
+}
+
+.rima-drawer-header {
+  border-bottom-color: rgba(255,255,255,0.08) !important;
+}
+
+.rima-drawer-nav ul li a {
+  color: rgba(255,255,255,0.85) !important;
+  font-size: 17px !important;
+  font-weight: 500 !important;
+  padding: 15px 4px !important;
+}
+
+.rima-drawer-nav ul li a:hover {
+  color: var(--rima-red) !important;
+}
+
+.rima-drawer-nav ul li {
+  border-bottom-color: rgba(255,255,255,0.05) !important;
+}
+
+/* ── 6. MOBILE BOTTOM BAR — always white ─────────────────────────────────── */
+#rima-mobile-bottom-nav {
+  background: #ffffff !important;
+  border-top: 1px solid rgba(0,0,0,0.08) !important;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.08) !important;
+}
+
+#rima-mobile-bottom-nav .rima-mob-nav-item {
+  color: #000000 !important;
+}
+
+#rima-mobile-bottom-nav .rima-mob-nav-item:hover,
+#rima-mobile-bottom-nav .rima-mob-nav-item.active {
+  color: var(--rima-red) !important;
+}
+
+#rima-mobile-bottom-nav .rima-mob-nav-item svg {
+  stroke: currentColor !important;
+}
+
+#rima-mobile-bottom-nav .rima-mob-nav-item span:not(.rima-mob-icon):not(.rima-mob-cart-badge) {
+  color: inherit !important;
+}
+
+/* ── 7. FOOTER ────────────────────────────────────────────────────────────── */
+.rima-site-footer,
+#rima-global-footer {
+  background: linear-gradient(135deg, #05060f 0%, #1a0815 50%, #0a1128 100%) !important;
+  color: var(--rima-footer-text) !important;
+  font-family: var(--rima-font) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+#rima-global-footer::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at 100% 0%, rgba(230, 34, 67, 0.1) 0%, transparent 40%),
+              radial-gradient(circle at 0% 100%, rgba(18, 48, 142, 0.15) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.rima-footer-top-accent {
+  height: 3px;
+  background: linear-gradient(90deg, var(--rima-navy), var(--rima-red), var(--rima-navy));
+  width: 100%;
+}
+
+.rima-footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 48px;
+  padding: 64px 0;
+  border-bottom: 1px solid var(--rima-footer-border);
+}
+
+.rima-footer-brand p {
+  color: var(--rima-footer-text) !important;
+  font-size: 0.9rem !important;
+  line-height: 1.7 !important;
+  margin-top: 14px !important;
+  max-width: 280px;
+}
+
+.rima-footer-col h4 {
+  color: #ffffff !important;
+  font-size: 0.78rem !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.12em !important;
+  margin: 0 0 20px !important;
+}
+
+.rima-footer-col ul {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.rima-footer-col ul li {
+  margin-bottom: 10px !important;
+}
+
+.rima-footer-col ul li a {
+  color: var(--rima-footer-text) !important;
+  text-decoration: none !important;
+  font-size: 0.9rem !important;
+  transition: color 0.2s !important;
+  font-weight: 400 !important;
+}
+
+.rima-footer-col ul li a:hover {
+  color: #ffffff !important;
+}
+
+/* Social icons */
+.rima-social-icons {
+  display: flex !important;
+  gap: 10px !important;
+}
+
+.rima-social-icons a {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  color: var(--rima-footer-text) !important;
+  transition: var(--rima-transition) !important;
+  text-decoration: none !important;
+}
+
+.rima-social-icons a:hover {
+  border-color: var(--rima-red) !important;
+  color: var(--rima-red) !important;
+  background: rgba(230,34,67,0.08);
+}
+
+/* Footer bottom */
+.rima-footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.rima-footer-copyright span {
+  color: rgba(255,255,255,0.4) !important;
+  font-size: 0.85rem !important;
+}
+
+.rima-footer-bottom-links {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.rima-footer-bottom-links a {
+  color: rgba(255,255,255,0.35) !important;
+  font-size: 0.82rem !important;
+  text-decoration: none !important;
+  transition: color 0.2s !important;
+}
+
+.rima-footer-bottom-links a:hover {
+  color: rgba(255,255,255,0.7) !important;
+}
+
+/* ── 8. INNER PAGE BODY (non-home pages) ─────────────────────────────────── */
+body:not(.home) {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  font-family: var(--rima-font) !important;
+}
+
+/* Keep WooCommerce dark pages untouched */
+body.woocommerce-checkout,
+body.woocommerce-cart {
+  background: #030408 !important;
+  color: #f0f2f5 !important;
+}
+
+/* Page content area */
+body:not(.home):not(.woocommerce-checkout):not(.woocommerce-cart) .eltdf-content {
+  background: #f8fafc !important;
+  min-height: 60vh;
+}
+
+body:not(.home):not(.woocommerce-checkout):not(.woocommerce-cart) .eltdf-content-inner {
+  max-width: var(--rima-container) !important;
+  margin: 0 auto !important;
+  padding: 48px clamp(16px, 4vw, 48px) 80px !important;
+}
+
+/* Page headings on white inner pages */
+body:not(.home):not(.woocommerce-checkout):not(.woocommerce-cart) h1,
+body:not(.home):not(.woocommerce-checkout):not(.woocommerce-cart) h2,
+body:not(.home):not(.woocommerce-checkout):not(.woocommerce-cart) h3 {
+  color: #0f172a !important;
+  font-family: var(--rima-font) !important;
+}
+
+body:not(.home):not(.woocommerce-checkout):not(.woocommerce-cart) p,
+body:not(.home):not(.woocommerce-checkout):not(.woocommerce-cart) li {
+  color: #334155 !important;
+  font-family: var(--rima-font) !important;
+}
+
+/* ── 9. MY ACCOUNT / WOOCOMMERCE GENERAL ─────────────────────────────────── */
+body.woocommerce-account {
+  background: #f0f4f8 !important;
+}
+
+/* ── 10. PERFORMANCE: CRITICAL RESOURCE HINTS ────────────────────────────── */
+/* Applied via PHP in functions.php — these are style hints only */
+
+/* Reduce paint during scroll */
+.rima-site-header,
+.rima-site-footer,
+#rima-global-footer {
+  contain: layout style;
+}
+
+/* Font display for anything using @font-face */
+/* Removed invalid font-face block */
+
+/* ── 11. PREVENT CONTENT OVERLAP FROM STICKY HEADER ─────────────────────── */
+/* Home page hero needs padding-top equal to header height */
+body.home .rima-hero-section,
+body.home .rima-premium-home > :first-child {
+  padding-top: calc(var(--rima-header-h) + 0px) !important;
+}
+
+/* Scroll offset for anchor links */
+html {
+  scroll-padding-top: calc(var(--rima-header-h) + 16px);
+}
+
+/* ── 12. WP ADMIN BAR OFFSET ─────────────────────────────────────────────── */
+.admin-bar .rima-site-header {
+  top: 32px !important;
+}
+
+@media (max-width: 782px) {
+  .admin-bar .rima-site-header {
+    top: 46px !important;
+  }
+}
+
+/* ── 13. RESPONSIVE — FOOTER ─────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .rima-footer-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+    padding: 48px 0;
+  }
+
+  .rima-footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .rima-footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    padding: 40px 0;
+  }
+
+  .rima-footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .rima-footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+/* ── 14. RESPONSIVE — HEADER ─────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .rima-header-nav,
+  .rima-header-tools .rima-btn {
+    display: none !important;
+  }
+
+  .rima-mobile-toggle {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  .rima-mobile-toggle {
+    display: none !important;
+  }
+}
+
+/* ── 15. WP MENU RESET ───────────────────────────────────────────────────── */
+.rima-header-nav .menu,
+.rima-header-nav .sub-menu {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* ── 16. SCROLLBAR ────────────────────────────────────────────────────────── */
+body:not(.woocommerce-checkout):not(.woocommerce-cart)::-webkit-scrollbar { width: 6px; }
+body:not(.woocommerce-checkout):not(.woocommerce-cart)::-webkit-scrollbar-track { background: #f1f5f9; }
+body:not(.woocommerce-checkout):not(.woocommerce-cart)::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+body:not(.woocommerce-checkout):not(.woocommerce-cart)::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* ── 17. HOMEPAGE HERO HERO CONTENT VISIBILITY FIX ───────────────────────── */
+/* With sticky white header, the hero content starts immediately below it */
+body.home .rima-premium-home {
+  /* remove the absolute-positioned-header-related gap */
+  padding-top: 0 !important;
+}
+
+body.home .rima-hero-section {
+  min-height: calc(100vh - var(--rima-header-h)) !important;
+  padding-top: 80px !important;
+}

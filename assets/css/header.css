@@ -1,0 +1,237 @@
+﻿/* ==========================================================================
+   RIMA ACADEMY - HEADER STYLES (PREMIUM)
+   ========================================================================== */
+
+/* Header Wrapper */
+.rima-site-header {
+    background-color: #ffffff;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.rima-site-header.is-scrolled {
+    box-shadow: 0 24px 50px -10px rgba(15, 23, 42, 0.4);
+}
+
+.rima-header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+}
+
+/* Logo */
+.rima-header-logo img {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* Desktop Navigation */
+.rima-header-nav {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.rima-header-nav ul {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+}
+
+.rima-header-nav ul li {
+    position: relative;
+    list-style: none !important;
+    margin: 0 !important;
+}
+
+.rima-header-nav ul li a {
+    color: #333333;
+    font-family: 'Inter', 'Outfit', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    text-transform: none; /* No ALL-CAPS */
+    text-decoration: none;
+    transition: color 0.3s ease;
+    display: block;
+    padding: 10px 0;
+}
+
+.rima-header-nav ul li a:hover,
+.rima-header-nav ul li.current-menu-item > a {
+    color: var(--rima-accent, #D4AF37); /* Academic Gold */
+}
+
+/* Tools & CTA (Right Side) */
+.rima-header-tools {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Cart Icon */
+.rima-header-cart {
+    position: relative;
+    color: #333333;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s ease;
+}
+
+.rima-header-cart:hover {
+    color: var(--rima-primary, #D4AF37);
+}
+
+.rima-mob-cart-badge {
+    /* position: absolute; */
+    top: -8px;
+    right: -10px;
+    background: var(--rima-accent, #B41527);
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    height: 18px;
+    width: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* Mobile Toggle Button */
+.rima-mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #333333;
+    cursor: pointer;
+    padding: 0;
+}
+
+/* ==========================================================================
+   MOBILE DRAWER (OFF-CANVAS)
+   ========================================================================== */
+.rima-drawer-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.7);
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+}
+.rima-drawer-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.rima-mobile-drawer {
+    position: fixed;
+    top: 0; right: -100%;
+    width: 300px;
+    max-width: 85vw;
+    height: 100vh;
+    background: var(--rima-secondary-dark, #090e17);
+    z-index: 10001;
+    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -5px 0 25px rgba(0,0,0,0.1);
+}
+.rima-mobile-drawer.is-open {
+    right: 0;
+}
+
+.rima-drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.rima-drawer-close {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.rima-drawer-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.rima-drawer-nav ul {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.rima-drawer-nav ul li {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    margin: 0 !important;
+}
+
+.rima-drawer-nav ul li a {
+    color: white;
+    font-size: 18px;
+    font-weight: 500;
+    text-decoration: none;
+    display: block;
+    padding: 15px 0;
+}
+
+.rima-drawer-footer {
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* RESPONSIVE BREAKPOINTS */
+@media (max-width: 1024px) {
+    .rima-header-nav,
+    .rima-header-tools .rima-btn {
+        display: none !important;
+    }
+    .rima-mobile-toggle {
+        display: block;
+    }
+}
+
+/* ==========================================================================
+   HOMEPAGE TRANSPARENT HEADER OVERRIDE
+   ========================================================================== */
+body.home .rima-site-header {
+    /* position: absolute; */
+    background-color: #000000 !important;
+    border-bottom: none;
+}
+body.home .rima-site-header.is-scrolled {
+    position: fixed;
+    background-color: #000000 !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+/* Force white text when at the very top of homepage */
+body.home .rima-site-header:not(.is-scrolled) .rima-header-nav ul li a,
+body.home .rima-site-header:not(.is-scrolled) .rima-header-cart,
+body.home .rima-site-header:not(.is-scrolled) .rima-mobile-toggle,
+body.home .rima-site-header:not(.is-scrolled) .rima-header-logo span {
+    color: #000000 !important;
+}

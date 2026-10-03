@@ -1,663 +1,432 @@
 <?php
 /**
- * Template Name: RIMA Home Modern (2026)
- * Description: Ultra-modern homepage with Parallax, GSAP, and Glassmorphism.
+ * Template Name: RIMA Home Premium 2026
+ * Description: Ultra-modern premium homepage with GSAP, Bento Grid, and 3D Globe.
  */
-
-// 1. Fetch Languages and their Courses for the 3D Flip Cards
-$language_data = array();
-$course_cats = get_terms( array(
-    'taxonomy'   => 'course-category',
-    'hide_empty' => true,
-) );
-
-if ( ! empty( $course_cats ) && ! is_wp_error( $course_cats ) ) {
-    
-    foreach ( $course_cats as $cat ) {
-        $slug = strtolower($cat->slug);
-        
-        // Fetch image set in Academist LMS (course-category taxonomy)
-        $cat_img = get_term_meta( $cat->term_id, 'course_category_image', true );
-        
-        // Elated themes sometimes store the attachment ID instead of URL
-        if ( is_numeric( $cat_img ) ) {
-            $cat_img = wp_get_attachment_url( $cat_img );
-        }
-
-        // Fetch up to 4 courses for this category
-        $courses_args = array(
-            'post_type'      => 'course',
-            'posts_per_page' => 4,
-            'post_status'    => 'publish',
-            'orderby'        => 'title',
-            'order'          => 'ASC',
-            'tax_query'      => array(
-                array(
-                    'taxonomy' => 'course-category',
-                    'field'    => 'slug',
-                    'terms'    => $cat->slug,
-                ),
-            ),
-        );
-        $courses_query = new WP_Query($courses_args);
-        $cat_courses = array();
-
-        if ($courses_query->have_posts()) {
-            while ($courses_query->have_posts()) {
-                $courses_query->the_post();
-                $c_id = get_the_ID();
-                $price = function_exists( 'academist_lms_calculate_course_price' ) ? academist_lms_calculate_course_price( $c_id ) : 0;
-                
-                $price_html = '';
-                if ( $price > 0 ) {
-                    if ( function_exists( 'get_woocommerce_currency_symbol' ) ) {
-                        $pos = get_option( 'woocommerce_currency_pos', 'right' );
-                        $sym = get_woocommerce_currency_symbol();
-                        $price_html = $pos === 'left' ? esc_html( $sym . $price ) : esc_html( $price . ' ' . $sym );
-                    } else {
-                        $price_html = esc_html( $price );
-                    }
-                } else {
-                    $price_html = 'Free';
-                }
-
-                // Extract level (e.g. A1-A2) from title
-                $title = get_the_title();
-                $level = '';
-                if (preg_match('/([A-C][1-2]\s*-\s*[A-C][1-2])|([A-C][1-2])/', $title, $matches)) {
-                    $level = $matches[0];
-                    $title = trim(str_replace($level, '', $title));
-                    $title = trim(trim($title, '-:'));
-                }
-                
-                $excerpt = wp_trim_words(get_the_excerpt(), 8, '...');
-
-                $cat_courses[] = array(
-                    'title'      => $title,
-                    'level'      => $level ? $level : 'All Levels',
-                    'link'       => get_permalink(),
-                    'excerpt'    => $excerpt,
-                    'price_html' => $price_html
-                );
-                
-                // If the category has no custom image, use the featured image of the first course
-                if ( empty( $cat_img ) && has_post_thumbnail() ) {
-                    $cat_img = get_the_post_thumbnail_url( get_the_ID(), 'full' );
-                }
-            }
-            wp_reset_postdata();
-        }
-        
-        // Final fallback if absolutely no image exists
-        if ( empty( $cat_img ) ) {
-            $cat_img = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop';
-        }
-
-        // Only add language if it has courses
-        if (!empty($cat_courses)) {
-            $language_data[] = array(
-                'name'    => $cat->name,
-                'slug'    => $cat->slug,
-                'img'     => $cat_img,
-                'courses' => $cat_courses
-            );
-        }
-    }
-}
-
-// Reorder languages: Romanian, English, Japanese
-$ordered_data = array();
-$desired_order = array('romanian', 'english', 'japanese');
-foreach ($desired_order as $slug) {
-    foreach ($language_data as $lang) {
-        if (strtolower($lang['slug']) === $slug) {
-            $ordered_data[] = $lang;
-            break;
-        }
-    }
-}
-// Add any others that might exist
-foreach ($language_data as $lang) {
-    if (!in_array(strtolower($lang['slug']), $desired_order)) {
-        $ordered_data[] = $lang;
-    }
-}
-$language_data = $ordered_data;
-
-// 2. Fetch Real Testimonials (Fixed)
-$testimonial_args = array(
-    'post_type'      => 'testimonials',
-    'posts_per_page' => 10,
-    'post_status'    => 'publish'
-);
-$testimonial_query = new WP_Query($testimonial_args);
-$testimonial_items = array();
-
-if ($testimonial_query->have_posts()) {
-    while ($testimonial_query->have_posts()) {
-        $testimonial_query->the_post();
-        
-        // In Academist, the author is often a meta field 'eltdf_testimonial_author' or the post_title. 
-        // The text is usually the post_title or post_content. Let's grab both.
-        $text = wp_strip_all_tags(get_the_title());
-        $author = get_post_meta(get_the_ID(), 'eltdf_testimonial_author', true);
-        if (empty($author)) {
-            $author = "Student";
-        }
-        
-        // Sometimes the text is in the content
-        $content = wp_strip_all_tags(get_the_content());
-        if (!empty($content) && strlen($content) > 10) {
-            $text = $content;
-        }
-
-        if (!empty($text)) {
-            $testimonial_items[] = array(
-                'text' => $text,
-                'author' => $author
-            );
-        }
-    }
-    wp_reset_postdata();
-}
-
-// Fallback if no testimonials found
-if (empty($testimonial_items)) {
-    $testimonial_items = array(
-        array('text' => 'The best language platform I have ever used.', 'author' => 'Sarah T.'),
-        array('text' => 'Native tutors helped me pass JLPT N3 easily.', 'author' => 'John D.'),
-        array('text' => 'I love the live Zoom integration!', 'author' => 'Maria M.'),
-    );
-}
-
-// Enqueue specific assets for this page
-add_action('wp_enqueue_scripts', function() {
-    // Enqueue GSAP
-    wp_enqueue_script('gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js', array(), null, true);
-    wp_enqueue_script('gsap-scroll', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js', array('gsap'), null, true);
-    
-    // Enqueue Custom CSS & JS
-    wp_enqueue_style('rima-home-css', get_stylesheet_directory_uri() . '/assets/css/rima-home.css', array(), time());
-    wp_enqueue_script('rima-home-js', get_stylesheet_directory_uri() . '/assets/js/rima-home.js', array('gsap', 'gsap-scroll', 'jquery'), time(), true);
-});
 
 get_header(); ?>
 
-<div id="rima-home-wrapper">
+<!-- RIMA PREMIUM HOME CSS -->
+<style>
+/* ==========================================================================
+   RIMA PREMIUM DESIGN AESTHETICS (High-End Agency Style)
+   ========================================================================== */
+.rima-premium-home {
+    background-color: #030408;
+    color: #ffffff;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow-x: hidden;
+    position: relative;
+}
 
-    <!-- 1. HERO SECTION (With 3D Globe & Elearning Theme) -->
-    <section class="rhm-hero">
-        <div class="rhm-hero-bg">
-            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #1c355e 0%, #040814 100%); z-index: -2;"></div>
-            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2000&auto=format&fit=crop') center/cover no-repeat; opacity: 0.1; z-index: -1;"></div>
-            <style>
-                .rhm-globe-wrapper { width: 90vw !important; height: 90vw !important; max-width: 1000px !important; max-height: 1000px !important; top: -49vh !important; left: 0 !important; right: 0 !important; margin: 0 auto !important; transform: none !important; }
-                @media (max-width: 1024px) { .rhm-globe-wrapper { width: 110vw !important; height: 110vw !important; top: -42vh !important; } }
-                @media (max-width: 768px) { .rhm-globe-wrapper { width: 130vw !important; height: 130vw !important; top: -27vh !important; } }
-            </style>
-            <div class="rhm-globe-wrapper" style="z-index: 2; opacity: 1;">
-                <div id="rhm-globe-viz" style="width: 100%; height: 100%;"></div>
+.eltdf-content, .eltdf-content-inner { padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
+/* Typography & Macro Spacing */
+.rima-premium-home h1, 
+.rima-premium-home h2, 
+.rima-premium-home h3 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.rima-eyebrow {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 500;
+    margin-bottom: 24px;
+    color: #a0aec0;
+}
+
+/* Fluid Hero Section */
+.rima-hero-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 5% 80px;
+    overflow: hidden;
+}
+
+.rima-hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 800px;
+}
+
+.rima-hero-title {
+    font-size: clamp(3rem, 7vw, 6.5rem);
+    background: linear-gradient(135deg, #ffffff 0%, #a0aec0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 32px;
+}
+
+.rima-hero-desc {
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.6;
+    max-width: 600px;
+    margin-bottom: 48px;
+}
+
+/* 3D Globe Container */
+#rima-globe-container {
+    background: radial-gradient(circle at center, rgba(138, 31, 44, 0.4) 0%, transparent 70%);
+    position: absolute;
+    top: 50%;
+    right: -10%;
+    transform: translateY(-50%);
+    width: 60vw;
+    height: 60vw;
+    max-width: 800px;
+    max-height: 800px;
+    z-index: 1;
+    opacity: 0.8;
+    pointer-events: none; /* Let clicks pass through if needed */
+}
+
+/* Premium Buttons */
+.rima-btn {
+    display: inline-flex;
+    align-items: center;
+    background: #ffffff;
+    color: #030408;
+    padding: 16px 24px 16px 32px;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: all 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.rima-btn:hover {
+    transform: scale(0.98);
+}
+.rima-btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(3, 4, 8, 0.05);
+    border-radius: 50%;
+    margin-left: 16px;
+    transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.rima-btn:hover .rima-btn-icon {
+    transform: translateX(4px) scale(1.05);
+}
+
+/* Double-Bezel Architecture (Bento Grid) */
+.rima-bento-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
+    padding: 120px 5%;
+}
+
+.rima-card-shell {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 32px;
+    padding: 8px;
+    transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.rima-card-core {
+    background: rgba(255, 255, 255, 0.03);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 40px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.rima-card-shell:hover {
+    transform: translateY(-8px);
+}
+
+.col-span-8 { grid-column: span 8; }
+.col-span-4 { grid-column: span 4; }
+.col-span-6 { grid-column: span 6; }
+
+@media (max-width: 768px) {
+    .rima-bento-grid {
+        grid-template-columns: 1fr;
+        padding: 60px 5%;
+    }
+    .col-span-8, .col-span-4, .col-span-6 {
+        grid-column: span 1;
+    }
+    #rima-globe-container {
+    background: radial-gradient(circle at center, rgba(138, 31, 44, 0.4) 0%, transparent 70%);
+        top: 20%;
+        right: -50%;
+        width: 150vw;
+        height: 150vw;
+        opacity: 0.4;
+    }
+}
+</style>
+
+<div class="rima-premium-home">
+
+    <!-- HERO SECTION -->
+    <section class="rima-hero-section">
+        <div id="rima-globe-container"></div>
+        <div class="rima-hero-content gsap-fade-up">
+            <span class="rima-eyebrow">The Future of Learning</span>
+            <h1 class="rima-hero-title">
+                Master 
+                <span class="rima-text-gradient-rotate" style="display:inline-block; font-weight:800; min-width: 320px; text-align: left;">
+                    <span id="rima-hero-typed">English</span>
+                </span><br>
+                Unlock the World.
+            </h1>
+            <p class="rima-hero-desc">Experience an ultra-modern educational journey with AI-driven assessments, native tutors, and an immersive curriculum designed for global success.</p>
+            
+            <a href="/our-courses/" class="rima-btn group">
+                Explore Courses
+                <span class="rima-btn-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </span>
+            </a>
+            
+            <div style="margin-top: 24px;">
+                <span style="display: inline-flex; align-items: center; background: rgba(230, 34, 67, 0.1); border: 1px solid rgba(230, 34, 67, 0.3); color: #ff4d6d; padding: 6px 14px; border-radius: 9999px; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">
+                    <span style="display: inline-block; width: 8px; height: 8px; background: #ff4d6d; border-radius: 50%; margin-right: 8px; box-shadow: 0 0 8px #ff4d6d;"></span>
+                    Romanian For Foreigners
+                </span>
             </div>
-            <div class="rhm-hero-vignette" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; background: radial-gradient(circle at center, transparent 0%, #040814 90%);"></div>
         </div>
-        
-        <div class="rhm-container rhm-hero-container" style="position: relative; z-index: 10; pointer-events: none;">
-            <div class="rhm-hero-content" style="pointer-events: auto;">
-                <?php 
-                $logo_url = 'https://rima-academy.com/wp-content/uploads/2026/06/light-logo.png';
-                ?>
-                <div class="rhm-hero-logo-wrapper">
-                    <img src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr(get_bloginfo('name')); ?>" class="rhm-hero-logo">
+    </section>
+
+    <!-- BENTO GRID (APPLE STYLE CARDS) -->
+    <section class="rima-bento-grid">
+        <!-- Card 1: Live Native Tutors (Large) -->
+        <div class="rima-card-shell col-span-8 gsap-fade-up">
+            <div class="rima-card-core" style="background: radial-gradient(circle at top right, rgba(138, 31, 44, 0.15), transparent 60%), rgba(255, 255, 255, 0.02);">
+                <h3 style="font-size: 2.5rem; margin-bottom: 16px;">Live Native Tutors</h3>
+                <p style="color: rgba(255,255,255,0.6); max-width: 400px; margin-bottom: auto; line-height: 1.6;">Join highly interactive live sessions directly through our platform. Native pronunciation, real-time feedback, and immersive conversations to accelerate your fluency.</p>
+                
+                <div style="margin-top: 40px; display: flex; gap: 16px;">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🌍</div>
+                    <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🎙️</div>
                 </div>
-                
-                <h1 class="rhm-hero-title">
-                    Master <br>
-                    <span class="rhm-gradient-text rhm-typewriter"><span id="rhm-typed-text"></span><span class="rhm-cursor">|</span></span>
-                </h1>
-                
-                <p class="rhm-hero-p">Unlock global opportunities with native tutors and live interactive sessions.</p>
-                
-                <div class="rhm-hero-actions">
-                    <a href="/our-courses/" class="rhm-glass-btn rhm-btn-primary" data-cursor="-hidden">
-                        <span>Start Learning</span>
-                    </a>
-                    <a href="#how-it-works" class="rhm-glass-btn rhm-btn-secondary">
-                        <span>How it works</span>
-                    </a>
-                </div>
-            </div>
-            <div class="rhm-hero-visual">
-                <!-- Globe is now fully in the background -->
             </div>
         </div>
 
-        <!-- Globe script is dynamically loaded below -->
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                // Dynamic Typing Effect
-                <?php
-                $course_cats = get_terms( array(
-                    'taxonomy'   => 'course-category',
-                    'hide_empty' => true,
-                ) );
-                $active_languages = array();
-                if ( ! empty( $course_cats ) && ! is_wp_error( $course_cats ) ) {
-                    foreach ( $course_cats as $cat ) {
-                        $active_languages[] = esc_js( $cat->name );
+        <!-- Card 2: Certifications (Medium) -->
+        <div class="rima-card-shell col-span-4 gsap-fade-up" style="transition-delay: 100ms;">
+            <div class="rima-card-core" style="background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0) 100%);">
+                <div style="font-size: 2.5rem; margin-bottom: 24px;">🎓</div>
+                <h3 style="font-size: 1.75rem; margin-bottom: 16px;">Verified Certifications</h3>
+                <p style="color: rgba(255,255,255,0.6); line-height: 1.6;">Earn verified certificates recognized by institutions worldwide upon completing your courses.</p>
+            </div>
+        </div>
+
+        <!-- Card 3: For Business (Medium) -->
+        <div class="rima-card-shell col-span-4 gsap-fade-up" style="transition-delay: 150ms;">
+            <div class="rima-card-core" style="background: rgba(255,255,255,0.02); text-align: center; justify-content: center; align-items: center;">
+                <div style="font-size: 3rem; margin-bottom: 24px;">🏢</div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 12px;">Corporate Solutions</h3>
+                <p style="color: rgba(255,255,255,0.5); font-size: 0.95rem;">Train your entire team with tailored B2B dashboards and automated invoicing.</p>
+            </div>
+        </div>
+
+        <!-- Card 4: Interactive Dashboard (Large) -->
+        <div class="rima-card-shell col-span-8 gsap-fade-up" style="transition-delay: 200ms;">
+            <div class="rima-card-core" style="background: radial-gradient(circle at bottom left, rgba(18, 48, 142, 0.15), transparent 60%), rgba(255, 255, 255, 0.02);">
+                <span class="rima-eyebrow" style="margin-bottom: 12px;">Platform</span>
+                <h3 style="font-size: 2.5rem; margin-bottom: 16px;">AI-Powered Dashboard</h3>
+                <p style="color: rgba(255,255,255,0.6); max-width: 450px; line-height: 1.6;">Track your progress, manage assignments, and receive AI-driven recommendations to improve your weak spots automatically.</p>
+            </div>
+        </div>
+
+        <!-- Featured Courses Dynamic Query -->
+        <div class="rima-card-shell col-span-12 gsap-fade-up" style="margin-top: 40px;">
+            <div class="rima-card-core" style="padding: 60px 40px; background: rgba(255,255,255,0.01);">
+                <span class="rima-eyebrow">Curriculum</span>
+                <h2 style="font-size: 3rem; margin-bottom: 40px;">Popular Pathways</h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+                    <?php
+                    // Fetch top 3 course categories
+                    $course_cats = get_terms( array('taxonomy' => 'course-category', 'hide_empty' => true, 'number' => 3) );
+                    if ( ! empty( $course_cats ) && ! is_wp_error( $course_cats ) ) {
+                        foreach ( $course_cats as $cat ) {
+                            echo '<a href="' . esc_url(get_term_link($cat)) . '" style="text-decoration: none; color: inherit; display: block;">';
+                            echo '<div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 32px; transition: transform 0.3s ease, background 0.3s ease;" onmouseover="this.style.background=\'rgba(255,255,255,0.08)\'; this.style.transform=\'translateY(-5px)\';" onmouseout="this.style.background=\'rgba(255,255,255,0.03)\'; this.style.transform=\'translateY(0)\';">';
+                            echo '<h4 style="font-size: 1.5rem; margin-bottom: 12px; font-weight: 600;">' . esc_html($cat->name) . '</h4>';
+                            echo '<p style="color: rgba(255,255,255,0.5); font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">';
+                            echo '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>';
+                            echo esc_html($cat->count) . ' Courses</p>';
+                            echo '</div>';
+                            echo '</a>';
+                        }
+                    } else {
+                        // Fallback if no categories exist yet
+                        echo '<div style="background: rgba(255,255,255,0.03); border-radius: 20px; padding: 32px;"><h4 style="font-size: 1.5rem; margin-bottom: 12px;">Romanian for Foreigners</h4><p style="color: rgba(255,255,255,0.5);">A1 - C2 Levels</p></div>';
+                        echo '<div style="background: rgba(255,255,255,0.03); border-radius: 20px; padding: 32px;"><h4 style="font-size: 1.5rem; margin-bottom: 12px;">English for Business</h4><p style="color: rgba(255,255,255,0.5);">Corporate communication</p></div>';
+                        echo '<div style="background: rgba(255,255,255,0.03); border-radius: 20px; padding: 32px;"><h4 style="font-size: 1.5rem; margin-bottom: 12px;">Japanese N5-N1</h4><p style="color: rgba(255,255,255,0.5);">JLPT Preparation</p></div>';
                     }
-                }
-                if ( empty( $active_languages ) ) {
-                    $active_languages = array("English", "Japanese", "Romanian");
-                }
-                $js_languages_array = '["' . implode('", "', $active_languages) . '"]';
-                ?>
-                const words = <?php echo $js_languages_array; ?>;
-                let i = 0;
-                let timer;
-                const typedTextSpan = document.getElementById("rhm-typed-text");
-                
-                function typingEffect() {
-                    let word = words[i].split("");
-                    var loopTyping = function() {
-                        if (word.length > 0) {
-                            typedTextSpan.innerHTML += word.shift();
-                        } else {
-                            setTimeout(deletingEffect, 2000);
-                            return false;
-                        }
-                        timer = setTimeout(loopTyping, 100);
-                    };
-                    loopTyping();
-                }
-
-                function deletingEffect() {
-                    let word = words[i].split("");
-                    var loopDeleting = function() {
-                        if (word.length > 0) {
-                            word.pop();
-                            typedTextSpan.innerHTML = word.join("");
-                        } else {
-                            i = (words.length > (i + 1)) ? ++i : 0;
-                            setTimeout(typingEffect, 500);
-                            return false;
-                        }
-                        timer = setTimeout(loopDeleting, 50);
-                    };
-                    loopDeleting();
-                }
-                
-                typingEffect();
-
-                // Globe Setup
-                const globeContainer = document.getElementById('rhm-globe-viz');
-                if (globeContainer) {
-                    
-
-                    const script = document.createElement('script');
-                    script.src = 'https://unpkg.com/globe.gl';
-                    script.onload = () => {
-                        if (typeof Globe === 'undefined') return;
-                        
-
-                        const markerData = [
-                            { lat: 51.5074, lng: -0.1278, slug: 'english', label: 'English', flag: 'https://flagcdn.com/w40/gb.png', isos: ['GBR'] },
-                            { lat: 45.9432, lng: 24.9668, slug: 'romanian', label: 'Romanian', flag: 'https://flagcdn.com/w40/ro.png', isos: ['ROU'] },
-                            { lat: 36.2048, lng: 138.2529, slug: 'japanese', label: 'Japanese', flag: 'https://flagcdn.com/w40/jp.png', isos: ['JPN'] }
-                        ];
-
-                        const arcsData = markerData.map(d => ({
-                            startLat: 51.5074, startLng: -0.1278, // Origin: London
-                            endLat: d.lat, endLng: d.lng
-                        }));
-
-                        const wrapperEl = document.querySelector('.rhm-globe-wrapper');
-                        const wWidth = wrapperEl ? wrapperEl.clientWidth : window.innerWidth / 2;
-                        const wHeight = wrapperEl ? wrapperEl.clientHeight : window.innerHeight;
-
-                        const globe = Globe()(globeContainer)
-                            .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
-                            .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
-                            .backgroundColor('rgba(0,0,0,0)')
-                            .showAtmosphere(true)
-                            .atmosphereColor('#00E5FF')
-                            .atmosphereAltitude(0.2)
-                            .width(wWidth)
-                            .height(wHeight)
-                            .polygonCapColor(feat => {
-                                const iso = feat.properties.ISO_A3;
-                                return markerData.find(m => m.isos.includes(iso)) ? 'rgba(0, 229, 255, 0.4)' : 'rgba(10, 20, 40, 0.8)';
-                            })
-                            .polygonSideColor(() => 'rgba(0,0,0,0)')
-                            .polygonStrokeColor(feat => {
-                                const iso = feat.properties.ISO_A3;
-                                return markerData.find(m => m.isos.includes(iso)) ? 'rgba(0, 229, 255, 1)' : 'rgba(0, 229, 255, 0.15)';
-                            })
-                            .polygonAltitude(0.01)
-                            .ringsData(markerData)
-                            .ringColor(() => '#00E5FF')
-                            .ringMaxRadius(7)
-                            .ringPropagationSpeed(3)
-                            .ringRepeatPeriod(1000)
-                            .htmlElementsData(markerData)
-                            .htmlElement(d => {
-                                const el = document.createElement('div');
-                                el.innerHTML = `
-                                    <div style="display:flex; align-items:center; background: rgba(10, 15, 30, 0.8); backdrop-filter: blur(4px); padding: 4px 8px; border-radius: 20px; border: 1px solid rgba(0, 229, 255, 0.5); pointer-events: none;">
-                                        <img src="${d.flag}" alt="flag" style="width: 20px; height: 14px; border-radius: 2px; margin-right: 6px;" />
-                                        <span style="color: #fff; font-size: 12px; font-weight: 500; font-family: Inter, sans-serif;">${d.label}</span>
-                                    </div>
-                                `;
-                                return el;
-                            })
-                            .arcsData(arcsData)
-                            .arcColor(() => 'rgba(0, 229, 255, 0.8)')
-                            .arcDashLength(0.4)
-                            .arcDashGap(0.2)
-                            .arcDashAnimateTime(1500);
-
-                        fetch('https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson')
-                            .then(res => res.json())
-                            .then(countries => {
-                                globe.polygonsData(countries.features);
-                            });
-
-                        globe.controls().autoRotate = (window.innerWidth > 768);
-                        globe.controls().autoRotateSpeed = 0.8;
-                        globe.controls().enableZoom = false; // Disable user interaction for hero
-
-                        globe.pointOfView({ lat: 45, lng: 60, altitude: 2.8 }, 1000);
-
-                        window.addEventListener('resize', () => {
-                            if (window.innerWidth > 0) {
-                                const newWidth = wrapperEl ? wrapperEl.clientWidth : window.innerWidth / 2;
-                                const newHeight = wrapperEl ? wrapperEl.clientHeight : window.innerHeight;
-                                globe.width(newWidth);
-                                globe.height(newHeight);
-                            }
-                        });
-                    };
-                    document.head.appendChild(script);
-                }
-            });
-        </script>    
-        <div class="rhm-scroll-indicator">
-            <div class="rhm-mouse"></div>
-        </div>
-    </section>
-
-    <!-- 1.5 TRUSTED BY -->
-    <div class="rhm-trusted-by">
-        <div class="rhm-container">
-            <p>Trusted by learners worldwide to pass official certifications</p>
-            <div class="rhm-trusted-logos">
-                <span>IELTS</span>
-                <span>JLPT</span>
-                <span>Cambridge</span>
-                <span>TOEFL</span>
-                <span>CEFR</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- 2. COURSE CATALOG (3D FLIP CARDS) -->
-    <section class="rhm-courses" id="courses">
-        <div class="rhm-container">
-            <div class="rhm-section-header">
-                <h2 class="rhm-h2">Choose Your <span class="rhm-cyan">Language</span>.</h2>
-                <p class="rhm-p">Click on a language card to reveal the available course levels.</p>
-            </div>
-            
-            
-            <div class="rhm-flip-grid">
-                <?php if(!empty($language_data)): foreach($language_data as $lang): ?>
-                
-                <div class="rhm-flip-container">
-                    <div class="rhm-flip-inner">
-                        
-                        <!-- FRONT OF CARD (Language) -->
-                        <div class="rhm-flip-front" style="background-image: url('<?php echo esc_url($lang['img']); ?>');">
-                            <div class="rhm-flip-front-overlay"></div>
-                            
-                            <?php 
-                                $slug = strtolower($lang['slug']);
-                                $stampClass = 'rhm-stamp';
-                                $stampText = '';
-                                if (in_array($slug, array('romanian', 'romana'))) {
-                                    $stampText = '⭐ For Foreigners';
-                                    $stampClass .= ' rhm-stamp-romanian';
-                                } elseif (in_array($slug, array('english'))) {
-                                    $stampText = 'Most Popular';
-                                    $stampClass .= ' rhm-stamp-blue';
-                                } elseif (in_array($slug, array('japanese'))) {
-                                    $stampText = 'Trending';
-                                    $stampClass .= ' rhm-stamp-purple';
-                                }
-                            ?>
-                            <?php if ($stampText): ?>
-                            <div class="<?php echo esc_attr($stampClass); ?>"><?php echo esc_html($stampText); ?></div>
-                            <?php endif; ?>
-
-                            <div class="rhm-flip-front-content">
-                                <h3><?php echo esc_html($lang['name']); ?></h3>
-                                <div class="rhm-flip-hint-wrapper">
-                                    <button class="rhm-flip-open" aria-label="View Courses">
-                                        <span>View Courses</span>
-                                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- BACK OF CARD (Courses) -->
-                        <div class="rhm-flip-back" style="background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(2, 6, 23, 0.95) 100%), url('<?php echo esc_url($lang['img']); ?>'); background-size: cover; background-position: center;">
-                            <div class="rhm-flip-back-header">
-                                <h3>
-                                    <?php echo esc_html($lang['name']); ?> Courses
-                                    <?php if ($stampText): ?>
-                                        <div class="<?php echo esc_attr($stampClass); ?> rhm-stamp-back"><?php echo esc_html($stampText); ?></div>
-                                    <?php endif; ?>
-                                </h3>
-                                <button class="rhm-flip-close" aria-label="Close" title="Back to Languages">
-                                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                                </button>
-                            </div>
-                            
-                            <div class="rhm-flip-course-list">
-                                <?php foreach($lang['courses'] as $course): ?>
-                                <a href="<?php echo esc_url($course['link']); ?>" class="rhm-course-list-card" onclick="window.location.href='<?php echo esc_url($course['link']); ?>'; return false;">
-                                    <div class="rhm-clc-left">
-                                        <div class="rhm-clc-level"><?php echo esc_html($course['level']); ?></div>
-                                        <div class="rhm-clc-details">
-                                            <p class="rhm-clc-excerpt"><?php echo esc_html($course['excerpt']); ?></p>
-                                        </div>
-                                    </div>
-                                    <div class="rhm-clc-right">
-                                        <div class="rhm-clc-price"><?php echo wp_kses_post($course['price_html']); ?></div>
-                                        <div class="rhm-btn-view">View</div>
-                                    </div>
-                                </a>
-                                <?php endforeach; ?>
-                            </div>
-                            
-                            <div class="rhm-flip-back-footer">
-                                <a href="/courses/" class="rhm-flip-view-all">View all <?php echo esc_html($lang['name']); ?> courses &rarr;</a>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                
-                <?php endforeach; endif; ?>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- 3. HOW IT WORKS (The RIMA Pathway) -->
-    <section class="rhm-how-it-works" id="how-it-works">
-        <div class="rhm-container">
-            <div class="rhm-section-header">
-                <h2 class="rhm-h2">The <span class="rhm-cyan">RIMA</span> Pathway</h2>
-                <p class="rhm-p">A proven step-by-step method to achieve fluency and global certification.</p>
-            </div>
-            
-            <div class="rhm-interactive-pathway">
-                <!-- Navigation Tabs -->
-                <div class="rhm-pathway-nav">
-                    <button class="rhm-pathway-tab active" data-target="pane-1">
-                        <span class="step-num">01</span>
-                        <span class="step-title">Placement & Assessment</span>
-                    </button>
-                    <button class="rhm-pathway-tab" data-target="pane-2">
-                        <span class="step-num">02</span>
-                        <span class="step-title">Choose Your Course</span>
-                    </button>
-                    <button class="rhm-pathway-tab" data-target="pane-3">
-                        <span class="step-num">03</span>
-                        <span class="step-title">Live Native Tutors</span>
-                    </button>
-                    <button class="rhm-pathway-tab" data-target="pane-4">
-                        <span class="step-num">04</span>
-                        <span class="step-title">Practice & Assignments</span>
-                    </button>
-                    <button class="rhm-pathway-tab" data-target="pane-5">
-                        <span class="step-num">05</span>
-                        <span class="step-title">Get Your Certificate</span>
-                    </button>
-                </div>
-                
-                <!-- Content Panes -->
-                <div class="rhm-pathway-content">
-                    
-                    <div class="rhm-pathway-pane active" id="pane-1">
-                        <h3>Placement & Assessment</h3>
-                        <p>Start your journey with a quick assessment. We evaluate your current fluency level to ensure you are placed in the perfect group for maximum growth.</p>
-                        <ul>
-                            <li>Free initial assessment</li>
-                            <li>Personalized learning roadmap</li>
-                            <li>Accurate CEFR level placement</li>
-                        </ul>
-                    </div>
-
-                    <div class="rhm-pathway-pane" id="pane-2">
-                        <h3>Choose Your Course</h3>
-                        <p>Browse our catalog of expert-curated courses ranging from absolute beginner (A1) to mastery (C2) based on your personal or professional goals.</p>
-                        <ul>
-                            <li>General Language Courses</li>
-                            <li>Business & Corporate Training</li>
-                            <li>Exam Preparation (IELTS, JLPT, etc.)</li>
-                        </ul>
-                    </div>
-
-                    <div class="rhm-pathway-pane" id="pane-3">
-                        <h3>Live Native Tutors</h3>
-                        <p>Join interactive live sessions directly from our platform. Our certified native tutors guide you through immersive conversations and real-world scenarios.</p>
-                        <ul>
-                            <li>Interactive Zoom integration</li>
-                            <li>Small group or 1-on-1 sessions</li>
-                            <li>Learn authentic pronunciation</li>
-                        </ul>
-                    </div>
-
-                    <div class="rhm-pathway-pane" id="pane-4">
-                        <h3>Practice & Assignments</h3>
-                        <p>Solidify your knowledge outside of class. Complete interactive quizzes, submit homework, and track your progress in real-time through your student dashboard.</p>
-                        <ul>
-                            <li>Automated progress tracking</li>
-                            <li>Interactive quizzes & exams</li>
-                            <li>Detailed feedback from tutors</li>
-                        </ul>
-                    </div>
-
-                    <div class="rhm-pathway-pane" id="pane-5">
-                        <h3>Get Your Certificate</h3>
-                        <p>Successfully complete your course modules and pass the final assessment to receive your official certificate of completion from Rima Academy.</p>
-                        <ul>
-                            <li>Verified Certificate of Completion</li>
-                            <li>Add directly to your CV/LinkedIn</li>
-                            <li>Proof of your language proficiency</li>
-                        </ul>
-                    </div>
+                    ?>
                 </div>
             </div>
-
-            <script>
-                document.addEventListener('DOMContentLoaded', () => {
-                    const tabs = document.querySelectorAll('.rhm-pathway-tab');
-                    const panes = document.querySelectorAll('.rhm-pathway-pane');
-
-                    tabs.forEach(tab => {
-                        tab.addEventListener('click', () => {
-                            // Remove active class from all
-                            tabs.forEach(t => t.classList.remove('active'));
-                            panes.forEach(p => p.classList.remove('active'));
-
-                            // Add active to clicked
-                            tab.classList.add('active');
-                            const targetId = tab.getAttribute('data-target');
-                            document.getElementById(targetId).classList.add('active');
-                        });
-                    });
-                });
-            </script>
-        </div>
-    </section>
-
-    <!-- 4. PARALLAX MEDIA BREAK -->
-    <section class="rhm-parallax-break">
-        <?php 
-        $parallax_img = get_the_post_thumbnail_url(get_the_ID(), 'full');
-        if (!$parallax_img) {
-            // Fallback reliable image if no featured image is set (students collaborating/learning)
-            $parallax_img = 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2000&auto=format&fit=crop';
-        }
-        $bg_style = "background-image: url('" . esc_url($parallax_img) . "');";
-        ?>
-        <div class="rhm-parallax-bg" style="<?php echo $bg_style; ?>"></div>
-        <div class="rhm-parallax-overlay">
-            <h2 class="rhm-massive-text" data-speed="0.5">FLUENCY IS POWER</h2>
-        </div>
-    </section>
-
-    <!-- 5. MARQUEE TESTIMONIALS -->
-    <section class="rhm-marquee-section">
-        <div class="rhm-marquee rhm-marquee-left">
-            <div class="rhm-marquee-track">
-                <?php foreach($testimonial_items as $item): ?>
-                <div class="rhm-testimonial-card">
-                    <p class="rhm-testi-text">"<?php echo esc_html($item['text']); ?>"</p>
-                    <div class="rhm-testi-author">- <?php echo esc_html($item['author']); ?></div>
-                </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-        <div class="rhm-marquee rhm-marquee-right">
-            <div class="rhm-marquee-track">
-                <?php 
-                $testimonial_reversed = array_reverse($testimonial_items);
-                foreach($testimonial_reversed as $item): ?>
-                <div class="rhm-testimonial-card">
-                    <p class="rhm-testi-text">"<?php echo esc_html($item['text']); ?>"</p>
-                    <div class="rhm-testi-author">- <?php echo esc_html($item['author']); ?></div>
-                </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    </section>
-
-    <!-- 7. FINAL CTA -->
-    <section class="rhm-cta">
-        <div class="rhm-cta-glow"></div>
-        <div class="rhm-cta-content">
-            <h2 class="rhm-h2">Your Future Starts Now.</h2>
-            <p class="rhm-p">Join a global community of language learners.</p>
-            <a href="/my-account/" class="rhm-btn rhm-btn-primary rhm-btn-large magnetic-btn">Create Free Account</a>
         </div>
     </section>
 
 </div>
 
+<!-- REQUIRED SCRIPTS FOR GSAP & THREE.JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+<script>
+window.rimaVueAppsQueue = window.rimaVueAppsQueue || [];
+window.rimaVueAppsQueue.push(function() {
+    // 1. GSAP Scroll Animations
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+        
+        gsap.utils.toArray('.gsap-fade-up').forEach(function(elem) {
+            gsap.fromTo(elem, 
+                { y: 60, opacity: 0, filter: "blur(10px)" },
+                { 
+                    y: 0, 
+                    opacity: 1, 
+                    filter: "blur(0px)",
+                    duration: 1, 
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: elem,
+                        start: "top 85%",
+                    }
+                }
+            );
+        });
+    }
+
+    // 2. Realistic SaaS Globe with Connections
+    const container = document.getElementById('rima-globe-container');
+    if(container && !window.rimaGlobeInitialized) {
+        window.rimaGlobeInitialized = true;
+        // Dynamically load globe.gl
+        if (typeof Globe === 'undefined') {
+            const script = document.createElement('script');
+            script.src = "https://unpkg.com/globe.gl";
+            script.onload = initGlobe;
+            document.head.appendChild(script);
+        } else {
+            initGlobe();
+        }
+        
+        function initGlobe() {
+            const arcsData = [
+                { startLat: 44.4268, startLng: 26.1025, endLat: 51.5074, endLng: -0.1278, color: '#12308e', name: 'Romanian to English' },
+                { startLat: 44.4268, startLng: 26.1025, endLat: 35.6762, endLng: 139.6503, color: '#e62243', name: 'Romanian to Japanese' }
+            ];
+            
+            const labelsData = [
+                { lat: 44.4268, lng: 26.1025, text: 'Romanian', size: 1.5, color: 'white' },
+                { lat: 51.5074, lng: -0.1278, text: 'English', size: 1.5, color: '#12308e' },
+                { lat: 35.6762, lng: 139.6503, text: 'Japanese', size: 1.5, color: '#e62243' }
+            ];
+            
+            const myGlobe = Globe()(container)
+                .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
+                .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+                .backgroundColor('rgba(0,0,0,0)')
+                .arcsData(arcsData)
+                .arcColor('color')
+                .arcDashLength(0.4)
+                .arcDashGap(0.2)
+                .arcDashAnimateTime(2000)
+                .arcStroke(1.5)
+                .labelsData(labelsData)
+                .labelLat('lat')
+                .labelLng('lng')
+                .labelText('text')
+                .labelSize('size')
+                .labelDotRadius(0.5)
+                .labelColor('color')
+                .labelResolution(2);
+                
+            // Setup initial rotation and view
+            myGlobe.controls().autoRotate = true;
+            myGlobe.controls().autoRotateSpeed = 1.2;
+            myGlobe.controls().enableZoom = false;
+            myGlobe.pointOfView({ lat: 35, lng: 70, altitude: 2 });
+            
+            // Match container size
+            myGlobe.width(container.clientWidth).height(container.clientHeight);
+            
+            window.addEventListener('resize', () => {
+                myGlobe.width(container.clientWidth).height(container.clientHeight);
+            });
+        }
+    }
+
+    // 3. Typing Effect
+    const typedEl = document.getElementById('rima-hero-typed');
+    if(typedEl && !window.rimaTypingStarted) {
+        window.rimaTypingStarted = true;
+        const words = ["English", "Japanese", "Romanian"];
+        let i = 0;
+        let timer;
+
+        function typingEffect() {
+            if (!document.getElementById('rima-hero-typed')) { window.rimaTypingStarted = false; return; }
+            let word = words[i].split("");
+            var loopTyping = function() {
+                if (!document.getElementById('rima-hero-typed')) { window.rimaTypingStarted = false; return; }
+                if (word.length > 0) {
+                    document.getElementById('rima-hero-typed').innerHTML += word.shift();
+                } else {
+                    setTimeout(deletingEffect, 2000);
+                    return false;
+                };
+                timer = setTimeout(loopTyping, 150);
+            };
+            loopTyping();
+        };
+
+        function deletingEffect() {
+            if (!document.getElementById('rima-hero-typed')) { window.rimaTypingStarted = false; return; }
+            let word = words[i].split("");
+            var loopDeleting = function() {
+                if (!document.getElementById('rima-hero-typed')) { window.rimaTypingStarted = false; return; }
+                if (word.length > 0) {
+                    word.pop();
+                    document.getElementById('rima-hero-typed').innerHTML = word.join("");
+                } else {
+                    if (words.length > (i + 1)) {
+                        i++;
+                    } else {
+                        i = 0;
+                    };
+                    typingEffect();
+                    return false;
+                };
+                timer = setTimeout(loopDeleting, 100);
+            };
+            loopDeleting();
+        };
+        
+        typedEl.innerHTML = "";
+        typingEffect();
+    }
+});
+</script>
+
 <?php get_footer(); ?>
-<!-- trigger sync -->
 
 

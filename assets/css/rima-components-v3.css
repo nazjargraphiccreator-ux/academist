@@ -1,0 +1,116 @@
+/* ==========================================================================
+   RIMA ACADEMY 2026 - COMPONENT LIBRARY
+   ========================================================================== */
+
+/* 1. BUTTONS (RimaButton) */
+.rima-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    font-size: var(--text-small);
+    font-weight: 600;
+    font-family: var(--font-display);
+    border-radius: var(--rima-radius-md);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    line-height: 1;
+}
+
+.rima-btn:hover {
+    transform: translateY(-2px);
+}
+
+.rima-btn:active {
+    transform: translateY(0);
+}
+
+.rima-btn:focus-visible {
+    outline: 2px solid var(--rima-accent);
+    outline-offset: 2px;
+}
+
+/* Primary Button */
+.rima-btn-primary {
+    background: var(--rima-gradient-primary);
+    color: var(--rima-surface) !important;
+    box-shadow: var(--rima-shadow-md);
+}
+
+.rima-btn-primary:hover {
+    box-shadow: var(--rima-shadow-lg);
+}
+
+/* Accent Button (Red/Blue gradient) */
+.rima-btn-accent {
+    background: var(--rima-gradient-accent);
+    color: var(--rima-surface) !important;
+    box-shadow: 0 4px 15px rgba(230, 34, 67, 0.3);
+}
+
+.rima-btn-accent:hover {
+    box-shadow: 0 8px 25px rgba(230, 34, 67, 0.4);
+}
+
+/* Secondary Button */
+.rima-btn-secondary {
+    background: transparent;
+    color: var(--rima-primary) !important;
+    border: 2px solid var(--rima-primary);
+}
+
+.rima-btn-secondary:hover {
+    background: var(--rima-primary-light);
+}
+
+/* 2. CARDS (RimaCard & RimaCourseCard) */
+.rima-card {
+    background: var(--rima-surface);
+    border-radius: var(--rima-radius-lg);
+    border: 1px solid var(--rima-border);
+    box-shadow: var(--rima-shadow-sm);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.rima-card:hover {
+    box-shadow: var(--rima-shadow-lg);
+    transform: translateY(-4px);
+    border-color: rgba(18, 48, 142, 0.1);
+}
+
+/* CEFR Badges */
+.rima-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--rima-radius-full);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.rima-badge-a1, .rima-badge-a2 { background: #E0F2FE; color: #0284C7; } /* Blue */
+.rima-badge-b1, .rima-badge-b2 { background: #FEF9C3; color: #CA8A04; } /* Yellow/Gold */
+.rima-badge-c1, .rima-badge-c2 { background: #DCFCE7; color: #16A34A; } /* Green */
+.rima-badge-premium { background: var(--rima-gradient-accent); color: white; }
+
+/* 3. TOASTS / ALERTS */
+.rima-alert {
+    padding: 1rem 1.5rem;
+    border-radius: var(--rima-radius-md);
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    font-size: var(--text-small);
+}
+
+.rima-alert-info {
+    background: var(--rima-primary-light);
+    border-left: 4px solid var(--rima-primary);
+    color: var(--rima-primary-dark);
+}

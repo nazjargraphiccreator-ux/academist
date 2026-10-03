@@ -5,8 +5,8 @@
 :root {
     --rh-dark: #070B14;
     --rh-dark-alt: #0C1322;
-    --rh-blue: #00E5FF;
-    --rh-blue-glow: rgba(0, 229, 255, 0.4);
+    --rh-blue: #D4AF37;
+    --rh-blue-glow: rgba(212, 175, 55, 0.4);
     --rh-white: #FFFFFF;
     --rh-text: #A0ABC0;
     --rh-radius: 32px;
@@ -102,8 +102,8 @@
 }
 .rh26-hero-badge {
     display: inline-block;
-    background: rgba(0, 229, 255, 0.1);
-    border: 1px solid rgba(0, 229, 255, 0.3);
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
     color: var(--rh-blue);
     padding: 8px 18px;
     border-radius: 50px;
@@ -350,7 +350,7 @@
 }
 .rh26-method-card:hover {
     background: rgba(255,255,255,0.05);
-    border-color: rgba(0, 229, 255, 0.4);
+    border-color: rgba(212, 175, 55, 0.4);
     transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
@@ -386,7 +386,7 @@
 .rh26-cta-box {
     max-width: 1000px;
     margin: 0 auto;
-    background: radial-gradient(circle at top right, rgba(0, 229, 255, 0.15), transparent 60%),
+    background: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 60%),
                 rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 40px;

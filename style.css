@@ -1,11 +1,11 @@
 /*
-Theme Name: Academist Child
-Theme URI: https://academist.qodeinteractive.com/
-Description: A child theme of Academist Theme
-Author: Elated Themes
-Author URI: http://themeforest.net/user/elated-themes
-Version: 1.0.2
-Text Domain: academist
+Theme Name: Rima Theme
+Theme URI: https://rima-academy.com/
+Description: A child theme customized for Rima Academy
+Author: Rima Academy
+Author URI: https://rima-academy.com/
+Version: 2.0.SPA.5
+Text Domain: rima-academy
 Template: academist
 */
 
@@ -963,3 +963,154 @@ footer .vc_row,
     padding-bottom: 0 !important;
     margin-bottom: 0 !important;
 }
+
+/* ==========================================================================
+   GLOBAL MY ACCOUNT LAYOUT FIX (Aligns Dashboard, Orders, Courses with Sidebar)
+   ========================================================================== */
+body.woocommerce-account .eltdf-container,
+body.woocommerce-account .eltdf-container-inner,
+body.woocommerce-account .eltdf-content .woocommerce {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+body.woocommerce-account.logged-in .woocommerce {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 30px !important;
+    max-width: 1200px !important;
+    margin: 40px auto !important;
+    width: 100% !important;
+}
+
+body.woocommerce-account.logged-in .woocommerce-MyAccount-navigation {
+    flex: 0 0 300px !important;
+    width: 300px !important;
+    max-width: 300px !important;
+    margin: 0 !important;
+}
+
+body.woocommerce-account.logged-in .woocommerce-MyAccount-content {
+    flex: 1 1 0% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    float: none !important;
+}
+
+@media (max-width: 991px) {
+    body.woocommerce-account.logged-in .woocommerce {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+    body.woocommerce-account.logged-in .woocommerce-MyAccount-navigation,
+    body.woocommerce-account.logged-in .woocommerce-MyAccount-content {
+        flex: 1 1 100% !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* ==========================================================================
+   MODERN CHECKOUT HEADER (Minimal Distractions)
+   ========================================================================== */
+body.woocommerce-checkout .eltdf-menu-area .eltdf-position-center,
+body.woocommerce-checkout .eltdf-menu-area .eltdf-position-right,
+body.woocommerce-checkout .eltdf-mobile-header .eltdf-mobile-menu-opener {
+    display: none !important;
+}
+
+body.woocommerce-checkout .eltdf-menu-area .eltdf-position-left {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+body.woocommerce-checkout .eltdf-logo-wrapper {
+    margin: 0 auto !important;
+    display: block !important;
+    text-align: center !important;
+}
+
+/* On mobile, center the logo as well */
+body.woocommerce-checkout .eltdf-mobile-header .eltdf-position-left {
+    width: 100% !important;
+    justify-content: center !important;
+}
+
+/* ==========================================================================
+   MOBILE MENU & RESPONSIVENESS FIXES
+   ========================================================================== */
+/* Mobile Menu Opener & Dropdown */
+.eltdf-mobile-header .eltdf-mobile-menu-opener a {
+    color: #ffffff !important;
+    font-size: 24px !important;
+}
+.eltdf-mobile-nav {
+    background-color: #0f172a !important;
+    z-index: 999999 !important;
+}
+.eltdf-mobile-nav ul li a, 
+.eltdf-mobile-nav ul li h6 {
+    color: #ffffff !important;
+    border-bottom-color: rgba(255,255,255,0.05) !important;
+}
+/* Side Area Fix */
+.eltdf-side-menu {
+    background-color: #0f172a !important;
+}
+.eltdf-side-menu-title, .eltdf-side-menu a {
+    color: #ffffff !important;
+}
+/* Our Courses Responsive Fixes */
+@media (max-width: 991px) {
+    .rw-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .rw-sidebar {
+        margin-top: 30px !important;
+    }
+}
+@media (max-width: 768px) {
+    .rw-bottom-banner {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 20px !important;
+    }
+    .rw-bb-content {
+        flex-direction: column !important;
+    }
+    .rw-bb-text h4 {
+        font-size: 1.2rem !important;
+    }
+}
+
+
+
+/* ==========================================================================
+   EMERGENCY OVERRIDE FOR BROKEN HEADER CACHE
+   ========================================================================== */
+@media only screen and (min-width: 1025px) {
+    body .eltdf-wrapper .eltdf-mobile-header {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        z-index: -1 !important;
+    }
+}
+@media only screen and (max-width: 1024px) {
+    body .eltdf-wrapper .eltdf-page-header {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        z-index: -1 !important;
+    }
+}
+
+

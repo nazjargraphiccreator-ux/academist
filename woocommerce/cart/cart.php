@@ -246,80 +246,7 @@ do_action('woocommerce_before_cart');
         </a>
     </div>
     
-    <style>
-    /* ── Mobile Sticky Footer Buttons ─────────────────────────────── */
-    .rima-mobile-sticky-footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        gap: 10px;
-        padding: 12px 16px;
-        background: #fff;
-        box-shadow: 0 -4px 20px rgba(0,0,0,0.12);
-        z-index: 9999;
-    }
-
-    .rima-mobile-sticky-footer .rima-btn {
-        flex: 1;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 14px 12px;
-        font-size: 15px;
-        font-weight: 600;
-        border-radius: 12px;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        white-space: nowrap;
-    }
-
-    .rima-mobile-sticky-footer .rima-btn-outline {
-        background: #fff;
-        color: #00BFA6;
-        border: 2px solid #00BFA6;
-    }
-
-    .rima-mobile-sticky-footer .rima-btn-primary {
-        background: linear-gradient(135deg, #00BFA6 0%, #102d56 100%);
-        color: #fff !important;
-    }
-
-    .rima-mobile-sticky-footer .rima-btn-primary:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 16px rgba(0,191,166,0.4);
-        color: #fff;
-    }
-
-    /* Add padding so content isn't hidden under sticky footer on mobile */
-    @media (max-width: 768px) {
-        .rima-cart-wrapper {
-            padding-bottom: 80px;
-        }
-    }
-
-    /* Hide mobile sticky footer on desktop */
-    @media (min-width: 769px) {
-        .rima-mobile-sticky-footer {
-            display: none !important;
-        }
-        
-        /* Hide the bottom cart actions (Actualizează + Continuă) on desktop */
-        .rima-cart-actions {
-            display: none !important;
-        }
-        
-        /* Make sidebar continue button match finalize button size */
-        .rima-cart-summary .rima-btn-outline {
-            padding: 15px 30px !important;
-            font-size: 16px !important;
-            width: 100% !important;
-        }
-    }
-    </style>
+    
 
 </div>
 
@@ -438,3 +365,4 @@ do_action('woocommerce_before_cart');
     });
 })(jQuery);
 </script>
+

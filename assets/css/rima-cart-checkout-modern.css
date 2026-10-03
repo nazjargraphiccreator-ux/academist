@@ -1,0 +1,219 @@
+/* ============================================================
+   RIMA — SaaS 2026 Premium Cart & Checkout Design (Dark Mode)
+   ============================================================ */
+
+body.woocommerce-cart,
+body.woocommerce-checkout {
+    background-color: #030408 !important;
+    background-image: radial-gradient(circle at top right, rgba(230, 34, 67, 0.05), transparent 40%),
+                      radial-gradient(circle at bottom left, rgba(18, 48, 142, 0.05), transparent 40%);
+    color: #f8fafc !important;
+    font-family: 'Outfit', sans-serif !important;
+}
+
+/* Hide old titles & defaults */
+.eltdf-title-holder { display: none !important; }
+.woocommerce-notices-wrapper { max-width: 1100px; margin: 20px auto; }
+
+/* Grid / Wrappers */
+.rima-checkout-wrapper, .rima-cart-wrapper {
+    max-width: 1200px;
+    margin: 60px auto;
+    display: grid;
+    gap: 32px;
+}
+
+@media (min-width: 992px) {
+    .rima-checkout-wrapper { grid-template-columns: 1fr 400px; align-items: start; }
+    .rima-cart-wrapper { grid-template-columns: 1fr 380px; align-items: start; }
+}
+
+/* ── PANELS (Glassmorphism) ── */
+.rima-checkout-step, .rima-order-summary-panel, .rima-cart-products, .rima-cart-summary {
+    background: rgba(255,255,255,0.02) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    overflow: hidden;
+}
+
+/* Headers of Panels */
+.rima-checkout-step-header, .rima-order-summary-header, .rima-cart-header {
+    background: rgba(255,255,255,0.03) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Step Numbers */
+.rima-step-number {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, #e62243, #12308e) !important;
+    color: #fff !important;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 800; flex-shrink: 0;
+    box-shadow: 0 4px 15px rgba(230,34,67,0.3);
+}
+
+/* Titles */
+.rima-checkout-title { font-size: 36px; font-weight: 800; color: #fff; text-align: center; margin-top: 40px; }
+.rima-checkout-subtitle { font-size: 16px; color: #94a3b8; text-align: center; margin-bottom: 40px; }
+.rima-step-title, .rima-order-summary-title { font-size: 20px; font-weight: 700; color: #fff !important; margin: 0; }
+.rima-step-subtitle { font-size: 14px; color: #94a3b8 !important; margin: 0; }
+
+.rima-checkout-step-body, .rima-order-summary-body { padding: 32px; }
+
+/* ── FORM FIELDS ── */
+.form-row label {
+    font-weight: 600;
+    color: #cbd5e1 !important;
+    font-size: 13px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+input.input-text, select, textarea, .select2-container .select2-selection {
+    background: rgba(0,0,0,0.2) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+    padding: 16px !important;
+    font-size: 16px !important;
+    transition: all 0.3s ease !important;
+    width: 100%;
+}
+
+.select2-container .select2-selection { height: 54px !important; }
+.select2-container--default .select2-selection--single .select2-selection__rendered { color: #fff !important; line-height: 54px !important; padding-left: 0 !important; }
+
+input.input-text:focus, select:focus, textarea:focus, .select2-container--open .select2-selection {
+    border-color: #12308e !important;
+    box-shadow: 0 0 0 4px rgba(18,48,142,0.2) !important;
+    outline: none !important;
+    background: rgba(0,0,0,0.4) !important;
+}
+
+/* ── BUTTONS ── */
+button[type="submit"], .checkout-button, .button.alt, .rima-btn-primary {
+    background: linear-gradient(135deg, #e62243, #12308e) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50px !important;
+    padding: 18px 36px !important;
+    font-weight: 800 !important;
+    font-size: 16px !important;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    width: 100%;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(230,34,67,0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+button[type="submit"]:hover, .checkout-button:hover, .button.alt:hover, .rima-btn-primary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(230,34,67,0.4) !important;
+}
+
+/* ── ORDER SUMMARY / CART ITEMS ── */
+.rima-order-product, .shop_table.woocommerce-checkout-review-order-table tr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.rima-order-product-name, .product-name {
+    font-weight: 700;
+    font-size: 16px;
+    color: #fff !important;
+}
+
+.rima-order-product-price, .product-total, .cart-subtotal .amount, .order-total .amount {
+    font-weight: 800;
+    font-size: 18px;
+    color: #fff !important;
+}
+
+.order-total .amount {
+    color: #e62243 !important;
+    font-size: 24px;
+}
+
+/* Hide standard WC table headers */
+.shop_table.woocommerce-checkout-review-order-table th {
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+    border: none !important;
+}
+.shop_table.woocommerce-checkout-review-order-table td { border: none !important; }
+
+/* Payments box */
+#payment {
+    background: rgba(0,0,0,0.2) !important;
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 24px;
+}
+#payment ul.payment_methods {
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+}
+#payment ul.payment_methods li {
+    color: #fff;
+    font-weight: 600;
+}
+#payment div.payment_box {
+    background: rgba(255,255,255,0.05) !important;
+    color: #cbd5e1 !important;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 14px;
+}
+#payment div.payment_box::before { border-bottom-color: rgba(255,255,255,0.05) !important; }
+
+/* ── CART SPECIFIC ── */
+.rima-cart-header { display: none; } /* Hide grid header */
+.rima-order-product {
+    background: rgba(255,255,255,0.02);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+.rima-product-image-wrapper img {
+    border-radius: 12px;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+}
+.rima-remove-item {
+    color: #ef4444;
+    font-size: 14px;
+    background: rgba(239, 68, 68, 0.1);
+    padding: 6px 12px;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+.rima-remove-item:hover { background: rgba(239, 68, 68, 0.2); }
+.rima-cart-qty-input {
+    background: rgba(0,0,0,0.3) !important;
+    color: #fff !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 8px;
+    text-align: center;
+    width: 60px;
+    padding: 8px;
+}

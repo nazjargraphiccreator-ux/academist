@@ -15,14 +15,14 @@
 
 :root {
     /* Primary Colors - Electric Cyan / Blue */
-    --rima-primary: #00E5FF;
+    --rima-primary: #D4AF37;
     --rima-primary-dark: #00B8CC;
     --rima-primary-light: #66EFFF;
-    --rima-primary-rgb: 0, 229, 255;
+    --rima-primary-rgb: 212, 175, 55;
 
     /* Secondary Colors - Deep Space Navy */
-    --rima-secondary: #162547;
-    --rima-secondary-dark: #0A1128;
+    --rima-secondary: #1E293B;
+    --rima-secondary-dark: #0F172A;
     --rima-secondary-light: #2D4173;
     --rima-secondary-rgb: 22, 37, 71;
 
@@ -31,7 +31,7 @@
     --rima-accent-gold: #FFD166;
 
     /* Semantic Colors */
-    --rima-success: #00E5FF;
+    --rima-success: #D4AF37;
     --rima-warning: #FFD166;
     --rima-danger: #FF1053;
     --rima-info: #102d56;
@@ -48,10 +48,10 @@
     --rima-gray-700: #495057;
     --rima-gray-800: #343A40;
     --rima-gray-900: #212529;
-    --rima-black: #0A1128; /* Replaced black with Deep Navy */
+    --rima-black: #0F172A; /* Replaced black with Deep Navy */
 
     /* Text Colors */
-    --rima-text-primary: #162547;
+    --rima-text-primary: #1E293B;
     --rima-text-secondary: #495057;
     --rima-text-muted: #ADB5BD;
     --rima-text-inverse: #FFFFFF;
@@ -60,12 +60,12 @@
     --rima-bg-body: #F8F9FA;
     --rima-bg-card: #FFFFFF;
     --rima-bg-overlay: rgba(10, 17, 40, 0.7);
-    --rima-bg-navy: #0A1128;
+    --rima-bg-navy: #0F172A;
 
     /* Gradients */
-    --rima-gradient-primary: linear-gradient(135deg, #0A1128 0%, #162547 50%, #2D4173 100%);
+    --rima-gradient-primary: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #2D4173 100%);
     --rima-gradient-accent: linear-gradient(135deg, #FF1053 0%, #FF6B6B 100%);
-    --rima-gradient-hero: linear-gradient(135deg, #0A1128 0%, #162547 55%, #2D4173 100%);
+    --rima-gradient-hero: linear-gradient(135deg, #0F172A 0%, #1E293B 55%, #2D4173 100%);
 
     /* Typography */
     --rima-font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -1285,13 +1285,11 @@ body.rima-lang-ro .rima-lang-toggle-light .rima-lang-label-ro { color: #2d3748 !
     visibility: hidden;
     transition: all 0.4s ease;
     backdrop-filter: blur(2px);
-    pointer-events: none;
 }
 
 .rima-side-cart-overlay.rima-cart-open {
     opacity: 1;
     visibility: visible;
-    pointer-events: auto;
 }
 
 /* Side Cart Header */
@@ -1946,4 +1944,3 @@ input[type="submit"]:hover,
     border-color: #102d56 !important;
     color: #ffffff !important;
 }
-

@@ -3,24 +3,24 @@
    ========================================================================== */
 
 :root {
-	--rima-red:        #ff4757;
-	--rima-red-dark:   #ff6b81;
-	--rima-red-glow:   rgba(255, 71, 87, 0.12);
-	--rima-navy:       #102d56;
-	--rima-navy-2:     #102d56;
-	--rima-navy-3:     #102d56;
-	--rima-text:       #2d3748;
-	--rima-muted:      #718096;
-	--rima-surface:    #ffffff;
-	--rima-bg:         #f7fafc;
-	--rima-border:     #e2e8f0;
-	--rima-white:      #ffffff;
-	--rima-radius-sm:  8px;
-	--rima-radius-md:  16px;
-	--rima-radius-lg:  24px;
-	--rima-shadow-sm:  0 2px 8px rgba(0,0,0,0.04);
-	--rima-shadow-md:  0 8px 24px rgba(0,0,0,0.06);
-	--rima-shadow-lg:  0 12px 32px rgba(0,0,0,0.1);
+	--rima-red:        var(--rima-accent);
+	--rima-red-dark:   var(--rima-accent-hover);
+	--rima-red-glow:   rgba(230, 34, 67, 0.12);
+	--rima-navy:       var(--rima-primary);
+	--rima-navy-2:     var(--rima-primary-dark);
+	--rima-navy-3:     var(--rima-primary-dark);
+	--rima-text:       var(--rima-text);
+	--rima-muted:      var(--rima-text-muted);
+	--rima-surface:    var(--rima-surface);
+	--rima-bg:         var(--rima-surface-alt);
+	--rima-border:     var(--rima-border);
+	--rima-white:      var(--rima-surface);
+	--rima-radius-sm:  var(--rima-radius-sm);
+	--rima-radius-md:  var(--rima-radius-md);
+	--rima-radius-lg:  var(--rima-radius-lg);
+	--rima-shadow-sm:  var(--rima-shadow-sm);
+	--rima-shadow-md:  var(--rima-shadow-md);
+	--rima-shadow-lg:  var(--rima-shadow-lg);
 	--rima-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 

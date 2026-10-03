@@ -1,0 +1,77 @@
+/* ==========================================================================
+   RIMA ACADEMY - GLOBAL DESIGN TOKENS
+   ========================================================================== */
+
+:root {
+    /* Brand Colors */
+    --rima-primary: #0F172A;        /* Deep RIMA Blue (Oxford Blue) */
+    --rima-primary-light: #1E293B;  /* Slate Blue */
+    --rima-secondary: #B41527;      /* Crimson Red (Primary CTA) */
+    --rima-secondary-hover: #91101e;
+    --rima-accent: #D4AF37;         /* Academic Gold */
+    --rima-accent-hover: #c4a132;
+    
+    /* Neutral / Text Colors */
+    --rima-text-main: #0F172A;
+    --rima-text-muted: #64748b;
+    --rima-text-inverse: #ffffff;
+    
+    /* Backgrounds & Surfaces */
+    --rima-background: #ffffff;
+    --rima-surface: #ffffff;
+    --rima-surface-alt: #f8fafc;
+    --rima-surface-hover: #f1f5f9;
+    --rima-border: #e2e8f0;
+
+    /* Typography Clamps */
+    /* H1: min 2.4rem (mobile) to 4.8rem (desktop) */
+    --rima-h1: clamp(2.4rem, 5vw, 4.8rem);
+    /* H2: min 2rem to 3.5rem */
+    --rima-h2: clamp(2rem, 4vw, 3.5rem);
+    /* H3: min 1.5rem to 2.5rem */
+    --rima-h3: clamp(1.5rem, 3vw, 2.5rem);
+    /* Body: min 1rem to 1.15rem */
+    --rima-body: clamp(1rem, 1.2vw, 1.15rem);
+
+    /* Global Spacing Tokens */
+    --rima-space-xs: 8px;
+    --rima-space-sm: 16px;
+    --rima-space-md: 24px;
+    --rima-space-lg: 48px;
+    --rima-space-xl: 80px;
+    --rima-space-2xl: 120px;
+
+    /* Radii & Shadows */
+    --rima-radius-sm: 8px;
+    --rima-radius-md: 16px;
+    --rima-radius-lg: 24px;
+    --rima-radius-xl: 32px;
+    
+    --rima-shadow-sm: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+    --rima-shadow-md: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
+    --rima-shadow-lg: 0 24px 50px -10px rgba(15, 23, 42, 0.12); /* Glassmorphism/Premium Shadow */
+
+    /* Glassmorphism Surface */
+    --rima-glass-bg: rgba(15, 23, 42, 0.7);
+    --rima-glass-blur: blur(20px);
+
+    /* Transitions */
+    --rima-transition-fast: 0.15s ease-in-out;
+    --rima-transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base Resets & Global Typo */
+body {
+    color: var(--rima-text-main);
+    background-color: var(--rima-background);
+}
+h1 { font-size: var(--rima-h1); line-height: 1.2; }
+h2 { font-size: var(--rima-h2); line-height: 1.3; }
+h3 { font-size: var(--rima-h3); line-height: 1.4; }
+p { font-size: var(--rima-body); line-height: 1.6; }
+
+/* Inputs and Checkout */
+input[type='text'], input[type='email'], input[type='password'], textarea { padding: 14px 16px; border-radius: var(--rima-radius-sm); border: 1px solid var(--rima-border); background-color: var(--rima-surface); transition: var(--rima-transition-fast); }
+input[type='text']:focus, input[type='email']:focus, input[type='password']:focus, textarea:focus { border-color: var(--rima-primary); box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1); outline: none; }
+.woocommerce-checkout .col2-set { box-shadow: var(--rima-shadow-md); border-radius: var(--rima-radius-lg); padding: var(--rima-space-md); background: var(--rima-surface); }
+.rima-admin-sidebar { box-shadow: var(--rima-shadow-lg); }

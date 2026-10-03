@@ -110,7 +110,23 @@ if ( empty( $profile_image ) ) {
 							$ro_label = 'Deconectare'; 
 							break;
 					}
+
+					// Inject Admin Link before Logout
+					if ( $endpoint === 'customer-logout' && current_user_can('manage_options') ) :
 				?>
+					<li class="nav-item">
+						<a href="<?php echo esc_url( wc_get_account_endpoint_url('rima-admin-panel') ); ?>" class="nav-link d-flex align-items-center gap-3 fw-semibold rounded-3 p-2 transition-all" style="background: rgba(0, 229, 255, 0.05); border: 1px solid rgba(0, 229, 255, 0.1);">
+							<span class="nav-icon d-inline-flex align-items-center justify-content-center rounded bg-white bg-opacity-10 transition-all" style="width: 36px; height: 36px;">
+								<svg style="width:18px;height:18px;display:inline-block;stroke:var(--rhm-cyan, #00e5ff);stroke-width:2px;fill:none;vertical-align:middle;position:relative;z-index:99;" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+							</span>
+							<span class="nav-label" style="color:var(--rhm-cyan, #00e5ff);">
+								<span class="rima-en">RIMA Admin Panel</span>
+								<span class="rima-ro">RIMA Admin Panel</span>
+							</span>
+						</a>
+					</li>
+				<?php endif; ?>
+
 					<li class="nav-item <?php echo wc_get_account_menu_item_classes( $endpoint ); ?>">
 						<a href="<?php echo esc_url( wc_get_account_endpoint_url( $endpoint ) ); ?>" class="nav-link d-flex align-items-center gap-3 text-white-50 fw-semibold rounded-3 p-2 transition-all">
 							<span class="nav-icon d-inline-flex align-items-center justify-content-center rounded bg-white bg-opacity-10 transition-all" style="width: 36px; height: 36px;">

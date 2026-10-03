@@ -32,18 +32,65 @@ do_action( 'woocommerce_before_account_orders', $has_orders ); ?>
         <?php if ( $has_orders ) : ?>
 
             <!-- Search and Filter Bar -->
-            <div class="row g-3 mb-4 p-3 bg-light rounded-3 align-items-end">
-                <div class="col-md-6">
-                    <label class="form-label small fw-semibold text-muted mb-1">
-                        <i class="fa fa-search me-1"></i> <span class="rima-en">Search Order</span><span class="rima-ro">Caută Comandă</span>
-                    </label>
-                    <input type="text" id="rima-order-search" class="form-control form-control-sm rounded-2 border-0 bg-white shadow-sm" placeholder="Număr comandă, curs...">
+            <style>
+            .rima-orders-filter-bar input.form-control,
+            .rima-orders-filter-bar select.form-select {
+                height: 54px !important;
+                padding-left: 48px !important;
+                font-size: 14px !important;
+                font-weight: 500 !important;
+                color: #1e293b !important;
+                background-color: #f8fafc !important;
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 12px !important;
+                transition: all 0.3s ease !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
+                line-height: normal !important;
+            }
+            .rima-orders-filter-bar input.form-control:focus,
+            .rima-orders-filter-bar select.form-select:focus {
+                background-color: #ffffff !important;
+                border-color: #7c3aed !important;
+                box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1) !important;
+                outline: none !important;
+            }
+            .rima-orders-filter-icon {
+                position: absolute !important;
+                top: 50% !important;
+                left: 18px !important;
+                transform: translateY(-50%) !important;
+                color: #94a3b8 !important;
+                font-size: 16px !important;
+                z-index: 4 !important;
+                pointer-events: none !important;
+            }
+            .rima-orders-chevron {
+                position: absolute !important;
+                top: 50% !important;
+                right: 18px !important;
+                transform: translateY(-50%) !important;
+                color: #94a3b8 !important;
+                font-size: 14px !important;
+                z-index: 4 !important;
+                pointer-events: none !important;
+            }
+            .rima-orders-filter-bar select.form-select {
+                appearance: none !important;
+                -webkit-appearance: none !important;
+                cursor: pointer !important;
+                padding-right: 48px !important;
+            }
+            </style>
+            <div class="rima-orders-filter-bar d-flex flex-column flex-md-row gap-3 mb-5">
+                <!-- Search Input -->
+                <div class="position-relative flex-grow-1">
+                    <i class="fa fa-search rima-orders-filter-icon"></i>
+                    <input type="text" id="rima-order-search" class="form-control" placeholder="Număr comandă, curs...">
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label small fw-semibold text-muted mb-1">
-                        <i class="fa fa-filter me-1"></i> <span class="rima-en">Filter Status</span><span class="rima-ro">Filtrează Status</span>
-                    </label>
-                    <select id="rima-order-status-filter" class="form-select form-select-sm rounded-2 border-0 bg-white shadow-sm">
+                <!-- Status Filter -->
+                <div class="position-relative" style="min-width: 260px;">
+                    <i class="fa fa-filter rima-orders-filter-icon"></i>
+                    <select id="rima-order-status-filter" class="form-select">
                         <option value="all">Toate statusurile / All statuses</option>
                         <option value="pending">În așteptare plată / Pending payment</option>
                         <option value="processing">În procesare / Processing</option>
@@ -51,6 +98,7 @@ do_action( 'woocommerce_before_account_orders', $has_orders ); ?>
                         <option value="completed">Finalizate / Completed</option>
                         <option value="cancelled">Anulate / Cancelled</option>
                     </select>
+                    <i class="fa fa-chevron-down rima-orders-chevron"></i>
                 </div>
             </div>
 
@@ -160,6 +208,25 @@ do_action( 'woocommerce_before_account_orders', $has_orders ); ?>
                                 <a href="<?php echo esc_url( $order->get_view_order_url() ); ?>" class="btn btn-sm btn-outline-primary fw-semibold rounded-3 flex-grow-1 py-2" style="font-size: 13px;">
                                     <i class="fa fa-eye me-1"></i> <span class="rima-en">Details</span><span class="rima-ro">Detalii</span>
                                 </a>
+
+                                <?php if ( $payment_method === 'bacs' && in_array( $status, array('pending', 'on-hold') ) && !$proof_id ) : ?>
+                                    <div class="position-relative rima-quick-upload-wrapper" style="flex-grow: 1;">
+                                        <input type="file" class="position-absolute top-0 start-0 w-100 h-100 opacity-0 rima-quick-proof-input" 
+                                               style="cursor: pointer; z-index: 2;" 
+                                               data-order-id="<?php echo esc_attr($order_id); ?>" 
+                                               data-nonce="<?php echo esc_attr(wp_create_nonce('rima_proof_nonce_' . $order_id)); ?>" 
+                                               accept="application/pdf,image/png,image/jpeg,image/jpg" 
+                                               title="Upload Proof">
+                                        <button type="button" class="btn btn-sm btn-danger fw-semibold rounded-3 py-2 w-100 rima-quick-proof-btn" style="font-size: 13px; pointer-events: none;">
+                                            <span class="rima-upload-text">
+                                                <i class="fa fa-upload me-1"></i> <span class="rima-en">Upload</span><span class="rima-ro">Încarcă Dovada</span>
+                                            </span>
+                                            <span class="rima-upload-loading" style="display:none;">
+                                                <i class="fa fa-spinner fa-spin"></i>
+                                            </span>
+                                        </button>
+                                    </div>
+                                <?php endif; ?>
 
                                 <?php if ( $order->needs_payment() ) : ?>
                                     <a href="<?php echo esc_url( $order->get_checkout_payment_url() ); ?>" class="btn btn-sm btn-success fw-semibold rounded-3 py-2 px-3" style="font-size: 13px;">
@@ -277,6 +344,76 @@ jQuery(document).ready(function($) {
     // Listen to custom change event
     $(document).on('rima_lang_changed', function(e, lang) {
         updateBilingualControls(lang);
+    });
+
+    // Handle Quick Upload from Orders Card
+    $('.rima-quick-proof-input').on('change', function() {
+        var $input = $(this);
+        var $wrapper = $input.closest('.rima-quick-upload-wrapper');
+        var $btn = $wrapper.find('.rima-quick-proof-btn');
+        var $btnText = $btn.find('.rima-upload-text');
+        var $btnLoading = $btn.find('.rima-upload-loading');
+        
+        var file = this.files[0];
+        if (!file) return;
+
+        var orderId = $input.data('order-id');
+        var nonce = $input.data('nonce');
+
+        // Basic validation
+        var allowedTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Format invalid. Sunt permise doar fișiere PDF, PNG și JPG.');
+            $input.val('');
+            return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Fișierul este prea mare. Lăsați dimensiunea maximă de 5MB.');
+            $input.val('');
+            return;
+        }
+
+        // UI state
+        $btnText.hide();
+        $btnLoading.show();
+        $btn.removeClass('btn-danger').addClass('btn-secondary');
+
+        var formData = new FormData();
+        formData.append('proof_file', file);
+        formData.append('order_id', orderId);
+        formData.append('action', 'rima_upload_payment_proof');
+        formData.append('nonce', nonce);
+
+        $.ajax({
+            url: '<?php echo admin_url("admin-ajax.php"); ?>',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    $wrapper.html('<button class="btn btn-sm btn-success fw-semibold w-100 rounded-3 py-2" style="font-size: 13px;" disabled><i class="fa fa-check"></i> ' + (currentLang === 'ro' ? 'Dovada a fost încărcată' : 'Proof Uploaded') + '</button>');
+                    // Refresh page after 1.5s to update statuses
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    alert(response.data || 'A apărut o eroare la încărcare.');
+                    resetQuickBtn();
+                }
+            },
+            error: function() {
+                alert('Eroare de rețea. Te rugăm să încerci din nou.');
+                resetQuickBtn();
+            }
+        });
+
+        function resetQuickBtn() {
+            $input.val('');
+            $btnLoading.hide();
+            $btnText.show();
+            $btn.removeClass('btn-secondary').addClass('btn-danger');
+        }
     });
 });
 </script>

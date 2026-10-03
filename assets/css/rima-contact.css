@@ -8,24 +8,24 @@
 
 /* ── CSS Variables (extends root tokens from rima-design-system) ─────────── */
 :root {
-    --rc-primary:        #8a1f2c;
-    --rc-primary-dark:   #6e1823;
-    --rc-primary-glow:   rgba(138, 31, 44, 0.3);
-    --rc-accent:         #8a1f2c;
-    --rc-red:            #ff4757;
-    --rc-navy:           #040814;
-    --rc-surface:        rgba(255, 255, 255, 0.03);
-    --rc-bg:             #040814;
-    --rc-border:         rgba(255, 255, 255, 0.08);
-    --rc-text:           #ffffff;
-    --rc-muted:          #A0ABC0;
-    --rc-radius:         20px;
-    --rc-radius-sm:      12px;
-    --rc-shadow-sm:      0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    --rc-shadow-md:      0 8px 32px 0 rgba(138, 31, 44, 0.2);
-    --rc-shadow-lg:      0 20px 60px rgba(138, 31, 44, 0.3);
+    --rc-primary:        var(--rima-primary);
+    --rc-primary-dark:   var(--rima-primary-dark);
+    --rc-primary-glow:   var(--rima-primary-light);
+    --rc-accent:         var(--rima-accent);
+    --rc-red:            var(--rima-accent);
+    --rc-navy:           var(--rima-secondary-dark);
+    --rc-surface:        var(--rima-surface);
+    --rc-bg:             var(--rima-surface-alt);
+    --rc-border:         var(--rima-border);
+    --rc-text:           var(--rima-text);
+    --rc-muted:          var(--rima-text-muted);
+    --rc-radius:         var(--rima-radius-xl, 24px);
+    --rc-radius-sm:      var(--rima-radius-md, 16px);
+    --rc-shadow-sm:      var(--rima-shadow-sm);
+    --rc-shadow-md:      var(--rima-shadow-md);
+    --rc-shadow-lg:      var(--rima-shadow-lg);
     --rc-transition:     all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    --rc-font:           'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --rc-font:           var(--rima-font-body);
 }
 
 /* ==========================================================================
@@ -82,9 +82,9 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #ffffff;
+    background: rgba(0, 0, 0, 0.10);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: var(--rc-text);
     border-radius: 50px;
     padding: 8px 20px;
     font-size: 13px;
@@ -103,7 +103,7 @@
     font-family: var(--rc-font);
     font-size: clamp(2rem, 5vw, 3.4rem);
     font-weight: 800;
-    color: #ffffff;
+    color: var(--rc-text);
     line-height: 1.15;
     margin: 0 0 20px;
     letter-spacing: -0.03em;
@@ -117,7 +117,7 @@
 }
 
 .rima-contact-hero p {
-    color: rgba(255,255,255,0.7);
+    color: rgba(0, 0, 0, 0.5);
     font-size: 1.1rem;
     max-width: 560px;
     margin: 0 auto;
@@ -240,7 +240,7 @@
    CONTACT FORM CARD
    ========================================================================== */
 .rima-contact-form-card {
-    background: #ffffff;
+    background: var(--rc-surface);
     border-radius: var(--rc-radius);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
     border: none;
@@ -255,13 +255,13 @@
 .rima-contact-form-header h2 {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--rc-text);
     margin: 0 0 6px;
     letter-spacing: -0.02em;
 }
 
 .rima-contact-form-header p {
-    color: rgba(255,255,255,0.75);
+    color: rgba(0, 0, 0, 0.5);
     font-size: 0.9rem;
     margin: 0;
 }
@@ -352,7 +352,7 @@
 .rc-field select:focus,
 .rc-field textarea:focus {
     border-color: var(--rc-primary);
-    background: rgba(255, 255, 255, 0.05); /* Dark mode focus background */
+    background: rgba(0, 0, 0, 0.10); /* Dark mode focus background */
     box-shadow: 0 0 0 4px var(--rc-primary-glow);
 }
 
@@ -415,7 +415,7 @@
     width: 100%;
     padding: 16px 32px;
     background: linear-gradient(135deg, var(--rc-primary) 0%, var(--rc-primary-dark) 100%);
-    color: #ffffff;
+    color: var(--rc-text);
     border: none;
     border-radius: 14px;
     font-size: 16px;
@@ -432,7 +432,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.15) 0%, transparent 60%);
 }
 
 .rc-btn-submit:hover {
@@ -489,8 +489,8 @@
     display: none;
     width: 18px;
     height: 18px;
-    border: 2.5px solid rgba(255,255,255,0.4);
-    border-top-color: #ffffff;
+    border: 2.5px solid rgba(0, 0, 0, 0.15);
+    border-top-color: var(--rc-text);
     border-radius: 50%;
     animation: rc-spin 0.7s linear infinite;
 }
@@ -626,13 +626,13 @@
 .rc-social-card h3 {
     font-size: 1.05rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--rc-text);
     margin: 0 0 6px;
 }
 
 .rc-social-card p {
     font-size: 13px;
-    color: rgba(255,255,255,0.6);
+    color: rgba(0, 0, 0, 0.5);
     margin: 0 0 20px;
     line-height: 1.6;
 }
@@ -648,15 +648,15 @@
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(0, 0, 0, 0.14);
+    border: 1px solid rgba(0, 0, 0, 0.15);
     border-radius: 12px;
     text-decoration: none !important;
     transition: var(--rc-transition);
 }
 
 .rc-social-link:hover {
-    background: rgba(255,255,255,0.13);
+    background: rgba(0, 0, 0, 0.15);
     border-color: var(--rc-primary);
     transform: translateX(4px);
     box-shadow: 0 4px 15px rgba(138, 31, 44, 0.3);
@@ -682,12 +682,12 @@
     display: block;
     font-size: 13px;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--rc-text);
 }
 
 .rc-social-link-text span {
     font-size: 12px;
-    color: rgba(255,255,255,0.55);
+    color: rgba(0, 0, 0, 0.5);
 }
 
 /* Hours card */
@@ -914,7 +914,7 @@
 /* Remove Quform default card chrome inside our card */
 .rc-quform-wrapper .quform-outer-wrapper,
 .rc-quform-wrapper .quform-form {
-    background: #ffffff !important;
+    background: var(--rc-surface) !important;
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
@@ -947,7 +947,7 @@
 .rc-quform-wrapper select,
 .rc-quform-wrapper textarea {
     width: 100% !important;
-    background: #ffffff !important;
+    background: var(--rc-surface) !important;
     border: 1.5px solid #cbd5e0 !important;
     border-radius: 12px !important;
     padding: 13px 16px !important;
@@ -970,7 +970,7 @@
 .rc-quform-wrapper select:focus,
 .rc-quform-wrapper textarea:focus {
     border-color: var(--rc-primary) !important;
-    background: #ffffff !important;
+    background: var(--rc-surface) !important;
     box-shadow: 0 0 0 3px rgba(138, 31, 44, 0.15) !important;
 }
 
@@ -1006,7 +1006,7 @@
     gap: 10px !important;
     padding: 15px 32px !important;
     background: linear-gradient(135deg, var(--rc-primary) 0%, var(--rc-primary-dark) 100%) !important;
-    color: #ffffff !important;
+    color: var(--rc-text) !important;
     border: none !important;
     border-radius: 14px !important;
     font-size: 16px !important;
@@ -1160,7 +1160,7 @@
 .rc-faq-card-header h3 {
     font-size: 22px;
     font-weight: 700;
-    color: #fff;
+    color: var(--rc-text);
     margin-bottom: 8px;
 }
 
@@ -1185,7 +1185,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #fff;
+    color: var(--rc-text);
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
@@ -1234,17 +1234,17 @@
     padding-top: 60px !important;
 }
 .rima-contact-hero h1, .rima-contact-hero p {
-    color: #ffffff !important;
+    color: var(--rc-text) !important;
 }
 .rima-contact-hero p {
     opacity: 0.8;
 }
 .rima-contact-hero-badge {
-    background: rgba(255, 255, 255, 0.1) !important;
+    background: rgba(0, 0, 0, 0.15) !important;
     backdrop-filter: blur(12px) !important;
     -webkit-backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(255,255,255,0.2) !important;
-    color: #fff !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    color: var(--rc-text) !important;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
@@ -1257,7 +1257,7 @@
     background: rgba(10, 15, 30, 0.5) !important;
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
     border-radius: 24px !important;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.4s ease, border-color 0.4s ease !important;
@@ -1266,14 +1266,14 @@
 .rc-info-card:hover {
     transform: translateY(-8px) scale(1.02) !important;
     background: rgba(20, 30, 50, 0.7) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
-    box-shadow: 0 20px 50px rgba(0, 229, 255, 0.15) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 20px 50px rgba(212, 175, 55, 0.15) !important;
 }
 .rc-info-card h4 {
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: rgba(0, 0, 0, 0.5) !important;
 }
 .rc-info-link, .rc-info-text {
-    color: #ffffff !important;
+    color: var(--rc-text) !important;
     font-weight: 600 !important;
 }
 
@@ -1282,7 +1282,7 @@
     background: rgba(10, 15, 30, 0.6) !important;
     backdrop-filter: blur(24px) !important;
     -webkit-backdrop-filter: blur(24px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
     border-radius: 32px !important;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4) !important;
     position: relative;
@@ -1294,35 +1294,35 @@
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.15), transparent);
     z-index: 1;
 }
 
 /* Form Headings */
 .rima-contact-form-header h2, .rc-faq-card-header h3, .rc-social-card h3 {
-    color: #ffffff !important;
+    color: var(--rc-text) !important;
 }
 .rima-contact-form-header p, .rc-faq-card-header p {
-    color: rgba(255, 255, 255, 0.7) !important;
+    color: rgba(0, 0, 0, 0.5) !important;
 }
 
 /* Topic Pills */
 .rc-topic-pill {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: rgba(255, 255, 255, 0.8) !important;
+    background: rgba(0, 0, 0, 0.10) !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    color: rgba(0, 0, 0, 0.5) !important;
     border-radius: 100px !important;
     transition: all 0.3s ease !important;
 }
 .rc-topic-pill:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
+    background: rgba(0, 0, 0, 0.15) !important;
+    color: var(--rc-text) !important;
 }
 .rc-topic-pill.active {
     background: var(--rc-primary) !important;
     border-color: var(--rc-primary) !important;
     color: #000000 !important;
-    box-shadow: 0 0 20px rgba(0, 229, 255, 0.4) !important;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4) !important;
 }
 
 /* Form Inputs (Quform Overrides for Glassmorphism) */
@@ -1331,8 +1331,8 @@
 .rc-quform-wrapper input[type="email"], 
 .rc-quform-wrapper textarea {
     background: rgba(0, 0, 0, 0.3) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    color: var(--rc-text) !important;
     border-radius: 16px !important;
     padding: 18px 24px !important;
     transition: all 0.3s ease !important;
@@ -1342,7 +1342,7 @@
 .rc-quform-wrapper textarea:focus {
     background: rgba(0, 0, 0, 0.5) !important;
     border-color: var(--rc-primary) !important;
-    box-shadow: 0 0 15px rgba(0, 229, 255, 0.2) !important;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2) !important;
     outline: none !important;
 }
 .rc-quform-wrapper .quform-submit-inner button {
@@ -1352,68 +1352,68 @@
     font-weight: 700 !important;
     text-transform: uppercase !important;
     letter-spacing: 1px !important;
-    box-shadow: 0 10px 30px rgba(0, 229, 255, 0.3) !important;
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3) !important;
     transition: all 0.3s ease !important;
 }
 .rc-quform-wrapper .quform-submit-inner button:hover {
     transform: translateY(-3px) scale(1.05) !important;
-    box-shadow: 0 15px 40px rgba(0, 229, 255, 0.5) !important;
+    box-shadow: 0 15px 40px rgba(212, 175, 55, 0.5) !important;
 }
 
 /* FAQ Accordion */
 .rc-faq-question {
-    background: rgba(255, 255, 255, 0.03) !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
-    color: #ffffff !important;
+    background: rgba(0, 0, 0, 0.06) !important;
+    border: 1px solid rgba(0, 0, 0, 0.10) !important;
+    color: var(--rc-text) !important;
     border-radius: 16px !important;
     padding: 20px 24px !important;
 }
 .rc-faq-item.open .rc-faq-question {
-    background: rgba(255, 255, 255, 0.08) !important;
+    background: rgba(0, 0, 0, 0.15) !important;
     border-radius: 16px 16px 0 0 !important;
     border-bottom-color: transparent !important;
 }
 .rc-faq-answer {
     background: rgba(0, 0, 0, 0.2) !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(0, 0, 0, 0.10) !important;
     border-top: none !important;
-    color: rgba(255, 255, 255, 0.7) !important;
+    color: rgba(0, 0, 0, 0.5) !important;
     border-radius: 0 0 16px 16px !important;
 }
 
 /* Social Cards */
 .rc-social-link {
-    background: rgba(255, 255, 255, 0.03) !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    background: rgba(0, 0, 0, 0.06) !important;
+    border: 1px solid rgba(0, 0, 0, 0.10) !important;
     border-radius: 20px !important;
     transition: all 0.3s ease !important;
 }
 .rc-social-link:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border-color: rgba(255, 255, 255, 0.2) !important;
+    background: rgba(0, 0, 0, 0.15) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
     transform: translateX(8px) !important;
 }
 .rc-social-link-text strong {
-    color: #ffffff !important;
+    color: var(--rc-text) !important;
 }
 .rc-social-link-text span {
-    color: rgba(255, 255, 255, 0.5) !important;
+    color: rgba(0, 0, 0, 0.5) !important;
 }
 
 /* Form Icons Fix (White text readability) */
 .rima-contact-page .wpcf7-form-control-wrap input::placeholder,
 .rc-quform-wrapper ::placeholder {
-    color: rgba(255, 255, 255, 0.4) !important;
+    color: rgba(0, 0, 0, 0.15) !important;
 }
 .rc-form-icon svg {
-    color: rgba(255, 255, 255, 0.5) !important;
+    color: rgba(0, 0, 0, 0.5) !important;
 }
 
 /* ==========================================================================
    PROFESSIONAL WHITE FORM CARD OVERRIDE
    ========================================================================== */
 .rima-contact-form-card {
-    background: #ffffff !important;
+    background: var(--rc-surface) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     border: none !important;
@@ -1462,7 +1462,7 @@
     background: var(--rc-primary) !important;
     border-color: var(--rc-primary) !important;
     color: #000000 !important;
-    box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3) !important;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3) !important;
 }
 
 /* Fix weird huge grey boxes from Quform default styling globally just in case */
@@ -1517,9 +1517,9 @@
 .rima-contact-form-card .rc-quform-wrapper .quform-input:focus, 
 .rima-contact-form-card .rc-quform-wrapper input:focus, 
 .rima-contact-form-card .rc-quform-wrapper textarea:focus {
-    background: #ffffff !important;
+    background: var(--rc-surface) !important;
     border-color: var(--rc-primary) !important;
-    box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.1) !important;
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1) !important;
     outline: none !important;
 }
 
@@ -1531,7 +1531,7 @@
 /* Quform Submit Button */
 .rima-contact-form-card .rc-quform-wrapper .quform-submit-inner button {
     background: #09090b !important;
-    color: #ffffff !important;
+    color: var(--rc-text) !important;
     border-radius: 12px !important;
     padding: 16px 32px !important;
     font-size: 16px !important;
@@ -1546,7 +1546,7 @@
     background: var(--rc-primary) !important;
     color: #000000 !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 10px 25px rgba(0, 229, 255, 0.3) !important;
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3) !important;
 }
 
 /* Ensure form labels inside the white card are dark */

@@ -7,17 +7,17 @@
    CSS TOKENS (local to this page)
    ══════════════════════════════════════════════════════ */
 :root {
-    --roc-blue:        var(--rima-primary, #00E5FF);
-    --roc-blue-dark:   var(--rima-primary-dark, #00B8CC);
-    --roc-blue-glow:   rgba(0, 229, 255, 0.3);
-    --roc-navy:        var(--rima-secondary-dark, #0A1128);
-    --roc-navy-mid:    var(--rima-secondary, #162547);
+    --roc-blue:        var(--rima-accent, #D4AF37); /* Academic Gold */
+    --roc-blue-dark:   #c4a132;
+    --roc-blue-glow:   rgba(212, 175, 55, 0.3);
+    --roc-navy:        var(--rima-primary, #0F172A); /* Oxford Blue */
+    --roc-navy-mid:    var(--rima-primary-light, #1E293B); /* Slate Blue */
     --roc-white:       #ffffff;
-    --roc-off:         var(--rima-gray-50, #F8F9FA);
-    --roc-border:      var(--rima-gray-200, #E9ECEF);
-    --roc-text:        var(--rima-secondary, #162547);
-    --roc-muted:       var(--rima-gray-600, #6C757D);
-    --roc-card-radius: 28px;
+    --roc-off:         var(--rima-surface-alt, #f8fafc);
+    --roc-border:      var(--rima-border, #E9ECEF);
+    --roc-text:        var(--rima-primary, #0F172A);
+    --roc-muted:       #64748b;
+    --roc-card-radius: 24px;
     --roc-transition:  0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Ultra smooth hover */
 }
 
@@ -73,7 +73,7 @@
     background: rgba(10, 17, 40, 0.6);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(0, 229, 255, 0.3);
+    border: 1px solid rgba(212, 175, 55, 0.3);
     border-radius: 50px;
     padding: 6px 12px;
     color: #fff;
@@ -89,7 +89,7 @@
 
 .roc-glass-marker:hover {
     transform: translate(-50%, -50%) scale(1.1);
-    border-color: rgba(0, 229, 255, 0.8);
+    border-color: rgba(212, 175, 55, 0.8);
     background: rgba(10, 17, 40, 0.8);
 }
 
@@ -106,6 +106,7 @@
 @media only screen and (max-width: 768px) {
     #roc-globe-viz {
         opacity: 0.6; /* Fade slightly behind content on mobile */
+        pointer-events: none !important; /* Allow page scrolling on touch screens */
     }
 }
 
@@ -188,9 +189,9 @@
 
 .roc-lang-flag-btn:hover {
     background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(0, 229, 255, 0.6);
+    border-color: rgba(212, 175, 55, 0.6);
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.2), 0 0 15px rgba(0, 229, 255, 0.2);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2), 0 0 15px rgba(212, 175, 55, 0.2);
 }
 
 .roc-lang-flag-btn:active {
@@ -528,7 +529,7 @@
 .roc-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 20px 40px rgba(10, 17, 40, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 1);
-    border-color: rgba(0, 229, 255, 0.3);
+    border-color: rgba(212, 175, 55, 0.3);
 }
 
 .roc-card-image-link { display: block; }
@@ -585,7 +586,7 @@
     color: var(--roc-navy);
     font-size: 14px;
     padding: 8px 18px;
-    box-shadow: 0 4px 15px rgba(0, 229, 255, 0.4);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
     z-index: 2;
     transform: translateY(-24px); /* Moves it up into the image area */
 }
@@ -685,7 +686,7 @@
     background: var(--roc-blue);
     color: var(--roc-navy) !important;
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 229, 255, 0.3);
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
     border-color: transparent;
 }
 .roc-card-cta svg { flex-shrink: 0; transition: transform var(--roc-transition); stroke-width: 2.5; }
@@ -845,7 +846,17 @@
 }
 
 @media (max-width: 768px) {
-    .roc-hero { padding: 64px 20px 56px; }
+    .roc-hero { padding: 100px 15px 56px; }
+    .roc-hero-glass-panel { 
+        padding: 40px 24px; 
+        margin-left: 0; 
+        max-width: 100%; 
+        border-radius: 24px; 
+        box-sizing: border-box; 
+    }
+    .roc-h1 { font-size: 2.2rem; }
+    .roc-hero-lead { font-size: 1rem; }
+    .roc-lang-flag-btn { padding: 8px 12px; font-size: 12px; }
     .roc-filter-inner { flex-direction: column; align-items: stretch; }
     .roc-filter-controls { flex-wrap: wrap; }
     .roc-search-input { width: 100%; }
@@ -926,7 +937,7 @@
     width: 360px;
     height: 360px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(0, 229, 255, 0.12) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.12) 0%, transparent 70%);
     animation: reelGlow 3s ease-in-out infinite alternate;
 }
 
@@ -939,7 +950,7 @@
     width: 240px;
     height: auto;
     border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0, 229, 255, 0.2), 0 0 0 2px rgba(0, 229, 255, 0.15);
+    box-shadow: 0 20px 60px rgba(212, 175, 55, 0.2), 0 0 0 2px rgba(212, 175, 55, 0.15);
     animation: reelFloat 4s ease-in-out infinite alternate;
     position: relative;
     z-index: 1;
@@ -978,7 +989,7 @@
 .roc-reel-name {
     font-size: 22px;
     font-weight: 300;
-    color: rgba(0, 229, 255, 0.8);
+    color: rgba(212, 175, 55, 0.8);
     margin: 0 0 8px;
 }
 
@@ -1009,7 +1020,7 @@
 .roc-reel-stat-num {
     font-size: 30px;
     font-weight: 700;
-    color: #00e5ff;
+    color: #D4AF37;
 }
 
 .roc-reel-stat-lbl {
@@ -1024,10 +1035,10 @@
     align-items: center;
     gap: 10px;
     padding: 14px 32px;
-    background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(124, 77, 255, 0.15));
-    border: 1px solid rgba(0, 229, 255, 0.3);
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(124, 77, 255, 0.15));
+    border: 1px solid rgba(212, 175, 55, 0.3);
     border-radius: 60px;
-    color: #00e5ff;
+    color: #D4AF37;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
@@ -1038,10 +1049,10 @@
 }
 
 .roc-reel-cta:hover {
-    background: linear-gradient(135deg, rgba(0, 229, 255, 0.3), rgba(124, 77, 255, 0.3));
-    border-color: rgba(0, 229, 255, 0.6);
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(124, 77, 255, 0.3));
+    border-color: rgba(212, 175, 55, 0.6);
     transform: translateX(4px);
-    box-shadow: 0 8px 30px rgba(0, 229, 255, 0.15);
+    box-shadow: 0 8px 30px rgba(212, 175, 55, 0.15);
 }
 
 /* ── Controls ───────────────────────────── */
@@ -1076,8 +1087,8 @@
 }
 
 .roc-reel-btn:hover {
-    background: rgba(0, 229, 255, 0.15);
-    border-color: rgba(0, 229, 255, 0.4);
+    background: rgba(212, 175, 55, 0.15);
+    border-color: rgba(212, 175, 55, 0.4);
 }
 
 .roc-reel-dots {
@@ -1108,13 +1119,13 @@
 }
 
 .roc-reel-dot:hover {
-    border-color: rgba(0, 229, 255, 0.5);
+    border-color: rgba(212, 175, 55, 0.5);
     transform: scale(1.15);
 }
 
 .roc-reel-dot-active {
-    border-color: #00e5ff;
-    box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+    border-color: #D4AF37;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
     transform: scale(1.2);
 }
 
@@ -1132,7 +1143,7 @@
 .roc-reel-progress-fill {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, #00e5ff, #7c4dff);
+    background: linear-gradient(90deg, #D4AF37, #7c4dff);
     transition: width 0.1s linear;
 }
 
@@ -1158,8 +1169,8 @@
 
 .roc-reel-playpause:hover {
     color: #fff;
-    border-color: rgba(0, 229, 255, 0.4);
-    background: rgba(0, 229, 255, 0.1);
+    border-color: rgba(212, 175, 55, 0.4);
+    background: rgba(212, 175, 55, 0.1);
 }
 
 /* ── Reel Responsive ────────────────────── */
@@ -1188,6 +1199,9 @@
     .roc-reel-controls { padding: 8px 12px; gap: 8px; }
     .roc-reel-dot { width: 28px; height: 28px; }
     .roc-reel-btn { width: 32px; height: 32px; }
+    .roc-reel-stat { flex-direction: column; gap: 4px; padding: 12px 20px; text-align: center; }
+    .roc-reel-stat-num { font-size: 24px; }
+    .roc-reel-stat-lbl { font-size: 11px; }
 }
 
 /* Marker pulse effect */
@@ -1197,7 +1211,7 @@
     left: 50%;
     width: 30px;
     height: 30px;
-    background: rgba(0, 229, 255, 0.4);
+    background: rgba(212, 175, 55, 0.4);
     border-radius: 50%;
     transform: translate(-50%, -50%);
     z-index: -1;
@@ -1246,7 +1260,7 @@
 
 .roc-lang-card-btn:hover {
     transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0, 229, 255, 0.2);
+    box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
 }
 
 .roc-lang-card-bg {
@@ -1349,7 +1363,7 @@
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     /* Deep mesh gradient matching the hero */
-    background: radial-gradient(circle at 15% 50%, rgba(0, 229, 255, 0.08), transparent 50%),
+    background: radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.08), transparent 50%),
                 radial-gradient(circle at 85% 30%, rgba(16, 45, 86, 0.4), transparent 50%);
     z-index: 1;
 }
@@ -1380,7 +1394,7 @@
 }
 
 .roc-btn-back-elegant:hover {
-    color: #00E5FF;
+    color: #D4AF37;
     transform: translateX(-5px);
 }
 
@@ -1431,7 +1445,7 @@
     content: '';
     position: absolute;
     top: 0; left: 0; width: 100%; height: 4px;
-    background: linear-gradient(90deg, #00E5FF, transparent);
+    background: linear-gradient(90deg, #D4AF37, transparent);
     opacity: 0;
     transition: opacity 0.4s ease;
 }
@@ -1451,13 +1465,13 @@
 .roc-lvl-badge {
     display: inline-block;
     padding: 6px 14px;
-    background: rgba(0, 229, 255, 0.1);
-    color: #00E5FF;
+    background: rgba(212, 175, 55, 0.1);
+    color: #D4AF37;
     font-size: 16px;
     font-weight: 800;
     border-radius: 50px;
     margin-bottom: 24px;
-    border: 1px solid rgba(0, 229, 255, 0.2);
+    border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 .roc-lvl-card h3 {
@@ -1516,8 +1530,8 @@
 
 .roc-page-container .eltdf-cl-item:hover {
     transform: translateY(-8px) !important;
-    border-color: rgba(0, 229, 255, 0.3) !important;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 229, 255, 0.1) !important;
+    border-color: rgba(212, 175, 55, 0.3) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 175, 55, 0.1) !important;
 }
 
 /* Image Wrapper */
@@ -1554,14 +1568,14 @@
     transition: color 0.3s ease !important;
 }
 .roc-page-container .eltdf-cl-title a:hover {
-    color: #00E5FF !important;
+    color: #D4AF37 !important;
 }
 
 /* Specific text elements */
 .roc-page-container .eltdf-cl-instructor,
 .roc-page-container .eltdf-cl-instructor a,
 .roc-page-container .eltdf-cl-price {
-    color: #00E5FF !important;
+    color: #D4AF37 !important;
     font-weight: 600 !important;
 }
 
@@ -1595,13 +1609,13 @@
     border-radius: 8px !important;
 }
 .roc-page-container .eltdf-cl-pagination ul li.eltdf-cl-pag-active a {
-    background: #00E5FF !important;
-    border-color: #00E5FF !important;
+    background: #D4AF37 !important;
+    border-color: #D4AF37 !important;
     color: #090e17 !important;
     font-weight: bold !important;
 }
 .roc-page-container .eltdf-cl-pagination ul li a:hover {
-    background: rgba(0, 229, 255, 0.2) !important;
-    border-color: #00E5FF !important;
-    color: #00E5FF !important;
+    background: rgba(212, 175, 55, 0.2) !important;
+    border-color: #D4AF37 !important;
+    color: #D4AF37 !important;
 }

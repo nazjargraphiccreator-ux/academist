@@ -1,0 +1,117 @@
+/* ==========================================================================
+   RIMA ACADEMY - CORE COMPONENTS
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. BUTTONS (RimaButton)
+   -------------------------------------------------------------------------- */
+.rima-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: var(--rima-radius-md);
+    transition: var(--rima-transition-fast);
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    border: 2px solid transparent;
+}
+
+.rima-btn:hover {
+    text-decoration: none;
+}
+
+/* Primary Button */
+.rima-btn-primary {
+    background-color: var(--rima-accent);
+    color: var(--rima-text-inverse) !important;
+    box-shadow: var(--rima-shadow-sm);
+}
+
+.rima-btn-primary:hover {
+    background-color: var(--rima-accent-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--rima-shadow-md);
+}
+
+/* Secondary Button */
+.rima-btn-secondary {
+    background-color: transparent;
+    color: var(--rima-primary) !important;
+    border-color: var(--rima-primary);
+}
+
+.rima-btn-secondary:hover {
+    background-color: var(--rima-primary);
+    color: var(--rima-text-inverse) !important;
+}
+
+/* Tertiary Button */
+.rima-btn-tertiary {
+    background-color: var(--rima-surface-alt);
+    color: var(--rima-text-main) !important;
+}
+
+.rima-btn-tertiary:hover {
+    background-color: var(--rima-border);
+}
+
+/* --------------------------------------------------------------------------
+   2. CARDS (RimaCard)
+   -------------------------------------------------------------------------- */
+.rima-card {
+    background: var(--rima-surface);
+    border-radius: var(--rima-radius-lg);
+    padding: var(--rima-space-md);
+    box-shadow: var(--rima-shadow-sm);
+    border: 1px solid var(--rima-border);
+    transition: var(--rima-transition-smooth);
+}
+
+.rima-card:hover {
+    box-shadow: var(--rima-shadow-lg);
+    transform: translateY(-4px);
+    border-color: rgba(0,0,0,0.05);
+}
+
+/* --------------------------------------------------------------------------
+   3. LAYOUT CONTAINERS
+   -------------------------------------------------------------------------- */
+.rima-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: var(--rima-space-sm);
+    padding-right: var(--rima-space-sm);
+}
+
+.rima-section {
+    padding-top: var(--rima-space-xl);
+    padding-bottom: var(--rima-space-xl);
+}
+
+/* --------------------------------------------------------------------------
+   4. BADGES
+   -------------------------------------------------------------------------- */
+.rima-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: var(--rima-radius-xl);
+    background: var(--rima-surface-alt);
+    color: var(--rima-text-muted);
+}
+
+.rima-badge-premium {
+    background: linear-gradient(135deg, var(--rima-primary), var(--rima-secondary));
+    color: var(--rima-text-inverse);
+}
+
+/* Glassmorphism Classes */
+.rima-glass { background-color: var(--rima-glass-bg); backdrop-filter: var(--rima-glass-blur); -webkit-backdrop-filter: var(--rima-glass-blur); }
+.rima-glass-card { background-color: rgba(255, 255, 255, 0.8); backdrop-filter: var(--rima-glass-blur); -webkit-backdrop-filter: var(--rima-glass-blur); box-shadow: var(--rima-shadow-lg); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: var(--rima-radius-lg); padding: var(--rima-space-md); }

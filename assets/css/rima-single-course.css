@@ -4,15 +4,15 @@
  */
 
 :root {
-    --rmc-blue:       #00E5FF;
-    --rmc-blue-dark:  #00B8CC;
-    --rmc-navy:       #0A1128;
-    --rmc-navy-mid:   #162547;
-    --rmc-white:      #ffffff;
-    --rmc-bg:         #f8f9fa;
-    --rmc-border:     #e9ecef;
-    --rmc-text:       #162547;
-    --rmc-muted:      #6c757d;
+    --rmc-blue:       var(--rima-primary);
+    --rmc-blue-dark:  var(--rima-primary-dark);
+    --rmc-navy:       var(--rima-secondary-dark);
+    --rmc-navy-mid:   var(--rima-secondary);
+    --rmc-white:      var(--rima-surface);
+    --rmc-bg:         var(--rima-surface-alt);
+    --rmc-border:     var(--rima-border);
+    --rmc-text:       var(--rima-text);
+    --rmc-muted:      var(--rima-text-muted);
     --rmc-radius:     24px;
     --rmc-t:          0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -28,8 +28,8 @@
    ══════════════════════════════════════════════════════ */
 .rmc-hero {
     background-color: var(--rmc-navy);
-    background-image: radial-gradient(circle at 80% 20%, rgba(0,229,255,0.1) 0%, transparent 50%),
-                      radial-gradient(circle at 20% 80%, rgba(22,37,71,0.5) 0%, transparent 50%);
+    background-image: radial-gradient(circle at 80% 20%, rgba(18, 48, 142, 0.15) 0%, transparent 50%),
+                      radial-gradient(circle at 20% 80%, rgba(230, 34, 67, 0.1) 0%, transparent 50%);
     color: var(--rmc-white);
     padding: 140px 0 60px;
     position: relative;
@@ -62,9 +62,9 @@
 
 .rmc-badge {
     display: inline-block;
-    background: rgba(0, 229, 255, 0.15);
-    color: var(--rmc-blue);
-    border: 1px solid rgba(0, 229, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--rmc-white);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     padding: 6px 14px;
     border-radius: 50px;
     font-size: 11px;
@@ -127,6 +127,7 @@
 }
 .rmc-hero-action form { margin: 0; }
 .rmc-hero-action button.single_add_to_cart_button,
+.rmc-hero-action .eltdf-course-buy-form button,
 .rmc-btn-primary {
     background: var(--rmc-blue);
     color: var(--rmc-navy);
@@ -139,12 +140,13 @@
     transition: all var(--rmc-t);
     text-decoration: none;
     display: inline-block;
-    box-shadow: 0 10px 20px rgba(0, 229, 255, 0.2);
+    box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
 }
 .rmc-hero-action button.single_add_to_cart_button:hover,
+.rmc-hero-action .eltdf-course-buy-form button:hover,
 .rmc-btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 15px 25px rgba(0, 229, 255, 0.3);
+    box-shadow: 0 15px 25px rgba(212, 175, 55, 0.3);
     background: #fff;
 }
 

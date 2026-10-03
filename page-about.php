@@ -1,10 +1,10 @@
 <?php
 /**
- * Template Name: Rima Academy – About Page
+ * Template Name: Rima Academy - About Page
  *
  * Custom e-learning about page for Rima Academy.
  * Place this file in the academist-child theme root.
- * In WordPress admin → Pages → Add New (or Edit "About Us") → set Page Attributes → Template = "Rima Academy – About Page"
+ * In WordPress admin → Pages → Add New (or Edit "About Us") → set Page Attributes → Template = "Rima Academy - About Page"
  *
  * @package AcademistChild
  */
@@ -605,3 +605,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <?php
 get_footer();
+
